@@ -4,6 +4,8 @@ import { startTransition, useEffect, useRef, useState } from "react";
 import { BookOpenText, Languages, PencilLine, RotateCcw, Sparkles, Undo2 } from "lucide-react";
 
 import { languagePacks } from "@/data/practice-content";
+import { AppDictionary } from "@/i18n/dictionaries";
+import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
 import { cn } from "@/lib/utils";
 import { Stroke, StrokePoint } from "@/types/writing";
@@ -23,37 +25,30 @@ function strokesToPath(stroke: Stroke) {
   return stroke.points.map((point) => `${point.x},${point.y}`).join(" ");
 }
 
-function getScoreTone(score: number | null) {
+function getScoreTone(dictionary: AppDictionary, score: number | null) {
   if (score === null) {
-    return {
-      label: "Ready when you are",
-      description: "Lift the pen and the prototype will estimate shape similarity.",
-    };
+    return dictionary.score.tones.ready;
   }
 
   if (score >= 85) {
-    return {
-      label: "Confident shape",
-      description: "The outer form is close enough to move on or repeat once more for consistency.",
-    };
+    return dictionary.score.tones.strong;
   }
 
   if (score >= 65) {
-    return {
-      label: "Nearly there",
-      description: "Try stabilizing the starting point and keeping the proportions inside the guide box.",
-    };
+    return dictionary.score.tones.good;
   }
 
-  return {
-    label: "Warm-up pass",
-    description: "Use the guide as tracing paper first, then rewrite with slower corner control.",
-  };
+  return dictionary.score.tones.practice;
 }
 
 const DEFAULT_TEMPLATE = languagePacks[0].templates[0];
 
-export function PrototypePracticeSheet() {
+type PrototypePracticeSheetProps = {
+  locale: AppLocale;
+  dictionary: AppDictionary;
+};
+
+export function PrototypePracticeSheet({ locale, dictionary }: PrototypePracticeSheetProps) {
   const [selectedLanguageId, setSelectedLanguageId] = useState(languagePacks[0].id);
   const [selectedTemplateId, setSelectedTemplateId] = useState(DEFAULT_TEMPLATE.id);
   const [strokes, setStrokes] = useState<Stroke[]>([]);
@@ -75,8 +70,10 @@ export function PrototypePracticeSheet() {
     }
   }, [selectedLanguage, selectedTemplateId]);
 
-  const scoreTone = getScoreTone(score);
+  const scoreTone = getScoreTone(dictionary, score);
   const renderedStrokeCount = strokes.length;
+  const currentPackLabel = getLocalizedText(selectedLanguage.label, locale);
+  const currentPackShowsSecondaryLabel = selectedLanguage.nativeLabel !== currentPackLabel;
 
   useEffect(() => {
     if (strokes.length === 0) {
@@ -174,30 +171,35 @@ export function PrototypePracticeSheet() {
     setStrokes((current) => current.slice(0, -1));
   }
 
+  const scoreStatusLabel =
+    scoreState === "pending"
+      ? dictionary.score.status.pending
+      : scoreState === "ready"
+        ? dictionary.score.status.ready
+        : dictionary.score.status.waiting;
+
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col gap-8 px-4 py-6 md:px-6 lg:px-8">
+    <main className="mx-auto flex min-h-[calc(100vh-88px)] w-full max-w-[1440px] flex-col gap-8 px-4 py-6 md:px-6 lg:px-8">
       <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
         <Card className="overflow-hidden border-[color:var(--border-strong)] bg-[color:var(--paper)]/95">
           <CardHeader className="gap-4 border-b border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(248,243,233,0.95),rgba(244,238,227,0.8))]">
-            <Badge className="w-fit">OpenLingo prototype</Badge>
+            <Badge className="w-fit">{dictionary.hero.badge}</Badge>
             <div className="space-y-3">
-              <CardTitle className="text-3xl leading-tight text-[color:var(--foreground)]">
-                A paper-like handwriting workspace for iPad-first practice.
-              </CardTitle>
-              <CardDescription>
-                The first build stays deliberately narrow: one oversized worksheet, multilingual-ready template data, and minimal motion.
-              </CardDescription>
+              <CardTitle className="text-3xl leading-tight text-[color:var(--foreground)]">{dictionary.hero.title}</CardTitle>
+              <CardDescription>{dictionary.hero.description}</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm font-medium text-[color:var(--foreground)]">
                 <Languages className="size-4" />
-                Language packs
+                {dictionary.sections.languagePacksTitle}
               </div>
               <div className="grid gap-3">
                 {languagePacks.map((pack) => {
                   const active = pack.id === selectedLanguage.id;
+                  const packLabel = getLocalizedText(pack.label, locale);
+                  const showSecondaryPackLabel = pack.nativeLabel !== packLabel;
 
                   return (
                     <button
@@ -214,11 +216,13 @@ export function PrototypePracticeSheet() {
                       <div className="mb-2 flex items-center justify-between gap-3">
                         <div>
                           <div className="font-[family-name:var(--font-display)] text-lg text-[color:var(--foreground)]">{pack.nativeLabel}</div>
-                          <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">{pack.label}</div>
+                          {showSecondaryPackLabel ? (
+                            <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">{packLabel}</div>
+                          ) : null}
                         </div>
-                        <Badge>{pack.stage}</Badge>
+                        <Badge>{dictionary.stages[pack.stage]}</Badge>
                       </div>
-                      <p className="text-sm leading-6 text-[color:var(--muted-foreground)]">{pack.summary}</p>
+                      <p className="text-sm leading-6 text-[color:var(--muted-foreground)]">{getLocalizedText(pack.summary, locale)}</p>
                     </button>
                   );
                 })}
@@ -228,7 +232,7 @@ export function PrototypePracticeSheet() {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm font-medium text-[color:var(--foreground)]">
                 <BookOpenText className="size-4" />
-                Practice cards
+                {dictionary.sections.practiceCardsTitle}
               </div>
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                 {selectedLanguage.templates.map((template) => {
@@ -251,13 +255,17 @@ export function PrototypePracticeSheet() {
                           <div className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
                             {template.nativeLabel}
                           </div>
-                          <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">{template.label}</div>
+                          <div className="text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
+                            {getLocalizedText(template.label, locale)}
+                          </div>
                         </div>
                         <span className="rounded-full bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted-foreground)]">
-                          {template.direction}
+                          {dictionary.directions.short[template.direction]}
                         </span>
                       </div>
-                      <p className="mt-3 text-sm leading-6 text-[color:var(--muted-foreground)]">{template.cue}</p>
+                      <p className="mt-3 text-sm leading-6 text-[color:var(--muted-foreground)]">
+                        {getLocalizedText(template.cue, locale)}
+                      </p>
                     </button>
                   );
                 })}
@@ -272,23 +280,26 @@ export function PrototypePracticeSheet() {
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">
                   <PencilLine className="size-4" />
-                  Worksheet
+                  {dictionary.sections.worksheetEyebrow}
                 </div>
                 <div>
                   <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
+                  {currentPackShowsSecondaryLabel ? (
+                    <div className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">{currentPackLabel}</div>
+                  ) : null}
                   <CardDescription className="mt-3 max-w-2xl">
-                    {selectedTemplate.description} The scorer uses a rough path-similarity estimate so the interaction feels like a real practice loop, not a static mock.
+                    {getLocalizedText(selectedTemplate.description, locale)} {dictionary.sections.worksheetScoringNote}
                   </CardDescription>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <Button variant="ghost" onClick={undoStroke} disabled={strokes.length === 0}>
                   <Undo2 className="size-4" />
-                  Undo stroke
+                  {dictionary.buttons.undoStroke}
                 </Button>
                 <Button variant="ghost" onClick={clearCanvas} disabled={strokes.length === 0}>
                   <RotateCcw className="size-4" />
-                  Clear page
+                  {dictionary.buttons.clearPage}
                 </Button>
               </div>
             </CardHeader>
@@ -329,16 +340,16 @@ export function PrototypePracticeSheet() {
                     ))}
                   </svg>
                   <div className="mt-4 flex items-center justify-between gap-3 text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                    <span>{selectedTemplate.gridLabel}</span>
-                    <span>{selectedTemplate.direction === "rtl" ? "Right-to-left ready" : "Left-to-right ready"}</span>
+                    <span>{getLocalizedText(selectedTemplate.gridLabel, locale)}</span>
+                    <span>{dictionary.directions.ready[selectedTemplate.direction]}</span>
                   </div>
                 </div>
 
                 <div className="grid gap-4">
                   <Card className="border-[color:var(--border-soft)] bg-white/50">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Score</CardTitle>
-                      <CardDescription>Prototype scoring runs about half a second after pen lift.</CardDescription>
+                      <CardTitle className="text-lg">{dictionary.sections.scoreTitle}</CardTitle>
+                      <CardDescription>{dictionary.sections.scoreDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="font-[family-name:var(--font-display)] text-6xl leading-none text-[color:var(--foreground)]">
@@ -349,29 +360,26 @@ export function PrototypePracticeSheet() {
                         <div className="text-sm font-semibold text-[color:var(--foreground)]">{scoreTone.label}</div>
                         <p className="mt-2 text-sm leading-6 text-[color:var(--muted-foreground)]">{scoreTone.description}</p>
                       </div>
-                      <div className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
-                        {scoreState === "pending" ? "Analyzing…" : scoreState === "ready" ? "Updated" : "Waiting for ink"}
-                      </div>
+                      <div className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">{scoreStatusLabel}</div>
                     </CardContent>
                   </Card>
 
                   <Card className="border-[color:var(--border-soft)] bg-white/50">
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-lg">Session notes</CardTitle>
-                      <CardDescription>The prototype keeps the UI minimal and worksheet-led.</CardDescription>
+                      <CardTitle className="text-lg">{dictionary.sections.sessionNotesTitle}</CardTitle>
+                      <CardDescription>{dictionary.sections.sessionNotesDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3 text-sm leading-6 text-[color:var(--muted-foreground)]">
                       <div className="flex items-start gap-3 rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
                         <Sparkles className="mt-0.5 size-4 shrink-0 text-[color:var(--accent)]" />
-                        <p>
-                          Multi-language structure is already visible through LTR and RTL packs, even though Korean remains the MVP content focus.
-                        </p>
+                        <p>{dictionary.notes.multilingual}</p>
                       </div>
                       <div className="flex items-center justify-between rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
-                        <span>Touch input</span>
+                        <span>{dictionary.notes.touchInput}</span>
                         <button
                           type="button"
                           onClick={() => setAllowTouch((current) => !current)}
+                          aria-pressed={allowTouch}
                           className={cn(
                             "relative inline-flex h-8 w-14 items-center rounded-full border transition-colors",
                             allowTouch
@@ -388,7 +396,7 @@ export function PrototypePracticeSheet() {
                         </button>
                       </div>
                       <div className="rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
-                        <div className="text-xs uppercase tracking-[0.18em]">Current stroke count</div>
+                        <div className="text-xs uppercase tracking-[0.18em]">{dictionary.notes.currentStrokeCount}</div>
                         <div className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[color:var(--foreground)]">
                           {renderedStrokeCount}
                         </div>

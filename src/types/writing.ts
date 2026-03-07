@@ -1,6 +1,10 @@
+import { LocalizedText } from "@/i18n/config";
+
 export type PracticeMode = "character" | "word" | "sentence";
 
 export type WritingDirection = "ltr" | "rtl";
+
+export type LanguagePackStage = "MVP" | "Prototype";
 
 export type StrokePoint = {
   x: number;
@@ -17,23 +21,22 @@ export type WritingTemplate = {
   id: string;
   languageId: string;
   mode: PracticeMode;
-  label: string;
+  label: LocalizedText;
   nativeLabel: string;
-  cue: string;
-  description: string;
+  cue: LocalizedText;
+  description: LocalizedText;
   direction: WritingDirection;
   guidePathD: string;
   viewBox: [number, number, number, number];
-  gridLabel: string;
+  gridLabel: LocalizedText;
 };
 
 export type LanguagePack = {
   id: string;
-  label: string;
+  label: LocalizedText;
   nativeLabel: string;
   direction: WritingDirection;
-  stage: "MVP" | "Prototype";
-  summary: string;
+  stage: LanguagePackStage;
+  summary: LocalizedText;
   templates: WritingTemplate[];
 };
-

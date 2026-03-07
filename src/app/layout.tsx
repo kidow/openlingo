@@ -1,17 +1,8 @@
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
+import { headers } from "next/headers";
 
+import { LOCALE_HEADER, resolveLocale } from "@/i18n/config";
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "OpenLingo Prototype",
-  description: "iPad-first handwriting practice prototype with multilingual-ready worksheet data.",
-  applicationName: "OpenLingo",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "OpenLingo",
-  },
-};
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -22,15 +13,17 @@ export const viewport: Viewport = {
   themeColor: "#efe6d8",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const requestHeaders = await headers();
+  const locale = resolveLocale(requestHeaders.get(LOCALE_HEADER));
+
   return (
-    <html lang="en">
+    <html lang={locale} dir="ltr">
       <body>{children}</body>
     </html>
   );
 }
-
