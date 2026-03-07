@@ -56,6 +56,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [score, setScore] = useState<number | null>(null);
   const [scoreState, setScoreState] = useState<"idle" | "pending" | "ready">("idle");
   const activeStrokeIdRef = useRef<string | null>(null);
+  const activePointerIdRef = useRef<number | null>(null);
 
   const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
   const selectedTemplate =
@@ -112,6 +113,10 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   }
 
   function beginStroke(event: React.PointerEvent<SVGSVGElement>) {
+    if (activeStrokeIdRef.current) {
+      return;
+    }
+
     if (!allowTouch && event.pointerType === "touch") {
       return;
     }
@@ -125,6 +130,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     const strokeId = crypto.randomUUID();
 
     activeStrokeIdRef.current = strokeId;
+    activePointerIdRef.current = event.pointerId;
     event.currentTarget.setPointerCapture(event.pointerId);
     setStrokes((current) => [...current, { id: strokeId, points: [point] }]);
   }
@@ -132,7 +138,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   function moveStroke(event: React.PointerEvent<SVGSVGElement>) {
     const strokeId = activeStrokeIdRef.current;
 
-    if (!strokeId) {
+    if (!strokeId || activePointerIdRef.current !== event.pointerId) {
       return;
     }
 
@@ -152,15 +158,21 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   }
 
   function endStroke(event: React.PointerEvent<SVGSVGElement>) {
-    if (activeStrokeIdRef.current) {
+    if (!activeStrokeIdRef.current || activePointerIdRef.current !== event.pointerId) {
+      return;
+    }
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
 
     activeStrokeIdRef.current = null;
+    activePointerIdRef.current = null;
   }
 
   function clearCanvas() {
     activeStrokeIdRef.current = null;
+    activePointerIdRef.current = null;
     setStrokes([]);
     setScore(null);
     setScoreState("idle");
@@ -168,6 +180,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
 
   function undoStroke() {
     activeStrokeIdRef.current = null;
+    activePointerIdRef.current = null;
     setStrokes((current) => current.slice(0, -1));
   }
 
@@ -317,11 +330,20 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                     onPointerMove={moveStroke}
                     onPointerUp={endStroke}
                     onPointerCancel={endStroke}
-                    onPointerLeave={endStroke}
+                    onLostPointerCapture={endStroke}
                   >
-                    <rect x="6" y="6" width="88" height="88" rx="18" className="fill-[color:rgba(255,255,255,0.15)] stroke-[color:var(--border-soft)]" />
+                    <rect
+                      x="6"
+                      y="6"
+                      width="88"
+                      height="88"
+                      rx="18"
+                      pointerEvents="none"
+                      className="fill-[color:rgba(255,255,255,0.15)] stroke-[color:var(--border-soft)]"
+                    />
                     <path
                       d={selectedTemplate.guidePathD}
+                      pointerEvents="none"
                       className="fill-none stroke-[color:rgba(146,122,90,0.45)]"
                       strokeWidth="5.5"
                       strokeLinecap="round"
@@ -331,6 +353,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                       <polyline
                         key={stroke.id}
                         points={strokesToPath(stroke)}
+                        pointerEvents="none"
                         fill="none"
                         stroke="var(--ink)"
                         strokeWidth="4.4"
