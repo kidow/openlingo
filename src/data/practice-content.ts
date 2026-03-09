@@ -34,6 +34,18 @@ export const languagePacks: LanguagePack[] = [
         },
         direction: "ltr",
         guidePathD: "M30 24 L30 76 L72 76",
+        strokeGuides: [
+          {
+            id: "ko-giyeok-1",
+            pathD: "M30 24 L30 76",
+            order: 1,
+          },
+          {
+            id: "ko-giyeok-2",
+            pathD: "M30 76 L72 76",
+            order: 2,
+          },
+        ],
         viewBox: [0, 0, 100, 100],
         gridLabel: {
           ko: "한글 연습 칸",
@@ -59,6 +71,43 @@ export const languagePacks: LanguagePack[] = [
         },
         direction: "ltr",
         guidePathD: "M30 24 L30 76 L70 76",
+        viewBox: [0, 0, 100, 100],
+        gridLabel: {
+          ko: "한글 연습 칸",
+          en: "Hangul box",
+        },
+      },
+      {
+        id: "ko-a",
+        languageId: "ko",
+        mode: "character",
+        label: {
+          ko: "아",
+          en: "A",
+        },
+        nativeLabel: "ㅏ",
+        cue: {
+          ko: "세로획을 먼저 쓴 다음 오른쪽 짧은 가로획을 붙여 마무리하세요.",
+          en: "Draw the vertical stroke first, then add the short right bar.",
+        },
+        description: {
+          ko: "획 순서 미리보기를 검증하기 위한 기본 모음 샘플입니다.",
+          en: "Core vowel sample for stroke-order preview validation.",
+        },
+        direction: "ltr",
+        guidePathD: "M42 22 L42 78 M42 50 H68",
+        strokeGuides: [
+          {
+            id: "ko-a-1",
+            pathD: "M42 22 L42 78",
+            order: 1,
+          },
+          {
+            id: "ko-a-2",
+            pathD: "M42 50 H68",
+            order: 2,
+          },
+        ],
         viewBox: [0, 0, 100, 100],
         gridLabel: {
           ko: "한글 연습 칸",
@@ -100,6 +149,23 @@ export const languagePacks: LanguagePack[] = [
         },
         direction: "ltr",
         guidePathD: "M24 78 L50 22 L76 78 M36 58 H64",
+        strokeGuides: [
+          {
+            id: "en-a-1",
+            pathD: "M24 78 L50 22",
+            order: 1,
+          },
+          {
+            id: "en-a-2",
+            pathD: "M50 22 L76 78",
+            order: 2,
+          },
+          {
+            id: "en-a-3",
+            pathD: "M36 58 H64",
+            order: 3,
+          },
+        ],
         viewBox: [0, 0, 100, 100],
         gridLabel: {
           ko: "라틴 알파벳 칸",
