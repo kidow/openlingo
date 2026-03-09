@@ -17,6 +17,14 @@ export type Stroke = {
   points: StrokePoint[];
 };
 
+export type StrokeGuide = {
+  id: string;
+  pathD: string;
+  order: number;
+  durationMs?: number;
+  holdMs?: number;
+};
+
 export type WritingTemplate = {
   id: string;
   languageId: string;
@@ -27,6 +35,7 @@ export type WritingTemplate = {
   description: LocalizedText;
   direction: WritingDirection;
   guidePathD: string;
+  strokeGuides?: StrokeGuide[];
   viewBox: [number, number, number, number];
   gridLabel: LocalizedText;
 };

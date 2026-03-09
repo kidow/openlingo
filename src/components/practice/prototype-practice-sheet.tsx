@@ -12,6 +12,7 @@ import { Stroke, StrokePoint } from "@/types/writing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { StrokePreview } from "@/components/practice/stroke-preview";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
   return {
@@ -55,6 +56,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [allowTouch, setAllowTouch] = useState(true);
   const [score, setScore] = useState<number | null>(null);
   const [scoreState, setScoreState] = useState<"idle" | "pending" | "ready">("idle");
+  const [previewAutoplay, setPreviewAutoplay] = useState(true);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
 
@@ -68,6 +70,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setStrokes([]);
       setScore(null);
       setScoreState("idle");
+      setPreviewAutoplay(true);
     }
   }, [selectedLanguage, selectedTemplateId]);
 
@@ -80,6 +83,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     if (strokes.length === 0) {
       setScore(null);
       setScoreState("idle");
+      setPreviewAutoplay(true);
       return;
     }
 
@@ -100,6 +104,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setStrokes([]);
       setScore(null);
       setScoreState("idle");
+      setPreviewAutoplay(true);
     });
   }
 
@@ -109,6 +114,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setStrokes([]);
       setScore(null);
       setScoreState("idle");
+      setPreviewAutoplay(true);
     });
   }
 
@@ -124,6 +130,8 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     if (event.button !== 0 && event.pointerType === "mouse") {
       return;
     }
+
+    setPreviewAutoplay(false);
 
     const bounds = event.currentTarget.getBoundingClientRect();
     const point = createStrokePoint(event, bounds);
@@ -369,6 +377,10 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                 </div>
 
                 <div className="grid gap-4">
+                  {selectedTemplate.strokeGuides?.length ? (
+                    <StrokePreview template={selectedTemplate} dictionary={dictionary} autoplay={previewAutoplay} />
+                  ) : null}
+
                   <Card className="border-[color:var(--border-soft)] bg-white/50">
                     <CardHeader className="pb-3">
                       <CardTitle className="text-lg">{dictionary.sections.scoreTitle}</CardTitle>

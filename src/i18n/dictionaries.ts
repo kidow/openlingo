@@ -32,10 +32,20 @@ export type AppDictionary = {
     scoreDescription: string;
     sessionNotesTitle: string;
     sessionNotesDescription: string;
+    strokePreviewTitle: string;
+    strokePreviewDescription: string;
+    strokePreviewIdle: string;
+    strokePreviewPlaying: string;
   };
   buttons: {
     undoStroke: string;
     clearPage: string;
+    replayStrokePreview: string;
+    toggleStrokeAutoplay: string;
+  };
+  common: {
+    on: string;
+    off: string;
   };
   notes: {
     multilingual: string;
@@ -92,10 +102,20 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       scoreDescription: "펜을 떼고 약 0.5초 뒤에 프로토타입 채점이 실행됩니다.",
       sessionNotesTitle: "세션 노트",
       sessionNotesDescription: "프로토타입은 학습지 중심의 단순한 흐름을 유지합니다.",
+      strokePreviewTitle: "획 미리보기",
+      strokePreviewDescription: "문자를 쓰기 전에 획 순서와 진행 방향을 확인하세요.",
+      strokePreviewIdle: "다시 보기를 눌러 재생하세요",
+      strokePreviewPlaying: "현재 {order}획 재생 중",
     },
     buttons: {
       undoStroke: "획 되돌리기",
       clearPage: "지우기",
+      replayStrokePreview: "다시 보기",
+      toggleStrokeAutoplay: "자동 재생",
+    },
+    common: {
+      on: "켜짐",
+      off: "꺼짐",
     },
     notes: {
       multilingual: "한국어가 MVP이지만, 구조는 좌→우와 우→좌 언어 모두를 염두에 두고 설계되어 있습니다.",
@@ -171,10 +191,20 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       scoreDescription: "Prototype scoring runs about half a second after pen lift.",
       sessionNotesTitle: "Session notes",
       sessionNotesDescription: "The prototype keeps the UI minimal and worksheet-led.",
+      strokePreviewTitle: "Stroke preview",
+      strokePreviewDescription: "Check the stroke order and direction before writing.",
+      strokePreviewIdle: "Press replay to preview",
+      strokePreviewPlaying: "Playing stroke {order}",
     },
     buttons: {
       undoStroke: "Undo stroke",
       clearPage: "Clear page",
+      replayStrokePreview: "Replay",
+      toggleStrokeAutoplay: "Autoplay",
+    },
+    common: {
+      on: "On",
+      off: "Off",
     },
     notes: {
       multilingual: "Multi-language structure is already visible through LTR and RTL packs, even though Korean remains the MVP content focus.",
