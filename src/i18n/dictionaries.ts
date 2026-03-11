@@ -28,6 +28,8 @@ export type AppDictionary = {
     practiceCardsTitle: string;
     worksheetEyebrow: string;
     worksheetScoringNote: string;
+    practiceToolsTitle: string;
+    practiceToolsDescription: string;
     scoreTitle: string;
     scoreDescription: string;
     sessionNotesTitle: string;
@@ -36,6 +38,8 @@ export type AppDictionary = {
     strokePreviewDescription: string;
     strokePreviewIdle: string;
     strokePreviewPlaying: string;
+    strokePreviewUnavailableTitle: string;
+    strokePreviewUnavailableDescription: string;
   };
   buttons: {
     undoStroke: string;
@@ -98,6 +102,8 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       practiceCardsTitle: "연습 카드",
       worksheetEyebrow: "워크시트",
       worksheetScoringNote: "채점기는 대략적인 경로 유사도 추정을 사용해, 정적인 목업이 아니라 실제 연습 루프처럼 느껴지도록 구성했습니다.",
+      practiceToolsTitle: "연습 도구",
+      practiceToolsDescription: "획 미리보기, 점수, 세션 노트를 필요할 때만 확인하세요.",
       scoreTitle: "점수",
       scoreDescription: "펜을 떼고 약 0.5초 뒤에 프로토타입 채점이 실행됩니다.",
       sessionNotesTitle: "세션 노트",
@@ -106,6 +112,8 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       strokePreviewDescription: "문자를 쓰기 전에 획 순서와 진행 방향을 확인하세요.",
       strokePreviewIdle: "다시 보기를 눌러 재생하세요",
       strokePreviewPlaying: "현재 {order}획 재생 중",
+      strokePreviewUnavailableTitle: "획 데이터 준비 중",
+      strokePreviewUnavailableDescription: "이 문자는 아직 애니메이션 미리보기가 없습니다. 워크시트에서 바로 따라 쓰며 연습할 수 있습니다.",
     },
     buttons: {
       undoStroke: "획 되돌리기",
@@ -187,6 +195,8 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       practiceCardsTitle: "Practice cards",
       worksheetEyebrow: "Worksheet",
       worksheetScoringNote: "The scorer uses a rough path-similarity estimate so the interaction feels like a real practice loop, not a static mock.",
+      practiceToolsTitle: "Practice tools",
+      practiceToolsDescription: "Open preview, score, and session notes only when you need them.",
       scoreTitle: "Score",
       scoreDescription: "Prototype scoring runs about half a second after pen lift.",
       sessionNotesTitle: "Session notes",
@@ -195,6 +205,8 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       strokePreviewDescription: "Check the stroke order and direction before writing.",
       strokePreviewIdle: "Press replay to preview",
       strokePreviewPlaying: "Playing stroke {order}",
+      strokePreviewUnavailableTitle: "Preview data coming soon",
+      strokePreviewUnavailableDescription: "This character does not have an animated stroke preview yet, but the worksheet is ready for direct tracing.",
     },
     buttons: {
       undoStroke: "Undo stroke",
@@ -256,4 +268,3 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
 export function getDictionary(locale: AppLocale) {
   return dictionaries[locale];
 }
-
