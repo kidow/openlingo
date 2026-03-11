@@ -1,4 +1,6 @@
 import { LanguagePack } from "@/types/writing";
+import { koGiyeokTemplate } from "@/data/templates/ko/giyeok";
+import { koNieunTemplate } from "@/data/templates/ko/nieun";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -15,68 +17,8 @@ export const languagePacks: LanguagePack[] = [
       en: "Start from foundational jamo while keeping the content model ready for words and sentences.",
     },
     templates: [
-      {
-        id: "ko-giyeok",
-        languageId: "ko",
-        mode: "character",
-        label: {
-          ko: "기역",
-          en: "Giyeok",
-        },
-        nativeLabel: "ㄱ",
-        cue: {
-          ko: "세로획을 안정적으로 내리고 아래 가로획을 또렷하게 마무리하세요.",
-          en: "Square corner with a steady downstroke.",
-        },
-        description: {
-          ko: "한국어 MVP 세트를 위한 첫 프로토타입 템플릿입니다.",
-          en: "Prototype starter for the Korean MVP set.",
-        },
-        direction: "ltr",
-        guidePathD: "M30 24 L30 76 L72 76",
-        strokeGuides: [
-          {
-            id: "ko-giyeok-1",
-            pathD: "M30 24 L30 76",
-            order: 1,
-          },
-          {
-            id: "ko-giyeok-2",
-            pathD: "M30 76 L72 76",
-            order: 2,
-          },
-        ],
-        viewBox: [0, 0, 100, 100],
-        gridLabel: {
-          ko: "한글 연습 칸",
-          en: "Hangul box",
-        },
-      },
-      {
-        id: "ko-nieun",
-        languageId: "ko",
-        mode: "character",
-        label: {
-          ko: "니은",
-          en: "Nieun",
-        },
-        nativeLabel: "ㄴ",
-        cue: {
-          ko: "받침선 폭을 넉넉하게 유지하고 세로획을 단단히 세우세요.",
-          en: "Keep the base wide and the vertical stroke firm.",
-        },
-        description: {
-          ko: "템플릿 전환 흐름을 점검하기 위한 두 번째 한글 프로토타입입니다.",
-          en: "A second Hangul shape to test template switching.",
-        },
-        direction: "ltr",
-        guidePathD: "M30 24 L30 76 L70 76",
-        viewBox: [0, 0, 100, 100],
-        gridLabel: {
-          ko: "한글 연습 칸",
-          en: "Hangul box",
-        },
-      },
+      koGiyeokTemplate,
+      koNieunTemplate,
       {
         id: "ko-a",
         languageId: "ko",
