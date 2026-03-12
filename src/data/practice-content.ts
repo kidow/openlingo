@@ -1,6 +1,8 @@
 import { LanguagePack } from "@/types/writing";
 import { koGiyeokTemplate } from "@/data/templates/ko/giyeok";
 import { koNieunTemplate } from "@/data/templates/ko/nieun";
+import { koDigeutTemplate } from "@/data/templates/ko/digeut";
+import { koRieulTemplate } from "@/data/templates/ko/rieul";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -19,6 +21,8 @@ export const languagePacks: LanguagePack[] = [
     templates: [
       koGiyeokTemplate,
       koNieunTemplate,
+      koDigeutTemplate,
+      koRieulTemplate,
       {
         id: "ko-a",
         languageId: "ko",
