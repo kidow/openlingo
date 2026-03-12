@@ -33,6 +33,7 @@ import { koWoTemplate } from "@/data/templates/ko/wo";
 import { koWeTemplate } from "@/data/templates/ko/we";
 import { koYuTemplate } from "@/data/templates/ko/yu";
 import { koUiTemplate } from "@/data/templates/ko/ui";
+import { enAlphabetTemplates } from "@/data/templates/en/alphabet";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -135,50 +136,7 @@ export const languagePacks: LanguagePack[] = [
       ko: "인터페이스와 저장 구조가 언어 비종속적으로 동작하는지 확인하기 위한 샘플 팩입니다.",
       en: "Included to validate that the interface and storage model are language-agnostic.",
     },
-    templates: [
-      {
-        id: "en-a",
-        languageId: "en",
-        mode: "character",
-        label: {
-          ko: "대문자 A",
-          en: "Uppercase A",
-        },
-        nativeLabel: "A",
-        cue: {
-          ko: "가운데 가로획을 넣기 전에 양쪽 대각선의 균형을 먼저 맞추세요.",
-          en: "Balance both diagonal strokes before crossing the center bar.",
-        },
-        description: {
-          ko: "다국어 레이아웃을 점검하기 위한 간단한 라틴 문자 샘플입니다.",
-          en: "Simple Latin character for multi-language layout checks.",
-        },
-        direction: "ltr",
-        guidePathD: "M24 78 L50 22 L76 78 M36 58 H64",
-        strokeGuides: [
-          {
-            id: "en-a-1",
-            pathD: "M24 78 L50 22",
-            order: 1,
-          },
-          {
-            id: "en-a-2",
-            pathD: "M50 22 L76 78",
-            order: 2,
-          },
-          {
-            id: "en-a-3",
-            pathD: "M36 58 H64",
-            order: 3,
-          },
-        ],
-        viewBox: [0, 0, 100, 100],
-        gridLabel: {
-          ko: "라틴 알파벳 칸",
-          en: "Latin cell",
-        },
-      },
-    ],
+    templates: enAlphabetTemplates,
   },
   {
     id: "ja",
