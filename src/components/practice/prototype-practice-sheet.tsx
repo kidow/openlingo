@@ -310,7 +310,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                     {getLocalizedText(selectedTemplate.cue, locale)}
                   </p>
 
-                  <div className="mt-4 flex gap-3 overflow-x-auto pb-1 lg:flex-col">
+                  <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
                     {selectedLanguage.templates.map((template) => {
                       const active = template.id === selectedTemplate.id;
 
@@ -320,24 +320,17 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                           type="button"
                           onClick={() => handleTemplateSelect(template.id)}
                           className={cn(
-                            "min-w-[144px] shrink-0 rounded-[22px] border px-4 py-3 text-left transition-colors lg:min-w-0",
+                            "rounded-[22px] border px-4 py-3 text-left transition-colors",
                             active
                               ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                               : "border-[color:var(--border-soft)] bg-white/30 hover:bg-[color:var(--paper-strong)]"
                           )}
                         >
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <div className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
-                                {template.nativeLabel}
-                              </div>
-                              <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                                {getLocalizedText(template.label, locale)}
-                              </div>
-                            </div>
-                            <span className="rounded-full bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted-foreground)]">
-                              {dictionary.directions.short[template.direction]}
-                            </span>
+                          <div className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
+                            {template.nativeLabel}
+                          </div>
+                          <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
+                            {getLocalizedText(template.label, locale)}
                           </div>
                         </button>
                       );
@@ -396,12 +389,11 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <Badge>{dictionary.directions.ready[selectedTemplate.direction]}</Badge>
                     <Badge>{selectedLanguage.templates.length}</Badge>
                   </div>
                 </div>
 
-                <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
                   {selectedLanguage.templates.map((template) => {
                     const active = template.id === selectedTemplate.id;
 
@@ -411,7 +403,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                         type="button"
                         onClick={() => handleTemplateSelect(template.id)}
                         className={cn(
-                          "min-w-[176px] shrink-0 rounded-[22px] border px-4 py-3 text-left transition-colors",
+                          "rounded-[22px] border px-4 py-3 text-left transition-colors",
                           active
                             ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                             : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"

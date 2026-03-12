@@ -1,6 +1,18 @@
 import { LanguagePack } from "@/types/writing";
 import { koGiyeokTemplate } from "@/data/templates/ko/giyeok";
 import { koNieunTemplate } from "@/data/templates/ko/nieun";
+import { koDigeutTemplate } from "@/data/templates/ko/digeut";
+import { koRieulTemplate } from "@/data/templates/ko/rieul";
+import { koMieumTemplate } from "@/data/templates/ko/mieum";
+import { koBieupTemplate } from "@/data/templates/ko/bieup";
+import { koSiotTemplate } from "@/data/templates/ko/siot";
+import { koIeungTemplate } from "@/data/templates/ko/ieung";
+import { koJieutTemplate } from "@/data/templates/ko/jieut";
+import { koChieutTemplate } from "@/data/templates/ko/chieut";
+import { koKieukTemplate } from "@/data/templates/ko/kieuk";
+import { koTieutTemplate } from "@/data/templates/ko/tieut";
+import { koPieupTemplate } from "@/data/templates/ko/pieup";
+import { koHieutTemplate } from "@/data/templates/ko/hieut";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -19,6 +31,18 @@ export const languagePacks: LanguagePack[] = [
     templates: [
       koGiyeokTemplate,
       koNieunTemplate,
+      koDigeutTemplate,
+      koRieulTemplate,
+      koMieumTemplate,
+      koBieupTemplate,
+      koSiotTemplate,
+      koIeungTemplate,
+      koJieutTemplate,
+      koChieutTemplate,
+      koKieukTemplate,
+      koTieutTemplate,
+      koPieupTemplate,
+      koHieutTemplate,
       {
         id: "ko-a",
         languageId: "ko",
