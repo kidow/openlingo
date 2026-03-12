@@ -13,6 +13,26 @@ import { koKieukTemplate } from "@/data/templates/ko/kieuk";
 import { koTieutTemplate } from "@/data/templates/ko/tieut";
 import { koPieupTemplate } from "@/data/templates/ko/pieup";
 import { koHieutTemplate } from "@/data/templates/ko/hieut";
+import { koAeTemplate } from "@/data/templates/ko/ae";
+import { koEoTemplate } from "@/data/templates/ko/eo";
+import { koETemplate } from "@/data/templates/ko/e";
+import { koOTemplate } from "@/data/templates/ko/o";
+import { koOeTemplate } from "@/data/templates/ko/oe";
+import { koUTemplate } from "@/data/templates/ko/u";
+import { koWiTemplate } from "@/data/templates/ko/wi";
+import { koEuTemplate } from "@/data/templates/ko/eu";
+import { koITemplate } from "@/data/templates/ko/i";
+import { koYaTemplate } from "@/data/templates/ko/ya";
+import { koYaeTemplate } from "@/data/templates/ko/yae";
+import { koYeoTemplate } from "@/data/templates/ko/yeo";
+import { koYeTemplate } from "@/data/templates/ko/ye";
+import { koWaTemplate } from "@/data/templates/ko/wa";
+import { koWaeTemplate } from "@/data/templates/ko/wae";
+import { koYoTemplate } from "@/data/templates/ko/yo";
+import { koWoTemplate } from "@/data/templates/ko/wo";
+import { koWeTemplate } from "@/data/templates/ko/we";
+import { koYuTemplate } from "@/data/templates/ko/yu";
+import { koUiTemplate } from "@/data/templates/ko/ui";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -80,6 +100,26 @@ export const languagePacks: LanguagePack[] = [
           en: "Hangul box",
         },
       },
+      koAeTemplate,
+      koEoTemplate,
+      koETemplate,
+      koOTemplate,
+      koOeTemplate,
+      koUTemplate,
+      koWiTemplate,
+      koEuTemplate,
+      koITemplate,
+      koYaTemplate,
+      koYaeTemplate,
+      koYeoTemplate,
+      koYeTemplate,
+      koWaTemplate,
+      koWaeTemplate,
+      koYoTemplate,
+      koWoTemplate,
+      koWeTemplate,
+      koYuTemplate,
+      koUiTemplate,
     ],
   },
   {
