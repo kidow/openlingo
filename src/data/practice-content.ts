@@ -8,6 +8,7 @@ import { koBieupTemplate } from "@/data/templates/ko/bieup";
 import { koSiotTemplate } from "@/data/templates/ko/siot";
 import { koIeungTemplate } from "@/data/templates/ko/ieung";
 import { koJieutTemplate } from "@/data/templates/ko/jieut";
+import { koChieutTemplate } from "@/data/templates/ko/chieut";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -33,6 +34,7 @@ export const languagePacks: LanguagePack[] = [
       koSiotTemplate,
       koIeungTemplate,
       koJieutTemplate,
+      koChieutTemplate,
       {
         id: "ko-a",
         languageId: "ko",
