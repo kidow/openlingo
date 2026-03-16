@@ -37,6 +37,7 @@ import { enAlphabetTemplates } from "@/data/templates/en/alphabet";
 import { jaTemplates } from "@/data/templates/ja";
 import { ruTemplates } from "@/data/templates/ru";
 import { arTemplates } from "@/data/templates/ar";
+import { deTemplates } from "@/data/templates/de";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -185,5 +186,20 @@ export const languagePacks: LanguagePack[] = [
       en: "RTL support is represented early so layout decisions do not get locked to LTR only.",
     },
     templates: arTemplates,
+  },
+  {
+    id: "de",
+    label: {
+      ko: "독일어",
+      en: "German",
+    },
+    nativeLabel: "Deutsch",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "라틴 알파벳에 움라우트와 에스체트를 추가하여 분음 부호 렌더링을 검증합니다.",
+      en: "Extends the Latin base with Umlauts and Eszett to validate diacritic rendering support.",
+    },
+    templates: deTemplates,
   },
 ];
