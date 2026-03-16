@@ -41,6 +41,8 @@ import { deTemplates } from "@/data/templates/de";
 import { esTemplates } from "@/data/templates/es";
 import { frTemplates } from "@/data/templates/fr";
 import { ptTemplates } from "@/data/templates/pt";
+import { zhHansTemplates } from "@/data/templates/zh/zh-hans";
+import { zhHantTemplates } from "@/data/templates/zh/zh-hant";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -249,5 +251,35 @@ export const languagePacks: LanguagePack[] = [
       en: "Accents, cedilla, and tilde broaden diacritic rendering coverage for Latin scripts.",
     },
     templates: ptTemplates,
+  },
+  {
+    id: "zh-hans",
+    label: {
+      ko: "중국어(간체)",
+      en: "Chinese (Simplified)",
+    },
+    nativeLabel: "简体中文",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "기본 필획 8종과 기초 한자 30자로 한자 획순 렌더링을 검증합니다.",
+      en: "Eight basic strokes and 30 foundational characters validate Hanzi stroke-order rendering.",
+    },
+    templates: zhHansTemplates,
+  },
+  {
+    id: "zh-hant",
+    label: {
+      ko: "중국어(번체)",
+      en: "Chinese (Traditional)",
+    },
+    nativeLabel: "繁體中文",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "기본 필획 8종과 기초 한자 30자로 번체자 획순 렌더링을 검증합니다.",
+      en: "Eight basic strokes and 30 foundational characters validate traditional Hanzi stroke-order rendering.",
+    },
+    templates: zhHantTemplates,
   },
 ];
