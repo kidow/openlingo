@@ -36,6 +36,7 @@ import { koUiTemplate } from "@/data/templates/ko/ui";
 import { enAlphabetTemplates } from "@/data/templates/en/alphabet";
 import { jaTemplates } from "@/data/templates/ja";
 import { ruTemplates } from "@/data/templates/ru";
+import { arTemplates } from "@/data/templates/ar";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -183,32 +184,6 @@ export const languagePacks: LanguagePack[] = [
       ko: "우→좌 언어를 초기에 포함해 레이아웃 결정이 좌→우에만 고정되지 않도록 합니다.",
       en: "RTL support is represented early so layout decisions do not get locked to LTR only.",
     },
-    templates: [
-      {
-        id: "ar-ba",
-        languageId: "ar",
-        mode: "character",
-        label: {
-          ko: "바",
-          en: "Ba",
-        },
-        nativeLabel: "ب",
-        cue: {
-          ko: "아랫부분 곡선을 낮게 유지하고 점은 충분히 떨어뜨려 두세요.",
-          en: "Keep the bowl low and the dot clearly separated.",
-        },
-        description: {
-          ko: "향후 방향성 지원을 초기에 드러내기 위한 우→좌 샘플입니다.",
-          en: "Right-to-left sample that keeps future directionality visible in the prototype.",
-        },
-        direction: "rtl",
-        guidePathD: "M78 55 C69 44, 57 39, 44 41 C32 43, 24 50, 24 60 C24 71, 34 78, 48 78 C60 78, 70 74, 79 67 M49 84 C51 88, 56 88, 58 84 C56 80, 51 80, 49 84",
-        viewBox: [0, 0, 100, 100],
-        gridLabel: {
-          ko: "우→좌 가이드 칸",
-          en: "RTL guide cell",
-        },
-      },
-    ],
+    templates: arTemplates,
   },
 ];
