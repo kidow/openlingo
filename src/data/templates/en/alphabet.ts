@@ -76,38 +76,57 @@ const LETTER_SEGMENTS: Record<string, SegmentId[]> = {
 
 const englishUppercaseLetters = Object.keys(LETTER_SEGMENTS);
 
-export const enAlphabetTemplates: WritingTemplate[] = englishUppercaseLetters.map((letter) => {
-  const segments = LETTER_SEGMENTS[letter];
-  const strokeGuides = segments.map((segmentId, index) => ({
-    id: `en-${letter.toLowerCase()}-${index + 1}`,
-    pathD: SEGMENT_PATHS[segmentId],
-    order: index + 1,
-  }));
+function createEnglishAlphabetTemplates(caseStyle: "uppercase" | "lowercase"): WritingTemplate[] {
+  return englishUppercaseLetters.map((letter) => {
+    const lowercaseLetter = letter.toLowerCase();
+    const segments = LETTER_SEGMENTS[letter];
+    const idPrefix = caseStyle === "uppercase" ? "en" : "en-lower";
+    const nativeLabel = caseStyle === "uppercase" ? letter : lowercaseLetter;
+    const labelPrefix = caseStyle === "uppercase" ? "대문자" : "소문자";
+    const descriptionPrefix = caseStyle === "uppercase" ? "Uppercase" : "Lowercase";
+    const cue =
+      caseStyle === "uppercase"
+        ? {
+            ko: "큰 획부터 쓰고, 짧은 보조 획은 마지막에 정리하세요.",
+            en: "Draw the main long strokes first, then finish with shorter supporting strokes.",
+          }
+        : {
+            ko: "임시 소문자 시트는 기존 대문자 획 구성을 축소 개념으로 연습하도록 맞춰져 있습니다.",
+            en: "These temporary lowercase sheets reuse the uppercase stroke structure as a placeholder practice guide.",
+          };
+    const strokeGuides = segments.map((segmentId, index) => ({
+      id: `${idPrefix}-${lowercaseLetter}-${index + 1}`,
+      pathD: SEGMENT_PATHS[segmentId],
+      order: index + 1,
+    }));
 
-  return {
-    id: `en-${letter.toLowerCase()}`,
-    languageId: "en",
-    mode: "character",
-    label: {
-      ko: `대문자 ${letter}`,
-      en: `Uppercase ${letter}`,
-    },
-    nativeLabel: letter,
-    cue: {
-      ko: "큰 획부터 쓰고, 짧은 보조 획은 마지막에 정리하세요.",
-      en: "Draw the main long strokes first, then finish with shorter supporting strokes.",
-    },
-    description: {
-      ko: `영어 알파벳 ${letter} 연습용 템플릿입니다.`,
-      en: `Practice template for the English letter ${letter}.`,
-    },
-    direction: "ltr",
-    guidePathD: strokeGuides.map((guide) => guide.pathD).join(" "),
-    strokeGuides,
-    viewBox: [0, 0, 100, 100],
-    gridLabel: {
-      ko: "라틴 알파벳 칸",
-      en: "Latin cell",
-    },
-  };
-});
+    return {
+      id: `${idPrefix}-${lowercaseLetter}`,
+      languageId: "en",
+      mode: "character",
+      label: {
+        ko: `${labelPrefix} ${nativeLabel}`,
+        en: `${descriptionPrefix} ${nativeLabel}`,
+      },
+      nativeLabel,
+      cue,
+      description: {
+        ko: `영어 알파벳 ${nativeLabel} 연습용 임시 템플릿입니다.`,
+        en: `Temporary practice template for the English letter ${nativeLabel}.`,
+      },
+      direction: "ltr",
+      guidePathD: strokeGuides.map((guide) => guide.pathD).join(" "),
+      strokeGuides,
+      viewBox: [0, 0, 100, 100],
+      gridLabel: {
+        ko: "라틴 알파벳 칸",
+        en: "Latin cell",
+      },
+    };
+  });
+}
+
+export const enAlphabetTemplates: WritingTemplate[] = [
+  ...createEnglishAlphabetTemplates("uppercase"),
+  ...createEnglishAlphabetTemplates("lowercase"),
+];
