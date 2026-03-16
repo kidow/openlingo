@@ -35,6 +35,7 @@ import { koYuTemplate } from "@/data/templates/ko/yu";
 import { koUiTemplate } from "@/data/templates/ko/ui";
 import { enAlphabetTemplates } from "@/data/templates/en/alphabet";
 import { jaTemplates } from "@/data/templates/ja";
+import { ruTemplates } from "@/data/templates/ru";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -153,6 +154,21 @@ export const languagePacks: LanguagePack[] = [
       en: "Curved strokes help stress-test guide rendering beyond angular Hangul shapes.",
     },
     templates: jaTemplates,
+  },
+  {
+    id: "ru",
+    label: {
+      ko: "러시아어",
+      en: "Russian",
+    },
+    nativeLabel: "Русский",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "라틴 문자와 유사하면서도 고유한 키릴 문자로 다양한 곡선 렌더링을 점검합니다.",
+      en: "Cyrillic letters share some Latin shapes but add unique curves that broaden rendering coverage.",
+    },
+    templates: ruTemplates,
   },
   {
     id: "ar",
