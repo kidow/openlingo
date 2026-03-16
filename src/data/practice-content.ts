@@ -39,6 +39,7 @@ import { ruTemplates } from "@/data/templates/ru";
 import { arTemplates } from "@/data/templates/ar";
 import { deTemplates } from "@/data/templates/de";
 import { esTemplates } from "@/data/templates/es";
+import { frTemplates } from "@/data/templates/fr";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -217,5 +218,20 @@ export const languagePacks: LanguagePack[] = [
       en: "Extends the Latin base with Eñe to validate tilde diacritic rendering support.",
     },
     templates: esTemplates,
+  },
+  {
+    id: "fr",
+    label: {
+      ko: "프랑스어",
+      en: "French",
+    },
+    nativeLabel: "Français",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "악상, 세디유, 합자 등 다양한 분음 부호로 렌더링 범위를 넓힙니다.",
+      en: "Accents, cedilla, and ligature broaden diacritic rendering coverage beyond simple dots.",
+    },
+    templates: frTemplates,
   },
 ];
