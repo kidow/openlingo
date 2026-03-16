@@ -34,3 +34,36 @@ describe("languagePacks English templates", () => {
     }
   });
 });
+
+describe("languagePacks Japanese templates", () => {
+  const japanesePack = languagePacks.find((pack) => pack.id === "ja");
+
+  it("includes 46 hiragana and 46 katakana templates (92 total)", () => {
+    expect(japanesePack).toBeDefined();
+    expect(japanesePack?.templates).toHaveLength(92);
+
+    const hiraganaTemplates = japanesePack?.templates.filter((t) => t.id.startsWith("ja-hiragana-"));
+    const katakanaTemplates = japanesePack?.templates.filter((t) => t.id.startsWith("ja-katakana-"));
+
+    expect(hiraganaTemplates).toHaveLength(46);
+    expect(katakanaTemplates).toHaveLength(46);
+  });
+
+  it("has unique IDs for all templates", () => {
+    const ids = japanesePack?.templates.map((t) => t.id) ?? [];
+    const uniqueIds = new Set(ids);
+    expect(uniqueIds.size).toBe(ids.length);
+  });
+
+  it("all templates have required fields", () => {
+    for (const template of japanesePack?.templates ?? []) {
+      expect(template.languageId).toBe("ja");
+      expect(template.mode).toBe("character");
+      expect(template.nativeLabel).toBeTruthy();
+      expect(template.guidePathD).toBeTruthy();
+      expect(template.label.ko).toBeTruthy();
+      expect(template.label.en).toBeTruthy();
+      expect(template.viewBox).toEqual([0, 0, 100, 100]);
+    }
+  });
+});
