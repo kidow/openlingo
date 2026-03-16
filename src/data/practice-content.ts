@@ -40,6 +40,7 @@ import { arTemplates } from "@/data/templates/ar";
 import { deTemplates } from "@/data/templates/de";
 import { esTemplates } from "@/data/templates/es";
 import { frTemplates } from "@/data/templates/fr";
+import { ptTemplates } from "@/data/templates/pt";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -233,5 +234,20 @@ export const languagePacks: LanguagePack[] = [
       en: "Accents, cedilla, and ligature broaden diacritic rendering coverage beyond simple dots.",
     },
     templates: frTemplates,
+  },
+  {
+    id: "pt",
+    label: {
+      ko: "포르투갈어",
+      en: "Portuguese",
+    },
+    nativeLabel: "Português",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "악상, 세딜랴, 틸 등 다양한 분음 부호로 라틴 문자 렌더링 범위를 넓힙니다.",
+      en: "Accents, cedilla, and tilde broaden diacritic rendering coverage for Latin scripts.",
+    },
+    templates: ptTemplates,
   },
 ];
