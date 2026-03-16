@@ -38,6 +38,7 @@ import { jaTemplates } from "@/data/templates/ja";
 import { ruTemplates } from "@/data/templates/ru";
 import { arTemplates } from "@/data/templates/ar";
 import { deTemplates } from "@/data/templates/de";
+import { esTemplates } from "@/data/templates/es";
 
 export const languagePacks: LanguagePack[] = [
   {
@@ -201,5 +202,20 @@ export const languagePacks: LanguagePack[] = [
       en: "Extends the Latin base with Umlauts and Eszett to validate diacritic rendering support.",
     },
     templates: deTemplates,
+  },
+  {
+    id: "es",
+    label: {
+      ko: "스페인어",
+      en: "Spanish",
+    },
+    nativeLabel: "Español",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "라틴 알파벳에 에녜(Ñ)를 추가하여 물결표 분음 부호 렌더링을 검증합니다.",
+      en: "Extends the Latin base with Eñe to validate tilde diacritic rendering support.",
+    },
+    templates: esTemplates,
   },
 ];
