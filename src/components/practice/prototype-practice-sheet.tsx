@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StrokePreview } from "@/components/practice/stroke-preview";
+import { TemplateGlyphLayer, TemplateGlyphMark } from "@/components/practice/template-glyph";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
   return {
@@ -326,9 +327,12 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                               : "border-[color:var(--border-soft)] bg-white/30 hover:bg-[color:var(--paper-strong)]"
                           )}
                         >
-                          <div className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
-                            {template.nativeLabel}
-                          </div>
+                          <TemplateGlyphMark
+                            template={template}
+                            label={`${getLocalizedText(template.label, locale)} glyph`}
+                            testId={`primary-template-card-glyph-${template.id}`}
+                            className="h-10 w-10"
+                          />
                           <div className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
                             {getLocalizedText(template.label, locale)}
                           </div>
@@ -409,9 +413,12 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                             : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
                         )}
                       >
-                        <div className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
-                          {template.nativeLabel}
-                        </div>
+                        <TemplateGlyphMark
+                          template={template}
+                          label={`${getLocalizedText(template.label, locale)} glyph`}
+                          testId={`worksheet-template-card-glyph-${template.id}`}
+                          className="h-10 w-10"
+                        />
                         <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
                           {getLocalizedText(template.label, locale)}
                         </div>
@@ -444,14 +451,22 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                     pointerEvents="none"
                     className="fill-[color:rgba(255,255,255,0.15)] stroke-[color:var(--border-soft)]"
                   />
-                  <path
-                    d={selectedTemplate.guidePathD}
-                    pointerEvents="none"
-                    className="fill-none stroke-[color:rgba(146,122,90,0.45)]"
-                    strokeWidth="5.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+                  {selectedTemplate.glyph ? (
+                    <TemplateGlyphLayer
+                      template={selectedTemplate}
+                      fill="rgba(146,122,90,0.4)"
+                      testId={`practice-guide-glyph-${selectedTemplate.id}`}
+                    />
+                  ) : (
+                    <path
+                      d={selectedTemplate.guidePathD}
+                      pointerEvents="none"
+                      className="fill-none stroke-[color:rgba(146,122,90,0.45)]"
+                      strokeWidth="5.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
                   {strokes.map((stroke) => (
                     <polyline
                       key={stroke.id}

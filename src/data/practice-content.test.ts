@@ -67,3 +67,16 @@ describe("languagePacks Japanese templates", () => {
     }
   });
 });
+
+describe("languagePacks Korean giyeok template", () => {
+  it("uses a dedicated glyph layer with the corrected stroke order", () => {
+    const koreanPack = languagePacks.find((pack) => pack.id === "ko");
+    const giyeok = koreanPack?.templates.find((template) => template.id === "ko-giyeok");
+    const giyeokGlyph = (giyeok as { glyph?: { paths?: unknown[] } } | undefined)?.glyph;
+
+    expect(giyeok).toBeDefined();
+    expect(giyeok?.guidePathD).toBe("M24 28 H74 V78");
+    expect(giyeok?.strokeGuides?.map((stroke) => stroke.pathD)).toEqual(["M24 28 H74", "M74 28 V78"]);
+    expect(giyeokGlyph?.paths).toHaveLength(1);
+  });
+});

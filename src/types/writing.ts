@@ -25,6 +25,26 @@ export type StrokeGuide = {
   holdMs?: number;
 };
 
+export type TemplateGlyphPath = {
+  d: string;
+  fillRule?: "nonzero" | "evenodd";
+  clipRule?: "nonzero" | "evenodd";
+};
+
+export type TemplateGlyphPlacement = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type TemplateGlyph = {
+  viewBox: [number, number, number, number];
+  paths: TemplateGlyphPath[];
+  placement?: TemplateGlyphPlacement;
+  maskStrokeWidth?: number;
+};
+
 export type WritingTemplate = {
   id: string;
   languageId: string;
@@ -36,6 +56,7 @@ export type WritingTemplate = {
   direction: WritingDirection;
   guidePathD: string;
   strokeGuides?: StrokeGuide[];
+  glyph?: TemplateGlyph;
   viewBox: [number, number, number, number];
   gridLabel: LocalizedText;
 };

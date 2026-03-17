@@ -31,4 +31,13 @@ describe("PrototypePracticeSheet", () => {
     expect(languagePackList).toHaveClass("grid", "overflow-y-auto");
     expect(languagePackList).not.toHaveClass("overflow-x-auto");
   });
+
+  it("uses the custom giyeok glyph across cards, worksheet guide, and preview", () => {
+    render(<PrototypePracticeSheet locale="ko" dictionary={getDictionary("ko")} />);
+
+    expect(screen.getByTestId("primary-template-card-glyph-ko-giyeok")).toBeInTheDocument();
+    expect(screen.getByTestId("worksheet-template-card-glyph-ko-giyeok")).toBeInTheDocument();
+    expect(screen.getByTestId("practice-guide-glyph-ko-giyeok")).toBeInTheDocument();
+    expect(screen.getByTestId("stroke-preview-glyph-ko-giyeok")).toBeInTheDocument();
+  });
 });

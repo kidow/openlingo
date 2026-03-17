@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
 import { cn } from "@/lib/utils";
 import { WritingTemplate } from "@/types/writing";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { TemplateGlyphLayer } from "@/components/practice/template-glyph";
 
 const BASE_STROKE_DURATION = 10;
 const MIN_STROKE_DURATION = 320;
@@ -29,6 +30,8 @@ export function StrokePreview({ template, dictionary, autoplay = true, loop = fa
   const sortedStrokes = useMemo(() => {
     return [...(template.strokeGuides ?? [])].sort((a, b) => a.order - b.order);
   }, [template.strokeGuides]);
+  const usesGlyphReveal = Boolean(template.glyph);
+  const revealMaskId = useId().replace(/:/g, "");
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [autoPlayEnabled, setAutoPlayEnabled] = useState(autoplay);
@@ -53,9 +56,9 @@ export function StrokePreview({ template, dictionary, autoplay = true, loop = fa
       const length = path.getTotalLength();
       path.style.strokeDasharray = `${length}`;
       path.style.strokeDashoffset = `${length}`;
-      path.style.opacity = "0.35";
+      path.style.opacity = usesGlyphReveal ? "1" : "0.35";
     });
-  }, []);
+  }, [usesGlyphReveal]);
 
   const stopPlayback = useCallback(() => {
     playbackTokenRef.current += 1;
@@ -113,7 +116,7 @@ export function StrokePreview({ template, dictionary, autoplay = true, loop = fa
         setCurrentStrokeOrder(stroke.order);
         const animation = path.animate(
           [
-            { strokeDashoffset: `${length}`, opacity: 0.35 },
+            { strokeDashoffset: `${length}`, opacity: 1 },
             { strokeDashoffset: "0", opacity: 1 },
           ],
           {
@@ -193,31 +196,64 @@ export function StrokePreview({ template, dictionary, autoplay = true, loop = fa
               pointerEvents="none"
               className="fill-[color:rgba(255,255,255,0.15)] stroke-[color:var(--border-soft)]"
             />
-            {sortedStrokes.map((stroke) => (
-              <path
-                key={`guide-${stroke.id}`}
-                d={stroke.pathD}
-                fill="none"
-                stroke="rgba(146,122,90,0.25)"
-                strokeWidth="5.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            ))}
-            {sortedStrokes.map((stroke, index) => (
-              <path
-                key={stroke.id}
-                d={stroke.pathD}
-                fill="none"
-                stroke="rgba(79,54,24,0.9)"
-                strokeWidth="5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                ref={(node) => {
-                  pathRefs.current[index] = node;
-                }}
-              />
-            ))}
+            {usesGlyphReveal ? (
+              <>
+                <TemplateGlyphLayer template={template} fill="rgba(146,122,90,0.25)" />
+                <defs>
+                  <mask id={revealMaskId} maskUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="100" height="100" fill="black" />
+                    {sortedStrokes.map((stroke, index) => (
+                      <path
+                        key={`mask-${stroke.id}`}
+                        d={stroke.pathD}
+                        fill="none"
+                        stroke="white"
+                        strokeWidth={template.glyph?.maskStrokeWidth ?? 14}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        ref={(node) => {
+                          pathRefs.current[index] = node;
+                        }}
+                      />
+                    ))}
+                  </mask>
+                </defs>
+                <TemplateGlyphLayer
+                  template={template}
+                  fill="rgba(79,54,24,0.9)"
+                  maskId={revealMaskId}
+                  testId={`stroke-preview-glyph-${template.id}`}
+                />
+              </>
+            ) : (
+              <>
+                {sortedStrokes.map((stroke) => (
+                  <path
+                    key={`guide-${stroke.id}`}
+                    d={stroke.pathD}
+                    fill="none"
+                    stroke="rgba(146,122,90,0.25)"
+                    strokeWidth="5.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                ))}
+                {sortedStrokes.map((stroke, index) => (
+                  <path
+                    key={stroke.id}
+                    d={stroke.pathD}
+                    fill="none"
+                    stroke="rgba(79,54,24,0.9)"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    ref={(node) => {
+                      pathRefs.current[index] = node;
+                    }}
+                  />
+                ))}
+              </>
+            )}
           </svg>
         </div>
 
