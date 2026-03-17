@@ -264,7 +264,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                     </span>
                   </div>
 
-                  <div className="flex gap-3 overflow-x-auto pb-1">
+                  <div className="grid max-h-[420px] gap-3 overflow-y-auto pr-1">
                     {languagePacks.map((pack) => {
                       const active = pack.id === selectedLanguage.id;
                       const packLabel = getLocalizedText(pack.label, locale);
@@ -276,7 +276,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                           type="button"
                           onClick={() => handleLanguageSelect(pack.id)}
                           className={cn(
-                            "min-w-[164px] shrink-0 rounded-[24px] border px-4 py-3 text-left transition-colors",
+                            "w-full rounded-[24px] border px-4 py-3 text-left transition-colors",
                             active
                               ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]"
                               : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"

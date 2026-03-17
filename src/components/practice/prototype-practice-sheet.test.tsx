@@ -21,4 +21,14 @@ describe("PrototypePracticeSheet", () => {
     expect(screen.getByRole("tabpanel", { name: "점수" })).toBeInTheDocument();
     expect(screen.queryByRole("tabpanel", { name: "획 미리보기" })).not.toBeInTheDocument();
   });
+
+  it("renders language pack toggles as a vertical list instead of a horizontal scroller", () => {
+    render(<PrototypePracticeSheet locale="ko" dictionary={getDictionary("ko")} />);
+
+    const englishPackButton = screen.getByRole("button", { name: /English/i });
+    const languagePackList = englishPackButton.parentElement;
+
+    expect(languagePackList).toHaveClass("grid", "overflow-y-auto");
+    expect(languagePackList).not.toHaveClass("overflow-x-auto");
+  });
 });
