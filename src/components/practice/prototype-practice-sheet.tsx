@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
-import { StrokePreview } from "@/components/practice/stroke-preview";
 import { TemplateGlyphLayer, TemplateGlyphMark } from "@/components/practice/template-glyph";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
@@ -60,7 +59,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [score, setScore] = useState<number | null>(null);
   const [scoreState, setScoreState] = useState<"idle" | "pending" | "ready">("idle");
   const [previewAutoplay, setPreviewAutoplay] = useState(true);
-  const [previewOverlayOpen, setPreviewOverlayOpen] = useState(false);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
 
@@ -75,7 +73,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setScore(null);
       setScoreState("idle");
       setPreviewAutoplay(true);
-      setPreviewOverlayOpen(false);
     }
   }, [selectedLanguage, selectedTemplateId]);
 
@@ -111,7 +108,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setScore(null);
       setScoreState("idle");
       setPreviewAutoplay(true);
-      setPreviewOverlayOpen(false);
     });
   }
 
@@ -122,7 +118,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setScore(null);
       setScoreState("idle");
       setPreviewAutoplay(true);
-      setPreviewOverlayOpen(false);
     });
   }
 
@@ -289,15 +284,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                     {getLocalizedText(selectedLanguage.summary, locale)}
                   </p>
                 </div>
-
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() => setPreviewOverlayOpen((current) => !current)}
-                  aria-pressed={previewOverlayOpen}
-                >
-                  {dictionary.sections.strokePreviewTitle}
-                </Button>
               </div>
 
               <div className="relative overflow-hidden rounded-[32px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] md:p-6">
@@ -352,26 +338,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                     />
                   ))}
                 </svg>
-
-                {previewOverlayOpen ? (
-                  <div
-                    data-testid="canvas-preview-overlay"
-                    className="absolute inset-x-4 top-4 z-10 rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/96 p-4 shadow-[0_16px_40px_rgba(88,63,30,0.14)] backdrop-blur"
-                  >
-                    {selectedTemplate.strokeGuides?.length ? (
-                      <StrokePreview template={selectedTemplate} dictionary={dictionary} autoplay={previewAutoplay} />
-                    ) : (
-                      <div className="rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-5 py-6">
-                        <div className="font-[family-name:var(--font-display)] text-xl text-[color:var(--foreground)]">
-                          {dictionary.sections.strokePreviewUnavailableTitle}
-                        </div>
-                        <p className="mt-3 text-sm leading-6 text-[color:var(--muted-foreground)]">
-                          {dictionary.sections.strokePreviewUnavailableDescription}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ) : null}
 
                 <div className="mt-4 flex items-center justify-between gap-3 text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
                   <span>{getLocalizedText(selectedTemplate.gridLabel, locale)}</span>
