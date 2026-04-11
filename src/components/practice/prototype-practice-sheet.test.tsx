@@ -143,14 +143,14 @@ describe("PrototypePracticeSheet", () => {
       expect(within(canvasStage).getByText(dictionary.score.status.pending)).toBeInTheDocument();
     });
 
-    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(within(canvasStage).getByRole("button", { name: dictionary.buttons.undoStroke })).toBeEnabled();
     expect(within(canvasStage).getByRole("button", { name: dictionary.buttons.clearPage })).toBeEnabled();
 
     await user.click(within(canvasStage).getByTestId("practice-template-next"));
 
     expect(within(canvasStage).getByText(dictionary.score.status.waiting)).toBeInTheDocument();
+    expect(within(canvasStage).getByRole("button", { name: dictionary.buttons.undoStroke })).toBeDisabled();
     expect(within(canvasStage).getByRole("button", { name: dictionary.buttons.clearPage })).toBeDisabled();
-    expect(screen.getByText("0")).toBeInTheDocument();
   });
 
   it("keeps stroke preview in a canvas overlay instead of a separate tab-panel workflow", async () => {
