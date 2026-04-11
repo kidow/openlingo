@@ -20,7 +20,7 @@ export function LanguagePackTabs({ ariaLabel, items, selectedId, onSelect }: Lan
   return (
     <div
       data-testid="language-pack-tabs-band"
-      className="border-b border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.94))]"
+      className="border-y border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.94))]"
     >
       <div
         role="tablist"
@@ -52,7 +52,7 @@ export function LanguagePackTabs({ ariaLabel, items, selectedId, onSelect }: Lan
                 <span className="mt-1 block text-[11px] uppercase tracking-[0.18em]">{item.secondaryLabel}</span>
               ) : null}
               {item.badgeLabel ? (
-                <span className="mt-2 inline-flex rounded-full border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
+                <span className="mt-2 inline-flex border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
                   {item.badgeLabel}
                 </span>
               ) : null}

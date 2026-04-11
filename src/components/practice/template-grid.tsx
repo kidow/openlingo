@@ -30,7 +30,7 @@ export function TemplateGrid({
     <section
       data-testid="template-grid"
       aria-label={dictionary.sections.practiceCardsTitle}
-      className="rounded-[28px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/64 p-4 md:p-5"
+      className="border-x-0 border-b-0 border-t border-[color:var(--border-soft)] bg-[color:var(--paper)]/64 p-4 md:p-5"
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
@@ -41,7 +41,7 @@ export function TemplateGrid({
           <p className="mt-2 text-sm leading-6 text-[color:var(--muted-foreground)]">{selectedTemplateCue}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge>{selectedLanguage.templates.length}</Badge>
+          <Badge className="rounded-none">{selectedLanguage.templates.length}</Badge>
         </div>
       </div>
 
@@ -55,7 +55,7 @@ export function TemplateGrid({
               type="button"
               onClick={() => onSelectTemplate(template.id)}
               className={cn(
-                "rounded-[22px] border px-3 py-3 text-left transition-colors sm:px-4",
+                "border px-3 py-3 text-left transition-colors sm:px-4",
                 active
                   ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                   : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"

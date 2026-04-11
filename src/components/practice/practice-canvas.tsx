@@ -63,11 +63,11 @@ export function PracticeCanvas({
   const quickScoreLabel = score === null ? "--" : `${score}%`;
 
   return (
-    <Card className="overflow-hidden border-[color:var(--border-strong)] bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.99))]">
+    <Card className="overflow-hidden rounded-none border-x-0 border-t-0 border-b-[color:var(--border-strong)] shadow-none bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.99))]">
       <CardHeader className="gap-4 border-b border-[color:var(--border-soft)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3">
-            <Badge className="w-fit">{dictionary.hero.badge}</Badge>
+            <Badge className="w-fit rounded-none">{dictionary.hero.badge}</Badge>
             <div className="space-y-2">
               <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
               <CardDescription className="max-w-3xl">
@@ -77,7 +77,7 @@ export function PracticeCanvas({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
+            <div className="border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
               <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
                 {dictionary.sections.scoreTitle}
               </div>
@@ -120,14 +120,14 @@ export function PracticeCanvas({
                   {currentPackLabel}
                 </span>
               ) : null}
-              <Badge>{dictionary.stages[selectedLanguage.stage]}</Badge>
+              <Badge className="rounded-none">{dictionary.stages[selectedLanguage.stage]}</Badge>
             </div>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[color:var(--muted-foreground)]">
               {getLocalizedText(selectedLanguage.summary, locale)}
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-start rounded-full border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-1">
+          <div className="flex items-center gap-2 self-start border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-1">
             <Button
               type="button"
               variant="ghost"
@@ -156,7 +156,7 @@ export function PracticeCanvas({
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-[32px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] md:p-6">
+        <div className="relative overflow-hidden border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] md:p-6">
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,transparent_31px,rgba(134,111,81,0.12)_32px),linear-gradient(90deg,transparent_31px,rgba(134,111,81,0.12)_32px)] bg-[size:32px_32px] opacity-70" />
           <div className="pointer-events-none absolute inset-x-0 top-[18%] border-t border-dashed border-[color:var(--border-soft)]" />
           <div className="pointer-events-none absolute inset-x-0 top-[50%] border-t border-[color:rgba(153,98,46,0.18)]" />
@@ -177,7 +177,7 @@ export function PracticeCanvas({
           <svg
             viewBox="0 0 100 100"
             data-testid="practice-canvas-surface"
-            className="relative z-0 aspect-square w-full touch-none rounded-[24px] bg-transparent"
+            className="relative z-0 aspect-square w-full touch-none bg-transparent"
             onPointerDown={onBeginStroke}
             onPointerMove={onMoveStroke}
             onPointerUp={onEndStroke}
@@ -189,7 +189,7 @@ export function PracticeCanvas({
               y="6"
               width="88"
               height="88"
-              rx="18"
+              rx="0"
               pointerEvents="none"
               className="fill-[color:rgba(255,255,255,0.15)] stroke-[color:var(--border-soft)]"
             />

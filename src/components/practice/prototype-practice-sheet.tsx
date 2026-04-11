@@ -244,7 +244,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             onEndStroke={endStroke}
           />
 
-          <aside className="rounded-[28px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/82 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+          <aside className="border border-[color:var(--border-soft)] bg-[color:var(--paper)]/82 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
             <div className="space-y-2">
               <h2 className="text-lg font-semibold text-[color:var(--foreground)]">
                 {dictionary.sections.sessionNotesTitle}
@@ -257,7 +257,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <div className="mt-5 space-y-4 text-sm leading-6 text-[color:var(--muted-foreground)]">
               <p>{dictionary.notes.multilingual}</p>
 
-              <div className="flex items-center justify-between gap-3 rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/92 px-4 py-3">
+              <div className="flex items-center justify-between gap-3 border border-[color:var(--border-soft)] bg-[color:var(--paper)]/92 px-4 py-3">
                 <span>{dictionary.notes.touchInput}</span>
                 <button
                   type="button"
@@ -279,7 +279,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
                 </button>
               </div>
 
-              <div className="rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/92 px-4 py-3">
+              <div className="border border-[color:var(--border-soft)] bg-[color:var(--paper)]/92 px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.18em]">{dictionary.notes.currentStrokeCount}</div>
                 <div className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[color:var(--foreground)]">
                   {renderedStrokeCount}
