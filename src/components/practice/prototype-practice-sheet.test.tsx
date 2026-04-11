@@ -11,7 +11,8 @@ describe("PrototypePracticeSheet", () => {
 
     render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
 
-    const languagePackTabs = screen.getByRole("tablist", {
+    const languagePackBand = screen.getByTestId("language-pack-tabs-band");
+    const languagePackTabs = within(languagePackBand).getByRole("tablist", {
       name: dictionary.sections.languagePacksTitle,
     });
 
@@ -42,6 +43,7 @@ describe("PrototypePracticeSheet", () => {
     const templateGrid = screen.getByTestId("template-grid");
 
     expect(templateGrid.compareDocumentPosition(canvasStage)).toBe(Node.DOCUMENT_POSITION_PRECEDING);
+    expect(templateGrid).not.toHaveClass("overflow-x-auto", "overflow-y-auto");
     expect(within(templateGrid).getAllByRole("button")).toHaveLength(languagePacks[0].templates.length);
   });
 
@@ -50,7 +52,8 @@ describe("PrototypePracticeSheet", () => {
 
     render(<PrototypePracticeSheet locale="ko" dictionary={getDictionary("ko")} />);
 
-    const previewControl = screen.getByRole("button", {
+    const canvasStage = screen.getByTestId("practice-canvas-stage");
+    const previewControl = within(canvasStage).getByRole("button", {
       name: /획 미리보기|stroke preview/i,
     });
 
