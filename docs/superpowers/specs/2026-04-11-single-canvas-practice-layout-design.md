@@ -1,211 +1,211 @@
-# Single-Canvas Practice Layout Design
+# 싱글 캔버스 연습 레이아웃 설계
 
 Date: 2026-04-11
 Status: Approved for planning
 
-## Summary
+## 요약
 
-Redesign the current practice screen so the writing canvas becomes the primary surface. Remove the current card-within-card layout and repeated padding shells. Selection tools should become lightweight controls around the canvas instead of separate visual regions competing for attention.
+현재 연습 화면을 다시 구성하여 쓰기 캔버스가 화면의 중심이 되도록 한다. 기존의 카드 안에 카드가 중첩되는 레이아웃과 반복되는 패딩 껍데기를 제거한다. 선택 도구들은 서로 경쟁하는 별도 시각 영역이 아니라, 캔버스를 둘러싼 가벼운 조작 요소로 바뀌어야 한다.
 
-## Problem Statement
+## 문제 정의
 
-The current screen gives similar visual weight to language selection, template selection, worksheet controls, score, preview, and notes. This creates two issues:
+현재 화면은 언어 선택, 템플릿 선택, 워크시트 조작, 점수, 프리뷰, 노트가 비슷한 시각적 무게를 갖고 있다. 이 구조는 두 가지 문제를 만든다.
 
-- The user cannot immediately tell where to focus first.
-- Nested cards and repeated internal padding create a boxed-in layout that feels visually heavy.
+- 사용자가 처음 화면을 봤을 때 어디에 먼저 집중해야 하는지 즉시 알기 어렵다.
+- 중첩 카드와 반복되는 내부 패딩 때문에 화면이 답답하고 지나치게 박스형으로 느껴진다.
 
-The redesign should make the practice area feel like the product, with all other controls clearly subordinate to it.
+새 레이아웃에서는 연습 영역 자체가 제품처럼 느껴져야 하며, 나머지 모든 조작 요소는 그보다 분명히 아래 위계에 있어야 한다.
 
-## Goals
+## 목표
 
-- Make the practice canvas the dominant element on first view.
-- Remove the nested padding and nested card feeling.
-- Keep language switching, card switching, score, and clear actions accessible without creating side panels.
-- Keep the full card list visible at once for the active language pack.
-- Treat stroke preview as a mode of the canvas, not a separate panel.
+- 첫 화면에서 연습 캔버스가 가장 강한 존재감을 갖도록 한다.
+- 중첩 패딩과 중첩 카드의 느낌을 제거한다.
+- 사이드 패널 없이도 언어 전환, 카드 전환, 점수 확인, 지우기 동작이 가능하도록 한다.
+- 현재 언어팩에 속한 카드 목록을 한 번에 모두 볼 수 있도록 유지한다.
+- 스트로크 프리뷰를 별도 패널이 아닌 캔버스의 한 상태로 다룬다.
 
-## Non-Goals
+## 비목표
 
-- No new learning features or scoring logic changes.
-- No drawer, carousel, or sidebar-based navigation for template cards.
-- No new persistent notes or inspector panel.
-- No redesign of app-wide header or locale switcher beyond what is necessary for layout harmony.
+- 학습 기능이나 점수 계산 로직 자체를 새로 만들지 않는다.
+- 템플릿 카드 탐색에 드로어, 캐러셀, 사이드바를 사용하지 않는다.
+- 새로운 고정 노트 패널이나 인스펙터 패널을 추가하지 않는다.
+- 전체 앱 헤더나 로케일 스위처를 큰 폭으로 다시 디자인하지 않는다. 다만 레이아웃 조화를 위해 필요한 수준의 조정은 허용한다.
 
-## Recommended Approach
+## 권장 접근
 
-Use a `single-canvas + flat control bands` layout.
+`single-canvas + flat control bands` 레이아웃을 사용한다.
 
-This approach preserves all required functionality while removing heavy visual framing. It is the strongest match for the desired direction:
+이 접근은 필요한 기능을 모두 유지하면서도 무거운 시각적 프레이밍을 제거한다. 또한 우리가 정한 방향과 가장 잘 맞는다.
 
-- the canvas is the main object on the page
-- controls are visually light
-- preview is integrated into the canvas
-- template selection remains fully visible without becoming another large panel
+- 캔버스가 화면의 주인공이 된다.
+- 조작 요소들은 가볍게 보인다.
+- 프리뷰는 캔버스에 통합된다.
+- 템플릿 선택 목록은 계속 전체 노출되지만 또 하나의 대형 패널처럼 보이지 않는다.
 
-## Layout Structure
+## 레이아웃 구조
 
-The page should be reorganized into three primary vertical regions beneath the global header.
+글로벌 헤더 아래의 페이지는 세 개의 주요 수직 영역으로 재구성한다.
 
-### 1. Language Pack Band
+### 1. 언어팩 밴드
 
-A thin top band uses underline-style tabs for the active language pack. This band only changes context and should not look like a card. It should sit close to the workspace and visually read as a lightweight selector rather than content.
+상단의 얇은 밴드에는 현재 언어팩을 전환하는 underline 스타일 탭을 둔다. 이 밴드는 오직 컨텍스트만 바꾸는 역할을 하며, 카드처럼 보여서는 안 된다. 워크스페이스 가까이에 붙어 있으면서도, 콘텐츠보다는 가벼운 선택 장치처럼 읽혀야 한다.
 
-### 2. Practice Workspace
+### 2. 연습 워크스페이스
 
-This is the dominant screen region and contains the current template context plus the writing surface.
+이 영역이 화면에서 가장 중요한 구역이며, 현재 템플릿 맥락과 실제 쓰기 표면을 포함한다.
 
-The workspace includes:
+워크스페이스에는 다음 요소가 포함된다.
 
-- current glyph title and supporting label
-- score display
-- clear action
-- previous and next template chevron buttons fixed to the left and right edges of the canvas
-- the large writing canvas itself
-- optional preview state rendered as an overlay on top of the same canvas
+- 현재 글리프 제목과 보조 라벨
+- 점수 표시
+- 지우기 액션
+- 캔버스 좌우 가장자리에 고정되는 이전/다음 템플릿 chevron 버튼
+- 대형 쓰기 캔버스
+- 같은 캔버스 위에 오버레이되는 선택적 프리뷰 상태
 
-The preview must not appear in a separate card. When preview is opened, the canvas should temporarily present guided stroke playback or equivalent overlay content on the same surface.
+프리뷰는 별도 카드로 나타나면 안 된다. 프리뷰가 열리면 같은 캔버스 표면 위에서 안내 스트로크 재생 또는 그에 준하는 오버레이 콘텐츠가 잠시 보이도록 해야 한다.
 
-### 3. Template Grid Band
+### 3. 템플릿 그리드 밴드
 
-The active language pack's template cards are displayed below the canvas in a fully expanded grid. The user should be able to scan the whole set without horizontal clipping, drawers, or carousels.
+현재 언어팩의 템플릿 카드들은 캔버스 아래에 완전히 펼쳐진 그리드로 배치한다. 사용자는 가로로 잘리거나 드로어를 열거나 캐러셀을 넘기지 않고도 전체 세트를 한 번에 훑을 수 있어야 한다.
 
-The grid should feel flat and utilitarian:
+이 그리드는 평평하고 도구적인 성격을 가져야 한다.
 
-- minimal framing
-- clear selected state
-- responsive columns
-- no large enclosing card shell
+- 최소한의 프레이밍
+- 분명한 선택 상태
+- 반응형 컬럼 구성
+- 바깥을 감싸는 큰 카드 셸 없음
 
-## Component Boundaries
+## 컴포넌트 경계
 
-Refactor the current `PrototypePracticeSheet` layout into smaller, purpose-focused units.
+현재 `PrototypePracticeSheet`가 맡고 있는 레이아웃 책임을 더 작은 단위로 나눈다. 각 단위는 역할이 분명해야 한다.
 
 ### `PracticeWorkspace`
 
-Owns high-level orchestration for the practice screen:
+연습 화면의 상위 오케스트레이션을 담당한다.
 
-- selected language
-- selected template
-- strokes
-- score
-- preview open state
+- 선택된 언어
+- 선택된 템플릿
+- 사용자의 strokes
+- 점수
+- preview open 상태
 
-This component lays out the language tabs, practice canvas region, and template grid.
+이 컴포넌트는 언어 탭, 연습 캔버스 영역, 템플릿 그리드를 배치한다.
 
 ### `LanguagePackTabs`
 
-Renders the active language pack selector as underline tabs inspired by the shadcn/radix line-style tabs pattern. It should have minimal background treatment and no heavy card styling.
+활성 언어팩 선택기를 underline 탭으로 렌더링한다. 시각 스타일은 shadcn/radix의 line 스타일 탭 패턴을 참고한다. 무거운 카드 스타일 없이 최소한의 배경 처리만 가져야 한다.
 
 ### `PracticeCanvas`
 
-Encapsulates the main practice surface and its immediate controls:
+메인 연습 표면과 그 주변의 즉시 관련된 조작 요소를 캡슐화한다.
 
-- current glyph metadata
-- score
-- clear button
-- previous and next chevrons
-- SVG drawing surface
-- guide glyph layer
-- user stroke rendering
-- preview overlay state
+- 현재 글리프 메타데이터
+- 점수
+- 지우기 버튼
+- 이전/다음 chevron
+- SVG 드로잉 표면
+- 가이드 글리프 레이어
+- 사용자 stroke 렌더링
+- preview overlay 상태
 
-This component is the visual center of the page.
+이 컴포넌트는 화면의 시각적 중심이 된다.
 
 ### `CanvasOverlayPreview`
 
-An internal presentation mode of `PracticeCanvas`, not a separate page region. It renders stroke preview or guidance over the existing canvas when toggled on.
+`PracticeCanvas`의 내부 표현 모드이며, 별도의 페이지 영역이 아니다. 토글되면 기존 캔버스 위에 스트로크 프리뷰 또는 가이드 정보를 겹쳐서 렌더링한다.
 
 ### `TemplateGrid`
 
-Displays the full set of templates for the current language pack below the canvas. It allows direct switching to any template and clearly highlights the active one.
+현재 언어팩의 전체 템플릿 세트를 캔버스 아래에 표시한다. 사용자는 이 영역에서 원하는 템플릿으로 직접 전환할 수 있어야 하며, 현재 선택 상태가 분명하게 강조되어야 한다.
 
-## Interaction Model
+## 상호작용 모델
 
-### Initial View
+### 초기 화면
 
-When the page loads, the user should immediately see:
+페이지에 진입하면 사용자는 즉시 다음을 볼 수 있어야 한다.
 
-- active language tab
-- current glyph context
-- large practice canvas
-- score and clear controls
-- full template grid below
+- 활성 언어 탭
+- 현재 글리프 컨텍스트
+- 대형 연습 캔버스
+- 점수 및 지우기 컨트롤
+- 아래에 펼쳐진 전체 템플릿 그리드
 
-No introductory hero block or competing support sidebar should sit above or beside the canvas.
+캔버스 위나 옆에 소개용 hero 블록이나 경쟁하는 보조 사이드바가 놓이면 안 된다.
 
-### Language Switching
+### 언어 전환
 
-Changing the language pack updates the template grid and resets:
+언어팩을 바꾸면 템플릿 그리드가 바뀌고, 다음 상태가 초기화된다.
 
-- selected template to the default for that pack
-- strokes
-- score
-- preview state
+- 해당 언어팩의 기본 템플릿으로 selected template 재설정
+- strokes 초기화
+- 점수 초기화
+- preview 상태 초기화
 
-### Template Switching
+### 템플릿 전환
 
-Users can switch templates in two ways:
+사용자는 두 가지 방식으로 템플릿을 바꿀 수 있다.
 
-- click a template in the full grid
-- use the previous and next chevron controls beside the canvas
+- 전체 그리드에서 템플릿을 직접 클릭
+- 캔버스 양옆의 이전/다음 chevron 사용
 
-Both pathways must update the same shared selection state.
+두 경로는 반드시 같은 선택 상태를 갱신해야 한다.
 
-### Preview Behavior
+### 프리뷰 동작
 
-Preview is treated as a canvas mode. When activated, the canvas shows guided stroke visualization on the same surface. Starting a new stroke should close the preview automatically so the workspace returns to active writing mode without manual cleanup.
+프리뷰는 캔버스의 한 모드로 취급한다. 프리뷰를 열면 같은 캔버스 표면 위에서 가이드 스트로크 시각화가 나타난다. 사용자가 새로운 stroke를 시작하면 프리뷰는 자동으로 닫혀야 하며, 별도 정리 동작 없이 즉시 쓰기 모드로 돌아와야 한다.
 
-### Clear Behavior
+### 지우기 동작
 
-Clear only resets the current drawing session:
+지우기는 현재 드로잉 세션만 초기화한다.
 
-- remove strokes
-- reset score
-- preserve selected language and selected template
+- strokes 제거
+- 점수 초기화
+- 선택된 언어와 템플릿은 유지
 
-## Visual Principles
+## 시각 원칙
 
-- Avoid stacked framed containers around already-framed content.
-- Prefer open spacing and lightweight separators over more cards.
-- The canvas must occupy the strongest visual mass on the page.
-- Support controls should feel attached to the canvas, not independent panels.
-- Template selection should be visible, but not visually louder than the canvas.
+- 이미 프레임이 있는 콘텐츠를 또 다른 프레임 컨테이너로 감싸지 않는다.
+- 더 많은 카드 대신 열린 여백과 가벼운 구분선을 우선한다.
+- 캔버스가 페이지에서 가장 큰 시각 질량을 가져야 한다.
+- 보조 조작 요소는 독립 패널이 아니라 캔버스에 붙은 요소처럼 느껴져야 한다.
+- 템플릿 선택 영역은 보여야 하지만, 캔버스보다 더 시끄럽게 보이면 안 된다.
 
-## Responsive Behavior
+## 반응형 동작
 
-- The language tabs remain a lightweight top row on all breakpoints.
-- The canvas remains the primary region on tablet and desktop.
-- The template grid should reflow responsively so the whole active set is still presented as an expanded list rather than a horizontally clipped strip.
-- On smaller screens, the layout may stack vertically, but the principle remains the same: canvas first, controls attached, template list fully exposed below.
+- 언어 탭은 모든 브레이크포인트에서 가벼운 상단 행으로 유지한다.
+- 태블릿과 데스크톱에서는 캔버스가 계속 가장 중요한 영역이어야 한다.
+- 템플릿 그리드는 반응형으로 재배치되더라도, 가로로 잘린 스트립이 아니라 계속 펼쳐진 목록으로 읽혀야 한다.
+- 작은 화면에서는 세로로 쌓일 수 있지만, 원칙은 동일해야 한다. 캔버스 우선, 조작 요소는 캔버스에 부착, 템플릿 목록은 아래에 전체 노출.
 
-## Error And Empty States
+## 오류 및 빈 상태
 
-- If a selected language pack has no templates, replace the canvas with a compact empty state message and disable navigation controls.
-- If preview data is unavailable for a template, preview toggle can remain hidden or present a simple unavailable state inside the canvas overlay.
-- Score pending state should use lightweight inline feedback near the canvas rather than a separate panel.
+- 선택된 언어팩에 템플릿이 없으면 캔버스 대신 간결한 빈 상태 메시지를 보여주고 네비게이션 컨트롤을 비활성화한다.
+- 특정 템플릿에 preview 데이터가 없으면 preview 토글을 숨기거나, 캔버스 오버레이 안에서 단순한 unavailable 상태를 보여줄 수 있다.
+- 점수 계산 중 상태는 별도 패널이 아니라 캔버스 근처의 가벼운 인라인 피드백으로 표현한다.
 
-## Testing Strategy
+## 테스트 전략
 
-### Behavioral Tests
+### 동작 테스트
 
-- Switching language packs resets template, strokes, score, and preview state.
-- Template selection via grid and chevrons updates the same selected template state.
-- Clear resets only the current drawing session state.
-- Preview opens inside the canvas surface and closes when drawing begins.
-- The template grid renders the full active template list for the selected language pack.
+- 언어팩 전환 시 템플릿, strokes, 점수, preview 상태가 초기화된다.
+- 그리드 선택과 chevron 선택이 동일한 selected template 상태를 갱신한다.
+- 지우기는 현재 드로잉 세션 상태만 초기화한다.
+- preview는 캔버스 내부에서 열리고, 드로잉 시작 시 닫힌다.
+- 템플릿 그리드는 선택된 언어팩의 전체 템플릿 목록을 모두 렌더링한다.
 
-### Visual Verification
+### 시각 검증
 
-- The first screen view is dominated by the practice canvas.
-- There are no nested major cards around language tabs, canvas controls, and template grid.
-- The previous support sidebar is removed.
-- Preview appears on the canvas itself rather than in a separate right-side panel.
-- The template list remains visible below the canvas as an expanded set.
+- 첫 화면에서 연습 캔버스가 가장 먼저 눈에 들어온다.
+- 언어 탭, 캔버스 조작 요소, 템플릿 그리드 주변에 중첩된 대형 카드가 없다.
+- 기존 우측 보조 사이드바가 제거된다.
+- preview가 우측 패널이 아니라 캔버스 자체 위에 나타난다.
+- 템플릿 목록이 캔버스 아래에 펼쳐진 세트로 유지된다.
 
-## Implementation Notes For Planning
+## 구현 계획 작성 시 참고 메모
 
-- Start by splitting layout responsibilities out of `PrototypePracticeSheet`.
-- Preserve current scoring and stroke logic where possible.
-- Reuse current template and language data structures.
-- Minimize data-model changes; this is primarily a layout and interaction refactor.
-- Review current card primitives carefully and avoid applying them by default to every region in the new structure.
+- 우선 `PrototypePracticeSheet`에서 레이아웃 책임을 분리하는 것부터 시작한다.
+- 현재 점수 계산과 stroke 로직은 가능한 한 그대로 유지한다.
+- 기존 템플릿 및 언어 데이터 구조를 재사용한다.
+- 데이터 모델 변경은 최소화하고, 이번 작업은 주로 레이아웃과 상호작용 리팩터링으로 다룬다.
+- 기존 카드 프리미티브를 검토하되, 새 구조의 모든 영역에 습관적으로 적용하지 않도록 주의한다.
