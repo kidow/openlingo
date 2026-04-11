@@ -8,7 +8,6 @@ import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
 import { cn } from "@/lib/utils";
 import { Stroke, StrokePoint } from "@/types/writing";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
 import { PracticeCanvas } from "@/components/practice/practice-canvas";
 import { TemplateGrid } from "@/components/practice/template-grid";
@@ -220,7 +219,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
           role="tabpanel"
           aria-labelledby={`language-pack-tab-${selectedLanguage.id}`}
           data-testid="practice-canvas-stage"
-          className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]"
+          className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px] xl:items-start"
         >
           <PracticeCanvas
             locale={locale}
@@ -245,44 +244,49 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             onEndStroke={endStroke}
           />
 
-          <div className="grid gap-4">
-            <Card className="border-[color:var(--border-soft)] bg-[color:var(--paper)]/88">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{dictionary.sections.sessionNotesTitle}</CardTitle>
-                <CardDescription>{dictionary.sections.sessionNotesDescription}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm leading-6 text-[color:var(--muted-foreground)]">
-                <p>{dictionary.notes.multilingual}</p>
-                <div className="flex items-center justify-between rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
-                  <span>{dictionary.notes.touchInput}</span>
-                  <button
-                    type="button"
-                    onClick={() => setAllowTouch((current) => !current)}
-                    aria-pressed={allowTouch}
+          <aside className="rounded-[28px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/82 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+            <div className="space-y-2">
+              <h2 className="text-lg font-semibold text-[color:var(--foreground)]">
+                {dictionary.sections.sessionNotesTitle}
+              </h2>
+              <p className="text-sm leading-6 text-[color:var(--muted-foreground)]">
+                {dictionary.sections.sessionNotesDescription}
+              </p>
+            </div>
+
+            <div className="mt-5 space-y-4 text-sm leading-6 text-[color:var(--muted-foreground)]">
+              <p>{dictionary.notes.multilingual}</p>
+
+              <div className="flex items-center justify-between gap-3 rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/92 px-4 py-3">
+                <span>{dictionary.notes.touchInput}</span>
+                <button
+                  type="button"
+                  onClick={() => setAllowTouch((current) => !current)}
+                  aria-pressed={allowTouch}
+                  className={cn(
+                    "relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border transition-colors",
+                    allowTouch
+                      ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
+                      : "border-[color:var(--border-soft)] bg-white/70"
+                  )}
+                >
+                  <span
                     className={cn(
-                      "relative inline-flex h-8 w-14 items-center rounded-full border transition-colors",
-                      allowTouch
-                        ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
-                        : "border-[color:var(--border-soft)] bg-white/70"
+                      "inline-block size-6 rounded-full bg-[color:var(--foreground)] transition-transform",
+                      allowTouch ? "translate-x-7" : "translate-x-1"
                     )}
-                  >
-                    <span
-                      className={cn(
-                        "inline-block size-6 rounded-full bg-[color:var(--foreground)] transition-transform",
-                        allowTouch ? "translate-x-7" : "translate-x-1"
-                      )}
-                    />
-                  </button>
+                  />
+                </button>
+              </div>
+
+              <div className="rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/92 px-4 py-3">
+                <div className="text-xs uppercase tracking-[0.18em]">{dictionary.notes.currentStrokeCount}</div>
+                <div className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[color:var(--foreground)]">
+                  {renderedStrokeCount}
                 </div>
-                <div className="rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
-                  <div className="text-xs uppercase tracking-[0.18em]">{dictionary.notes.currentStrokeCount}</div>
-                  <div className="mt-2 font-[family-name:var(--font-display)] text-3xl text-[color:var(--foreground)]">
-                    {renderedStrokeCount}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </div>
+          </aside>
         </section>
       }
       templateGrid={

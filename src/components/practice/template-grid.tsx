@@ -30,7 +30,7 @@ export function TemplateGrid({
     <section
       data-testid="template-grid"
       aria-label={dictionary.sections.practiceCardsTitle}
-      className="rounded-[28px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/72 p-4 md:p-5"
+      className="rounded-[28px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/64 p-4 md:p-5"
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
@@ -45,7 +45,7 @@ export function TemplateGrid({
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
         {selectedLanguage.templates.map((template) => {
           const active = template.id === selectedTemplateId;
 
@@ -55,7 +55,7 @@ export function TemplateGrid({
               type="button"
               onClick={() => onSelectTemplate(template.id)}
               className={cn(
-                "rounded-[22px] border px-4 py-3 text-left transition-colors",
+                "rounded-[22px] border px-3 py-3 text-left transition-colors sm:px-4",
                 active
                   ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                   : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
