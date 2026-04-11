@@ -24,9 +24,17 @@ type StrokePreviewProps = {
   autoplay?: boolean;
   loop?: boolean;
   className?: string;
+  mode?: "card" | "overlay";
 };
 
-export function StrokePreview({ template, dictionary, autoplay = true, loop = false, className }: StrokePreviewProps) {
+export function StrokePreview({
+  template,
+  dictionary,
+  autoplay = true,
+  loop = false,
+  className,
+  mode = "card",
+}: StrokePreviewProps) {
   const sortedStrokes = useMemo(() => {
     return [...(template.strokeGuides ?? [])].sort((a, b) => a.order - b.order);
   }, [template.strokeGuides]);
@@ -177,14 +185,32 @@ export function StrokePreview({ template, dictionary, autoplay = true, loop = fa
 
   const previewTitle = dictionary.sections.strokePreviewTitle;
   const previewDescription = dictionary.sections.strokePreviewDescription;
+  const isOverlay = mode === "overlay";
 
   return (
-    <Card className={cn("border-[color:var(--border-soft)] bg-white/50", className)}>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg">{previewTitle}</CardTitle>
-        <CardDescription>{previewDescription}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Card
+      className={cn(
+        isOverlay
+          ? "border-[color:rgba(134,111,81,0.2)] bg-[color:rgba(252,249,241,0.96)] shadow-[0_18px_40px_rgba(69,48,20,0.14)] backdrop-blur-sm"
+          : "border-[color:var(--border-soft)] bg-white/50",
+        className
+      )}
+    >
+      {isOverlay ? null : (
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">{previewTitle}</CardTitle>
+          <CardDescription>{previewDescription}</CardDescription>
+        </CardHeader>
+      )}
+      <CardContent className={cn("space-y-4", isOverlay ? "p-4" : "")}>
+        {isOverlay ? (
+          <div className="space-y-1">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
+              {previewTitle}
+            </div>
+            <p className="text-sm leading-5 text-[color:var(--muted-foreground)]">{previewDescription}</p>
+          </div>
+        ) : null}
         <div className="relative overflow-hidden rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-4">
           <svg viewBox={template.viewBox.join(" ")} className="aspect-square w-full">
             <rect

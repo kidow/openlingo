@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, RotateCcw, Undo2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCcw, Undo2 } from "lucide-react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
 import { AppLocale, getLocalizedText } from "@/i18n/config";
@@ -8,6 +8,7 @@ import { LanguagePack, Stroke, WritingTemplate } from "@/types/writing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { StrokePreview } from "@/components/practice/stroke-preview";
 import { TemplateGlyphLayer } from "@/components/practice/template-glyph";
 
 function strokesToPath(stroke: Stroke) {
@@ -26,10 +27,12 @@ type PracticeCanvasProps = {
   strokes: Stroke[];
   canGoPrevious: boolean;
   canGoNext: boolean;
+  isPreviewVisible: boolean;
   onPreviousTemplate: () => void;
   onNextTemplate: () => void;
   onUndoStroke: () => void;
   onClearCanvas: () => void;
+  onTogglePreview: () => void;
   onBeginStroke: (event: React.PointerEvent<SVGSVGElement>) => void;
   onMoveStroke: (event: React.PointerEvent<SVGSVGElement>) => void;
   onEndStroke: (event: React.PointerEvent<SVGSVGElement>) => void;
@@ -47,10 +50,12 @@ export function PracticeCanvas({
   strokes,
   canGoPrevious,
   canGoNext,
+  isPreviewVisible,
   onPreviousTemplate,
   onNextTemplate,
   onUndoStroke,
   onClearCanvas,
+  onTogglePreview,
   onBeginStroke,
   onMoveStroke,
   onEndStroke,
@@ -80,6 +85,14 @@ export function PracticeCanvas({
                 {quickScoreLabel}
               </div>
             </div>
+            <Button
+              variant={isPreviewVisible ? "default" : "ghost"}
+              onClick={onTogglePreview}
+              aria-pressed={isPreviewVisible}
+            >
+              {isPreviewVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              {dictionary.sections.strokePreviewTitle}
+            </Button>
             <Button variant="ghost" onClick={onUndoStroke} disabled={strokes.length === 0}>
               <Undo2 className="size-4" />
               {dictionary.buttons.undoStroke}
@@ -148,10 +161,23 @@ export function PracticeCanvas({
           <div className="pointer-events-none absolute inset-x-0 top-[18%] border-t border-dashed border-[color:var(--border-soft)]" />
           <div className="pointer-events-none absolute inset-x-0 top-[50%] border-t border-[color:rgba(153,98,46,0.18)]" />
           <div className="pointer-events-none absolute inset-x-0 top-[82%] border-t border-dashed border-[color:var(--border-soft)]" />
+          {isPreviewVisible ? (
+            <div
+              data-testid="canvas-preview-overlay"
+              className="absolute inset-x-4 top-4 z-10 md:inset-x-6"
+            >
+              <StrokePreview
+                template={selectedTemplate}
+                dictionary={dictionary}
+                autoplay
+                mode="overlay"
+              />
+            </div>
+          ) : null}
           <svg
             viewBox="0 0 100 100"
             data-testid="practice-canvas-surface"
-            className="relative aspect-square w-full touch-none rounded-[24px] bg-transparent"
+            className="relative z-0 aspect-square w-full touch-none rounded-[24px] bg-transparent"
             onPointerDown={onBeginStroke}
             onPointerMove={onMoveStroke}
             onPointerUp={onEndStroke}

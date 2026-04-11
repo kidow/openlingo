@@ -38,7 +38,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [allowTouch, setAllowTouch] = useState(true);
   const [score, setScore] = useState<number | null>(null);
   const [scoreState, setScoreState] = useState<"idle" | "pending" | "ready">("idle");
-  const [previewAutoplay, setPreviewAutoplay] = useState(true);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
 
@@ -64,7 +64,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     if (strokes.length === 0) {
       setScore(null);
       setScoreState("idle");
-      setPreviewAutoplay(true);
       return;
     }
 
@@ -85,7 +84,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     setStrokes([]);
     setScore(null);
     setScoreState("idle");
-    setPreviewAutoplay(true);
+    setIsPreviewVisible(false);
   }
 
   function handleLanguageSelect(languageId: string) {
@@ -118,7 +117,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       return;
     }
 
-    setPreviewAutoplay(false);
+    setIsPreviewVisible(false);
 
     const bounds = event.currentTarget.getBoundingClientRect();
     const point = createStrokePoint(event, bounds);
@@ -237,10 +236,12 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             strokes={strokes}
             canGoPrevious={canGoPrevious}
             canGoNext={canGoNext}
+            isPreviewVisible={isPreviewVisible}
             onPreviousTemplate={handlePreviousTemplate}
             onNextTemplate={handleNextTemplate}
             onUndoStroke={undoStroke}
             onClearCanvas={clearCanvas}
+            onTogglePreview={() => setIsPreviewVisible((current) => !current)}
             onBeginStroke={beginStroke}
             onMoveStroke={moveStroke}
             onEndStroke={endStroke}

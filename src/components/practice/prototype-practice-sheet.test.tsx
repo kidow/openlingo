@@ -170,4 +170,25 @@ describe("PrototypePracticeSheet", () => {
     expect(screen.queryByRole("tabpanel", { name: dictionary.sections.strokePreviewTitle })).not.toBeInTheDocument();
     expect(screen.getByTestId("canvas-preview-overlay")).toBeInTheDocument();
   });
+
+  it("dismisses the canvas preview overlay when drawing begins", async () => {
+    const user = userEvent.setup();
+    const dictionary = getDictionary("ko");
+
+    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+
+    const canvasStage = screen.getByTestId("practice-canvas-stage");
+    const previewControl = within(canvasStage).getByRole("button", {
+      name: dictionary.sections.strokePreviewTitle,
+    });
+
+    await user.click(previewControl);
+    expect(screen.getByTestId("canvas-preview-overlay")).toBeInTheDocument();
+
+    drawStroke(within(canvasStage).getByTestId("practice-canvas-surface"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("canvas-preview-overlay")).not.toBeInTheDocument();
+    });
+  });
 });
