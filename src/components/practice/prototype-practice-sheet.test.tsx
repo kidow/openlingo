@@ -6,22 +6,21 @@ import { languagePacks } from "@/data/practice-content";
 import { getDictionary } from "@/i18n/dictionaries";
 
 describe("PrototypePracticeSheet", () => {
-  it("renders language packs as tabs for the canvas workflow", () => {
+  it("renders language packs as tabs for the canvas workflow", async () => {
     const dictionary = getDictionary("ko");
+    const user = userEvent.setup();
 
     render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
 
-    const languagePackBand = screen.getByTestId("language-pack-tabs-band");
+    const workspace = screen.getByTestId("practice-workspace");
+    const languagePackBand = within(workspace).getByTestId("language-pack-tabs-band");
     const languagePackTabs = within(languagePackBand).getByRole("tablist", {
       name: dictionary.sections.languagePacksTitle,
     });
+    const tabs = within(languagePackTabs).getAllByRole("tab");
 
-    expect(within(languagePackTabs).getAllByRole("tab")).toHaveLength(languagePacks.length);
-    expect(
-      within(languagePackTabs).getByRole("tab", {
-        name: languagePacks[0].nativeLabel,
-      })
-    ).toHaveAttribute("aria-selected", "true");
+    expect(tabs).toHaveLength(languagePacks.length);
+    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     expect(
       screen.queryByRole("button", {
         name: new RegExp(`^${languagePacks[0].nativeLabel}`),
@@ -32,6 +31,10 @@ describe("PrototypePracticeSheet", () => {
         name: new RegExp(`^${languagePacks[1].nativeLabel}`),
       })
     ).not.toBeInTheDocument();
+
+    await user.click(tabs[1]);
+
+    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
   });
 
   it("renders the template library as a full grid below the practice canvas", () => {
@@ -39,8 +42,9 @@ describe("PrototypePracticeSheet", () => {
 
     render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
 
-    const canvasStage = screen.getByTestId("practice-canvas-stage");
-    const templateGrid = screen.getByTestId("template-grid");
+    const workspace = screen.getByTestId("practice-workspace");
+    const canvasStage = within(workspace).getByTestId("practice-canvas-stage");
+    const templateGrid = within(workspace).getByTestId("template-grid");
 
     expect(templateGrid.compareDocumentPosition(canvasStage)).toBe(Node.DOCUMENT_POSITION_PRECEDING);
     expect(templateGrid).not.toHaveClass("overflow-x-auto", "overflow-y-auto");
@@ -49,18 +53,19 @@ describe("PrototypePracticeSheet", () => {
 
   it("keeps stroke preview in a canvas overlay instead of a separate tab-panel workflow", async () => {
     const user = userEvent.setup();
+    const dictionary = getDictionary("ko");
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={getDictionary("ko")} />);
+    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const previewControl = within(canvasStage).getByRole("button", {
-      name: /획 미리보기|stroke preview/i,
+      name: dictionary.sections.strokePreviewTitle,
     });
 
     await user.click(previewControl);
 
-    expect(screen.queryByRole("tab", { name: /획 미리보기|stroke preview/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("tabpanel", { name: /획 미리보기|stroke preview/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: dictionary.sections.strokePreviewTitle })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tabpanel", { name: dictionary.sections.strokePreviewTitle })).not.toBeInTheDocument();
     expect(screen.getByTestId("canvas-preview-overlay")).toBeInTheDocument();
   });
 });
