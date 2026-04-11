@@ -1,5 +1,6 @@
 import type { Viewport } from "next";
 import { headers } from "next/headers";
+import Script from "next/script";
 
 import { LOCALE_HEADER, resolveLocale } from "@/i18n/config";
 import "./globals.css";
@@ -23,6 +24,15 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir="ltr">
+      <head>
+        {process.env.NODE_ENV === "development" && (
+          <Script
+            src="//unpkg.com/react-grab/dist/index.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
+      </head>
       <body>{children}</body>
     </html>
   );
