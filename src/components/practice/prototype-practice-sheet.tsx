@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useEffect, useRef, useState } from "react";
-import { BookOpenText, RotateCcw, Undo2 } from "lucide-react";
+import { BookOpenText } from "lucide-react";
 
 import { languagePacks } from "@/data/practice-content";
 import { AppDictionary } from "@/i18n/dictionaries";
@@ -10,11 +10,11 @@ import { calculatePrototypeSimilarity } from "@/lib/similarity";
 import { cn } from "@/lib/utils";
 import { Stroke, StrokePoint } from "@/types/writing";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
+import { PracticeCanvas } from "@/components/practice/practice-canvas";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
-import { TemplateGlyphLayer, TemplateGlyphMark } from "@/components/practice/template-glyph";
+import { TemplateGlyphMark } from "@/components/practice/template-glyph";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
   return {
@@ -22,26 +22,6 @@ function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElemen
     y: ((event.clientY - bounds.top) / bounds.height) * 100,
     t: Date.now(),
   };
-}
-
-function strokesToPath(stroke: Stroke) {
-  return stroke.points.map((point) => `${point.x},${point.y}`).join(" ");
-}
-
-function getScoreTone(dictionary: AppDictionary, score: number | null) {
-  if (score === null) {
-    return dictionary.score.tones.ready;
-  }
-
-  if (score >= 85) {
-    return dictionary.score.tones.strong;
-  }
-
-  if (score >= 65) {
-    return dictionary.score.tones.good;
-  }
-
-  return dictionary.score.tones.practice;
 }
 
 const DEFAULT_TEMPLATE = languagePacks[0].templates[0];
@@ -69,18 +49,16 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   useEffect(() => {
     if (!selectedLanguage.templates.some((template) => template.id === selectedTemplateId)) {
       setSelectedTemplateId(selectedLanguage.templates[0].id);
-      setStrokes([]);
-      setScore(null);
-      setScoreState("idle");
-      setPreviewAutoplay(true);
+      resetPracticeState();
     }
   }, [selectedLanguage, selectedTemplateId]);
 
-  const scoreTone = getScoreTone(dictionary, score);
   const renderedStrokeCount = strokes.length;
   const currentPackLabel = getLocalizedText(selectedLanguage.label, locale);
   const currentPackShowsSecondaryLabel = selectedLanguage.nativeLabel !== currentPackLabel;
-  const quickScoreLabel = score === null ? "--" : `${score}%`;
+  const selectedTemplateIndex = selectedLanguage.templates.findIndex((template) => template.id === selectedTemplate.id);
+  const canGoPrevious = selectedTemplateIndex > 0;
+  const canGoNext = selectedTemplateIndex < selectedLanguage.templates.length - 1;
 
   useEffect(() => {
     if (strokes.length === 0) {
@@ -101,23 +79,29 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     return () => window.clearTimeout(timeoutId);
   }, [selectedTemplate, strokes]);
 
+  function resetPracticeState() {
+    activeStrokeIdRef.current = null;
+    activePointerIdRef.current = null;
+    setStrokes([]);
+    setScore(null);
+    setScoreState("idle");
+    setPreviewAutoplay(true);
+  }
+
   function handleLanguageSelect(languageId: string) {
+    const nextLanguage = languagePacks.find((pack) => pack.id === languageId) ?? languagePacks[0];
+
     startTransition(() => {
-      setSelectedLanguageId(languageId);
-      setStrokes([]);
-      setScore(null);
-      setScoreState("idle");
-      setPreviewAutoplay(true);
+      setSelectedLanguageId(nextLanguage.id);
+      setSelectedTemplateId(nextLanguage.templates[0].id);
+      resetPracticeState();
     });
   }
 
   function handleTemplateSelect(templateId: string) {
     startTransition(() => {
       setSelectedTemplateId(templateId);
-      setStrokes([]);
-      setScore(null);
-      setScoreState("idle");
-      setPreviewAutoplay(true);
+      resetPracticeState();
     });
   }
 
@@ -182,11 +166,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   }
 
   function clearCanvas() {
-    activeStrokeIdRef.current = null;
-    activePointerIdRef.current = null;
-    setStrokes([]);
-    setScore(null);
-    setScoreState("idle");
+    resetPracticeState();
   }
 
   function undoStroke() {
@@ -201,6 +181,22 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       : scoreState === "ready"
         ? dictionary.score.status.ready
         : dictionary.score.status.waiting;
+
+  function handlePreviousTemplate() {
+    if (!canGoPrevious) {
+      return;
+    }
+
+    handleTemplateSelect(selectedLanguage.templates[selectedTemplateIndex - 1].id);
+  }
+
+  function handleNextTemplate() {
+    if (!canGoNext) {
+      return;
+    }
+
+    handleTemplateSelect(selectedLanguage.templates[selectedTemplateIndex + 1].id);
+  }
 
   return (
     <PracticeWorkspace
@@ -229,143 +225,28 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
           data-testid="practice-canvas-stage"
           className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px]"
         >
-          <Card className="overflow-hidden border-[color:var(--border-strong)] bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.99))]">
-            <CardHeader className="gap-4 border-b border-[color:var(--border-soft)]">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div className="space-y-3">
-                  <Badge className="w-fit">{dictionary.hero.badge}</Badge>
-                  <div className="space-y-2">
-                    <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
-                    <CardDescription className="max-w-3xl">
-                      {getLocalizedText(selectedTemplate.description, locale)} {dictionary.sections.worksheetScoringNote}
-                    </CardDescription>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="rounded-[22px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
-                    <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
-                      {dictionary.sections.scoreTitle}
-                    </div>
-                    <div className="mt-1 font-[family-name:var(--font-display)] text-3xl leading-none text-[color:var(--foreground)]">
-                      {quickScoreLabel}
-                    </div>
-                  </div>
-                  <Button variant="ghost" onClick={undoStroke} disabled={strokes.length === 0}>
-                    <Undo2 className="size-4" />
-                    {dictionary.buttons.undoStroke}
-                  </Button>
-                  <Button variant="ghost" onClick={clearCanvas} disabled={strokes.length === 0}>
-                    <RotateCcw className="size-4" />
-                    {dictionary.buttons.clearPage}
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-6 pt-6">
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div>
-                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                    {dictionary.sections.languagePacksTitle}
-                  </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <span className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
-                      {selectedLanguage.nativeLabel}
-                    </span>
-                    {currentPackShowsSecondaryLabel ? (
-                      <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                        {currentPackLabel}
-                      </span>
-                    ) : null}
-                    <Badge>{dictionary.stages[selectedLanguage.stage]}</Badge>
-                  </div>
-                  <p className="mt-3 max-w-2xl text-sm leading-6 text-[color:var(--muted-foreground)]">
-                    {getLocalizedText(selectedLanguage.summary, locale)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative overflow-hidden rounded-[32px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] md:p-6">
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,transparent_31px,rgba(134,111,81,0.12)_32px),linear-gradient(90deg,transparent_31px,rgba(134,111,81,0.12)_32px)] bg-[size:32px_32px] opacity-70" />
-                <div className="pointer-events-none absolute inset-x-0 top-[18%] border-t border-dashed border-[color:var(--border-soft)]" />
-                <div className="pointer-events-none absolute inset-x-0 top-[50%] border-t border-[color:rgba(153,98,46,0.18)]" />
-                <div className="pointer-events-none absolute inset-x-0 top-[82%] border-t border-dashed border-[color:var(--border-soft)]" />
-                <svg
-                  viewBox="0 0 100 100"
-                  className="relative aspect-square w-full touch-none rounded-[24px] bg-transparent"
-                  onPointerDown={beginStroke}
-                  onPointerMove={moveStroke}
-                  onPointerUp={endStroke}
-                  onPointerCancel={endStroke}
-                  onLostPointerCapture={endStroke}
-                >
-                  <rect
-                    x="6"
-                    y="6"
-                    width="88"
-                    height="88"
-                    rx="18"
-                    pointerEvents="none"
-                    className="fill-[color:rgba(255,255,255,0.15)] stroke-[color:var(--border-soft)]"
-                  />
-                  {selectedTemplate.glyph ? (
-                    <TemplateGlyphLayer
-                      template={selectedTemplate}
-                      fill="rgba(146,122,90,0.4)"
-                      testId={`practice-guide-glyph-${selectedTemplate.id}`}
-                    />
-                  ) : (
-                    <path
-                      d={selectedTemplate.guidePathD}
-                      pointerEvents="none"
-                      className="fill-none stroke-[color:rgba(146,122,90,0.45)]"
-                      strokeWidth="5.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  )}
-                  {strokes.map((stroke) => (
-                    <polyline
-                      key={stroke.id}
-                      points={strokesToPath(stroke)}
-                      pointerEvents="none"
-                      fill="none"
-                      stroke="var(--ink)"
-                      strokeWidth="4.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  ))}
-                </svg>
-
-                <div className="mt-4 flex items-center justify-between gap-3 text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                  <span>{getLocalizedText(selectedTemplate.gridLabel, locale)}</span>
-                  <span>{scoreStatusLabel}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <PracticeCanvas
+            locale={locale}
+            dictionary={dictionary}
+            selectedLanguage={selectedLanguage}
+            selectedTemplate={selectedTemplate}
+            currentPackLabel={currentPackLabel}
+            currentPackShowsSecondaryLabel={currentPackShowsSecondaryLabel}
+            score={score}
+            scoreStatusLabel={scoreStatusLabel}
+            strokes={strokes}
+            canGoPrevious={canGoPrevious}
+            canGoNext={canGoNext}
+            onPreviousTemplate={handlePreviousTemplate}
+            onNextTemplate={handleNextTemplate}
+            onUndoStroke={undoStroke}
+            onClearCanvas={clearCanvas}
+            onBeginStroke={beginStroke}
+            onMoveStroke={moveStroke}
+            onEndStroke={endStroke}
+          />
 
           <div className="grid gap-4">
-            <Card className="border-[color:var(--border-soft)] bg-[color:var(--paper)]/88">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{dictionary.sections.scoreTitle}</CardTitle>
-                <CardDescription>{dictionary.sections.scoreDescription}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="font-[family-name:var(--font-display)] text-6xl leading-none text-[color:var(--foreground)]">
-                  {score === null ? "--" : score}
-                  {score === null ? "" : "%"}
-                </div>
-                <div className="rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
-                  <div className="text-sm font-semibold text-[color:var(--foreground)]">{scoreTone.label}</div>
-                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted-foreground)]">{scoreTone.description}</p>
-                </div>
-                <div className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">{scoreStatusLabel}</div>
-              </CardContent>
-            </Card>
-
             <Card className="border-[color:var(--border-soft)] bg-[color:var(--paper)]/88">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">{dictionary.sections.sessionNotesTitle}</CardTitle>
