@@ -38,36 +38,26 @@ describe("PrototypePracticeSheet", () => {
 
     render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
 
+    const canvasStage = screen.getByTestId("practice-canvas-stage");
     const templateGrid = screen.getByTestId("template-grid");
 
+    expect(templateGrid.compareDocumentPosition(canvasStage)).toBe(Node.DOCUMENT_POSITION_PRECEDING);
     expect(within(templateGrid).getAllByRole("button")).toHaveLength(languagePacks[0].templates.length);
   });
 
   it("keeps stroke preview in a canvas overlay instead of a separate tab-panel workflow", async () => {
-    const dictionary = getDictionary("ko");
     const user = userEvent.setup();
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+    render(<PrototypePracticeSheet locale="ko" dictionary={getDictionary("ko")} />);
 
-    const practiceTools = screen.getByRole("tablist", {
-      name: dictionary.sections.practiceToolsTitle,
-    });
-    const previewControl = within(practiceTools).getByRole("tab", {
-      name: dictionary.sections.strokePreviewTitle,
+    const previewControl = screen.getByRole("button", {
+      name: /획 미리보기|stroke preview/i,
     });
 
     await user.click(previewControl);
 
-    expect(
-      within(practiceTools).queryByRole("tab", {
-        name: dictionary.sections.strokePreviewTitle,
-      })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("tabpanel", {
-        name: dictionary.sections.strokePreviewTitle,
-      })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: /획 미리보기|stroke preview/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("tabpanel", { name: /획 미리보기|stroke preview/i })).not.toBeInTheDocument();
     expect(screen.getByTestId("canvas-preview-overlay")).toBeInTheDocument();
   });
 });
