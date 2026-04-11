@@ -1,7 +1,6 @@
 "use client";
 
 import { startTransition, useEffect, useRef, useState } from "react";
-import { BookOpenText } from "lucide-react";
 
 import { languagePacks } from "@/data/practice-content";
 import { AppDictionary } from "@/i18n/dictionaries";
@@ -9,12 +8,11 @@ import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
 import { cn } from "@/lib/utils";
 import { Stroke, StrokePoint } from "@/types/writing";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
 import { PracticeCanvas } from "@/components/practice/practice-canvas";
+import { TemplateGrid } from "@/components/practice/template-grid";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
-import { TemplateGlyphMark } from "@/components/practice/template-glyph";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
   return {
@@ -288,56 +286,14 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
         </section>
       }
       templateGrid={
-        <section
-          data-testid="template-grid"
-          aria-label={dictionary.sections.practiceCardsTitle}
-          className="rounded-[28px] border border-[color:var(--border-soft)] bg-[color:var(--paper)]/72 p-4 md:p-5"
-        >
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-sm font-medium text-[color:var(--foreground)]">
-                <BookOpenText className="size-4" />
-                {dictionary.sections.practiceCardsTitle}
-              </div>
-              <p className="mt-2 text-sm leading-6 text-[color:var(--muted-foreground)]">
-                {getLocalizedText(selectedTemplate.cue, locale)}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge>{selectedLanguage.templates.length}</Badge>
-            </div>
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-            {selectedLanguage.templates.map((template) => {
-              const active = template.id === selectedTemplate.id;
-
-              return (
-                <button
-                  key={`worksheet-${template.id}`}
-                  type="button"
-                  onClick={() => handleTemplateSelect(template.id)}
-                  className={cn(
-                    "rounded-[22px] border px-4 py-3 text-left transition-colors",
-                    active
-                      ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
-                      : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
-                  )}
-                >
-                  <TemplateGlyphMark
-                    template={template}
-                    label={`${getLocalizedText(template.label, locale)} glyph`}
-                    testId={`worksheet-template-card-glyph-${template.id}`}
-                    className="h-10 w-10"
-                  />
-                  <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                    {getLocalizedText(template.label, locale)}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+        <TemplateGrid
+          locale={locale}
+          dictionary={dictionary}
+          selectedLanguage={selectedLanguage}
+          selectedTemplateId={selectedTemplate.id}
+          selectedTemplateCue={getLocalizedText(selectedTemplate.cue, locale)}
+          onSelectTemplate={handleTemplateSelect}
+        />
       }
     />
   );
