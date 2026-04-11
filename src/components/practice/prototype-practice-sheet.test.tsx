@@ -5,6 +5,10 @@ import { PrototypePracticeSheet } from "@/components/practice/prototype-practice
 import { languagePacks } from "@/data/practice-content";
 import { getDictionary } from "@/i18n/dictionaries";
 
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 describe("PrototypePracticeSheet", () => {
   it("renders language packs as tabs for the canvas workflow", async () => {
     const dictionary = getDictionary("ko");
@@ -22,19 +26,20 @@ describe("PrototypePracticeSheet", () => {
     expect(tabs).toHaveLength(languagePacks.length);
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     expect(
-      screen.queryByRole("button", {
-        name: new RegExp(`^${languagePacks[0].nativeLabel}`),
+      within(languagePackBand).queryByRole("button", {
+        name: new RegExp(`^${escapeRegExp(languagePacks[0].nativeLabel)}`),
       })
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", {
-        name: new RegExp(`^${languagePacks[1].nativeLabel}`),
+      within(languagePackBand).queryByRole("button", {
+        name: new RegExp(`^${escapeRegExp(languagePacks[1].nativeLabel)}`),
       })
     ).not.toBeInTheDocument();
 
     await user.click(tabs[1]);
 
     expect(tabs[1]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[0]).toHaveAttribute("aria-selected", "false");
   });
 
   it("renders the template library as a full grid below the practice canvas", () => {
