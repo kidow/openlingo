@@ -295,7 +295,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
           dictionary={dictionary}
           selectedLanguage={selectedLanguage}
           selectedTemplateId={selectedTemplate.id}
-          selectedTemplateCue={getLocalizedText(selectedTemplate.cue, locale)}
           onSelectTemplate={handleTemplateSelect}
         />
       }

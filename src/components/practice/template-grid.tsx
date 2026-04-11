@@ -14,7 +14,6 @@ type TemplateGridProps = {
   dictionary: AppDictionary;
   selectedLanguage: (typeof languagePacks)[number];
   selectedTemplateId: string;
-  selectedTemplateCue: string;
   onSelectTemplate: (templateId: string) => void;
 };
 
@@ -23,7 +22,6 @@ export function TemplateGrid({
   dictionary,
   selectedLanguage,
   selectedTemplateId,
-  selectedTemplateCue,
   onSelectTemplate,
 }: TemplateGridProps) {
   return (
@@ -38,7 +36,6 @@ export function TemplateGrid({
             <BookOpenText className="size-4" />
             {dictionary.sections.practiceCardsTitle}
           </div>
-          <p className="mt-2 text-sm leading-6 text-[color:var(--muted-foreground)]">{selectedTemplateCue}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge className="rounded-none">{selectedLanguage.templates.length}</Badge>

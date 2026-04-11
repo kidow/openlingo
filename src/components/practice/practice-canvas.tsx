@@ -7,7 +7,7 @@ import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { LanguagePack, Stroke, WritingTemplate } from "@/types/writing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StrokePreview } from "@/components/practice/stroke-preview";
 import { TemplateGlyphLayer } from "@/components/practice/template-glyph";
 
@@ -68,12 +68,7 @@ export function PracticeCanvas({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-3">
             <Badge className="w-fit rounded-none">{dictionary.hero.badge}</Badge>
-            <div className="space-y-2">
-              <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
-              <CardDescription className="max-w-3xl">
-                {getLocalizedText(selectedTemplate.description, locale)} {dictionary.sections.worksheetScoringNote}
-              </CardDescription>
-            </div>
+            <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -122,9 +117,6 @@ export function PracticeCanvas({
               ) : null}
               <Badge className="rounded-none">{dictionary.stages[selectedLanguage.stage]}</Badge>
             </div>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-[color:var(--muted-foreground)]">
-              {getLocalizedText(selectedLanguage.summary, locale)}
-            </p>
           </div>
 
           <div className="flex items-center gap-2 self-start border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-1">
