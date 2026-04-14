@@ -145,13 +145,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     resetPracticeState();
   }
 
-  function undoStroke() {
-    activeStrokeIdRef.current = null;
-    activePointerIdRef.current = null;
-    setScore(null);
-    setStrokes((current) => current.slice(0, -1));
-  }
-
   const scoreState: "idle" | "pending" | "ready" = strokes.length === 0 ? "idle" : score === null ? "pending" : "ready";
   const scoreStatusLabel =
     scoreState === "pending"
@@ -190,7 +183,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
               id: pack.id,
               nativeLabel: pack.nativeLabel,
               secondaryLabel: pack.nativeLabel === packLabel ? undefined : packLabel,
-              badgeLabel: dictionary.stages[pack.stage],
             };
           })}
         />
@@ -218,7 +210,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             isPreviewVisible={isPreviewVisible}
             onPreviousTemplate={handlePreviousTemplate}
             onNextTemplate={handleNextTemplate}
-            onUndoStroke={undoStroke}
             onClearCanvas={clearCanvas}
             onTogglePreview={() => setIsPreviewVisible((current) => !current)}
             onBeginStroke={beginStroke}

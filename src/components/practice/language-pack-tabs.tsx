@@ -6,7 +6,6 @@ type LanguagePackTabItem = {
   id: string;
   nativeLabel: string;
   secondaryLabel?: string;
-  badgeLabel?: string;
 };
 
 type LanguagePackTabsProps = {
@@ -50,11 +49,6 @@ export function LanguagePackTabs({ ariaLabel, items, selectedId, onSelect }: Lan
               <span className="block font-[family-name:var(--font-display)] text-lg leading-none">{item.nativeLabel}</span>
               {item.secondaryLabel ? (
                 <span className="mt-1 block text-[11px] uppercase tracking-[0.18em]">{item.secondaryLabel}</span>
-              ) : null}
-              {item.badgeLabel ? (
-                <span className="mt-2 inline-flex border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
-                  {item.badgeLabel}
-                </span>
               ) : null}
             </button>
           );

@@ -1,11 +1,10 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCcw, Undo2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCcw } from "lucide-react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
 import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { LanguagePack, Stroke, WritingTemplate } from "@/types/writing";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StrokePreview } from "@/components/practice/stroke-preview";
@@ -30,7 +29,6 @@ type PracticeCanvasProps = {
   isPreviewVisible: boolean;
   onPreviousTemplate: () => void;
   onNextTemplate: () => void;
-  onUndoStroke: () => void;
   onClearCanvas: () => void;
   onTogglePreview: () => void;
   onBeginStroke: (event: React.PointerEvent<SVGSVGElement>) => void;
@@ -53,7 +51,6 @@ export function PracticeCanvas({
   isPreviewVisible,
   onPreviousTemplate,
   onNextTemplate,
-  onUndoStroke,
   onClearCanvas,
   onTogglePreview,
   onBeginStroke,
@@ -66,10 +63,7 @@ export function PracticeCanvas({
     <Card className="overflow-hidden rounded-none border-x-0 border-t-0 border-b-[color:var(--border-strong)] shadow-none bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.99))]">
       <CardHeader className="gap-4 border-b border-[color:var(--border-soft)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="space-y-3">
-            <Badge className="w-fit rounded-none">{dictionary.hero.badge}</Badge>
-            <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
-          </div>
+          <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
 
           <div className="flex flex-wrap items-center gap-3">
             <div className="border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
@@ -87,10 +81,6 @@ export function PracticeCanvas({
             >
               {isPreviewVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               {dictionary.sections.strokePreviewTitle}
-            </Button>
-            <Button variant="ghost" onClick={onUndoStroke} disabled={strokes.length === 0}>
-              <Undo2 className="size-4" />
-              {dictionary.buttons.undoStroke}
             </Button>
             <Button variant="ghost" onClick={onClearCanvas} disabled={strokes.length === 0}>
               <RotateCcw className="size-4" />
@@ -115,7 +105,6 @@ export function PracticeCanvas({
                   {currentPackLabel}
                 </span>
               ) : null}
-              <Badge className="rounded-none">{dictionary.stages[selectedLanguage.stage]}</Badge>
             </div>
           </div>
 
