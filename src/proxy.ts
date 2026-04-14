@@ -33,7 +33,7 @@ function getLocaleFromPathname(pathname: string) {
   return isAppLocale(candidate) ? candidate : null;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const pathnameLocale = getLocaleFromPathname(pathname);
   const detectedLocale = pathnameLocale ?? detectLocale(request);
@@ -58,4 +58,3 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|manifest.webmanifest).*)"],
 };
-

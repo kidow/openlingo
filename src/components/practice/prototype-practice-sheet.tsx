@@ -32,7 +32,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [selectedTemplateId, setSelectedTemplateId] = useState(DEFAULT_TEMPLATE.id);
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [score, setScore] = useState<number | null>(null);
-  const [scoreState, setScoreState] = useState<"idle" | "pending" | "ready">("idle");
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
@@ -41,12 +40,13 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
 
-  useEffect(() => {
-    if (!selectedLanguage.templates.some((template) => template.id === selectedTemplateId)) {
-      setSelectedTemplateId(selectedLanguage.templates[0].id);
-      resetPracticeState();
-    }
-  }, [selectedLanguage, selectedTemplateId]);
+  function resetPracticeState() {
+    activeStrokeIdRef.current = null;
+    activePointerIdRef.current = null;
+    setStrokes([]);
+    setScore(null);
+    setIsPreviewVisible(false);
+  }
 
   const currentPackLabel = getLocalizedText(selectedLanguage.label, locale);
   const currentPackShowsSecondaryLabel = selectedLanguage.nativeLabel !== currentPackLabel;
@@ -56,30 +56,16 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
 
   useEffect(() => {
     if (strokes.length === 0) {
-      setScore(null);
-      setScoreState("idle");
       return;
     }
-
-    setScoreState("pending");
 
     const timeoutId = window.setTimeout(() => {
       const nextScore = calculatePrototypeSimilarity(selectedTemplate, strokes);
       setScore(nextScore);
-      setScoreState("ready");
     }, 480);
 
     return () => window.clearTimeout(timeoutId);
   }, [selectedTemplate, strokes]);
-
-  function resetPracticeState() {
-    activeStrokeIdRef.current = null;
-    activePointerIdRef.current = null;
-    setStrokes([]);
-    setScore(null);
-    setScoreState("idle");
-    setIsPreviewVisible(false);
-  }
 
   function handleLanguageSelect(languageId: string) {
     const nextLanguage = languagePacks.find((pack) => pack.id === languageId) ?? languagePacks[0];
@@ -115,6 +101,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
 
     activeStrokeIdRef.current = strokeId;
     activePointerIdRef.current = event.pointerId;
+    setScore(null);
     event.currentTarget.setPointerCapture(event.pointerId);
     setStrokes((current) => [...current, { id: strokeId, points: [point] }]);
   }
@@ -161,9 +148,11 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   function undoStroke() {
     activeStrokeIdRef.current = null;
     activePointerIdRef.current = null;
+    setScore(null);
     setStrokes((current) => current.slice(0, -1));
   }
 
+  const scoreState: "idle" | "pending" | "ready" = strokes.length === 0 ? "idle" : score === null ? "pending" : "ready";
   const scoreStatusLabel =
     scoreState === "pending"
       ? dictionary.score.status.pending
