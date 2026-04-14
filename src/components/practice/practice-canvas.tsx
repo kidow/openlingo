@@ -3,10 +3,9 @@
 import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCcw } from "lucide-react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
-import { AppLocale, getLocalizedText } from "@/i18n/config";
-import { LanguagePack, Stroke, WritingTemplate } from "@/types/writing";
+import { Stroke, WritingTemplate } from "@/types/writing";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { StrokePreview } from "@/components/practice/stroke-preview";
 import { TemplateGlyphLayer } from "@/components/practice/template-glyph";
 
@@ -15,14 +14,9 @@ function strokesToPath(stroke: Stroke) {
 }
 
 type PracticeCanvasProps = {
-  locale: AppLocale;
   dictionary: AppDictionary;
-  selectedLanguage: LanguagePack;
   selectedTemplate: WritingTemplate;
-  currentPackLabel: string;
-  currentPackShowsSecondaryLabel: boolean;
   score: number | null;
-  scoreStatusLabel: string;
   strokes: Stroke[];
   canGoPrevious: boolean;
   canGoNext: boolean;
@@ -37,14 +31,9 @@ type PracticeCanvasProps = {
 };
 
 export function PracticeCanvas({
-  locale,
   dictionary,
-  selectedLanguage,
   selectedTemplate,
-  currentPackLabel,
-  currentPackShowsSecondaryLabel,
   score,
-  scoreStatusLabel,
   strokes,
   canGoPrevious,
   canGoNext,
@@ -57,91 +46,29 @@ export function PracticeCanvas({
   onMoveStroke,
   onEndStroke,
 }: PracticeCanvasProps) {
-  const quickScoreLabel = score === null ? "--" : `${score}%`;
-
   return (
     <Card className="overflow-hidden rounded-none border-x-0 border-t-0 border-b-[color:var(--border-strong)] shadow-none bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.99))]">
-      <CardHeader className="gap-4 border-b border-[color:var(--border-soft)]">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <CardTitle className="text-4xl leading-none md:text-5xl">{selectedTemplate.nativeLabel}</CardTitle>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
-                {dictionary.sections.scoreTitle}
-              </div>
-              <div className="mt-1 font-[family-name:var(--font-display)] text-3xl leading-none text-[color:var(--foreground)]">
-                {quickScoreLabel}
-              </div>
-            </div>
-            <Button
-              variant={isPreviewVisible ? "default" : "ghost"}
-              onClick={onTogglePreview}
-              aria-pressed={isPreviewVisible}
-            >
-              {isPreviewVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-              {dictionary.sections.strokePreviewTitle}
-            </Button>
-            <Button variant="ghost" onClick={onClearCanvas} disabled={strokes.length === 0}>
-              <RotateCcw className="size-4" />
-              {dictionary.buttons.clearPage}
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-6 pt-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-              {dictionary.sections.languagePacksTitle}
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
-                {selectedLanguage.nativeLabel}
-              </span>
-              {currentPackShowsSecondaryLabel ? (
-                <span className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                  {currentPackLabel}
-                </span>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 self-start border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              data-testid="practice-template-previous"
-              aria-label="Previous template"
-              onClick={onPreviousTemplate}
-              disabled={!canGoPrevious}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <div className="min-w-[5.5rem] px-2 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
-              {selectedTemplate.nativeLabel}
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              data-testid="practice-template-next"
-              aria-label="Next template"
-              onClick={onNextTemplate}
-              disabled={!canGoNext}
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </div>
-        </div>
-
-        <div className="relative overflow-hidden border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] md:p-6">
+      <CardContent className="p-0">
+        <div className="relative overflow-hidden bg-[color:var(--paper)] p-4 pb-24 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] md:p-6 md:pb-28">
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,transparent_31px,rgba(134,111,81,0.12)_32px),linear-gradient(90deg,transparent_31px,rgba(134,111,81,0.12)_32px)] bg-[size:32px_32px] opacity-70" />
           <div className="pointer-events-none absolute inset-x-0 top-[18%] border-t border-dashed border-[color:var(--border-soft)]" />
           <div className="pointer-events-none absolute inset-x-0 top-[50%] border-t border-[color:rgba(153,98,46,0.18)]" />
           <div className="pointer-events-none absolute inset-x-0 top-[82%] border-t border-dashed border-[color:var(--border-soft)]" />
+          {score !== null ? (
+            <div className="absolute inset-x-0 top-4 z-20 flex justify-center md:top-6">
+              <div
+                data-testid="practice-canvas-score"
+                className="border border-[color:var(--border-strong)] bg-[color:rgba(252,249,241,0.96)] px-4 py-3 text-center shadow-[0_14px_30px_rgba(88,63,30,0.14)] backdrop-blur-sm"
+              >
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
+                  {dictionary.sections.scoreTitle}
+                </div>
+                <div className="mt-1 font-[family-name:var(--font-display)] text-3xl leading-none text-[color:var(--foreground)]">
+                  {score}%
+                </div>
+              </div>
+            </div>
+          ) : null}
           {isPreviewVisible ? (
             <div
               data-testid="canvas-preview-overlay"
@@ -204,9 +131,58 @@ export function PracticeCanvas({
             ))}
           </svg>
 
-          <div className="mt-4 flex items-center justify-between gap-3 text-xs uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-            <span>{getLocalizedText(selectedTemplate.gridLabel, locale)}</span>
-            <span>{scoreStatusLabel}</span>
+          <div className="absolute inset-x-0 bottom-4 z-20 flex justify-center md:bottom-6">
+            <div
+              data-testid="practice-canvas-floating-controls"
+              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--border-strong)] bg-[color:rgba(252,249,241,0.96)] p-2 shadow-[0_14px_30px_rgba(88,63,30,0.14)] backdrop-blur-sm"
+            >
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                data-testid="practice-template-previous"
+                aria-label="Previous template"
+                onClick={onPreviousTemplate}
+                disabled={!canGoPrevious}
+                className="rounded-full"
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+              <Button
+                type="button"
+                size="icon"
+                variant={isPreviewVisible ? "default" : "ghost"}
+                onClick={onTogglePreview}
+                aria-label={dictionary.sections.strokePreviewTitle}
+                aria-pressed={isPreviewVisible}
+                className="rounded-full"
+              >
+                {isPreviewVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </Button>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                onClick={onClearCanvas}
+                disabled={strokes.length === 0}
+                aria-label={dictionary.buttons.clearPage}
+                className="rounded-full"
+              >
+                <RotateCcw className="size-4" />
+              </Button>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                data-testid="practice-template-next"
+                aria-label="Next template"
+                onClick={onNextTemplate}
+                disabled={!canGoNext}
+                className="rounded-full"
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>

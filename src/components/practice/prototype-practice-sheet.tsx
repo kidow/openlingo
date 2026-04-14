@@ -48,8 +48,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     setIsPreviewVisible(false);
   }
 
-  const currentPackLabel = getLocalizedText(selectedLanguage.label, locale);
-  const currentPackShowsSecondaryLabel = selectedLanguage.nativeLabel !== currentPackLabel;
   const selectedTemplateIndex = selectedLanguage.templates.findIndex((template) => template.id === selectedTemplate.id);
   const canGoPrevious = selectedTemplateIndex > 0;
   const canGoNext = selectedTemplateIndex < selectedLanguage.templates.length - 1;
@@ -145,14 +143,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     resetPracticeState();
   }
 
-  const scoreState: "idle" | "pending" | "ready" = strokes.length === 0 ? "idle" : score === null ? "pending" : "ready";
-  const scoreStatusLabel =
-    scoreState === "pending"
-      ? dictionary.score.status.pending
-      : scoreState === "ready"
-        ? dictionary.score.status.ready
-        : dictionary.score.status.waiting;
-
   function handlePreviousTemplate() {
     if (!canGoPrevious) {
       return;
@@ -196,14 +186,9 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
           className="grid gap-5"
         >
           <PracticeCanvas
-            locale={locale}
             dictionary={dictionary}
-            selectedLanguage={selectedLanguage}
             selectedTemplate={selectedTemplate}
-            currentPackLabel={currentPackLabel}
-            currentPackShowsSecondaryLabel={currentPackShowsSecondaryLabel}
             score={score}
-            scoreStatusLabel={scoreStatusLabel}
             strokes={strokes}
             canGoPrevious={canGoPrevious}
             canGoNext={canGoNext}

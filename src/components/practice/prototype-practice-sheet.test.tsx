@@ -111,20 +111,19 @@ describe("PrototypePracticeSheet", () => {
     const previousButton = within(canvasStage).getByTestId("practice-template-previous");
     const nextButton = within(canvasStage).getByTestId("practice-template-next");
 
-    expect(
-      within(canvasStage).getByRole("heading", { name: languagePacks[0].templates[0].nativeLabel })
-    ).toBeInTheDocument();
-    expect(within(canvasStage).getByText(dictionary.sections.scoreTitle)).toBeInTheDocument();
-    expect(within(canvasStage).getByText(dictionary.score.status.waiting)).toBeInTheDocument();
+    expect(within(canvasStage).queryByTestId("practice-canvas-score")).not.toBeInTheDocument();
+    expect(within(canvasStage).queryByText(dictionary.score.status.waiting)).not.toBeInTheDocument();
+    const floatingControls = within(canvasStage).getByTestId("practice-canvas-floating-controls");
+    expect(floatingControls).toBeInTheDocument();
+    expect(within(floatingControls).getByTestId("practice-template-previous")).toBeInTheDocument();
+    expect(within(floatingControls).getByTestId("practice-template-next")).toBeInTheDocument();
     expect(within(canvasStage).getByRole("button", { name: dictionary.buttons.clearPage })).toBeDisabled();
+    expect(within(canvasStage).getByRole("button", { name: dictionary.sections.strokePreviewTitle })).toBeInTheDocument();
     expect(previousButton).toBeDisabled();
     expect(nextButton).toBeEnabled();
 
     await user.click(nextButton);
 
-    expect(
-      within(canvasStage).getByRole("heading", { name: languagePacks[0].templates[1].nativeLabel })
-    ).toBeInTheDocument();
     expect(previousButton).toBeEnabled();
   });
 
@@ -140,7 +139,7 @@ describe("PrototypePracticeSheet", () => {
     drawStroke(surface);
 
     await waitFor(() => {
-      expect(within(canvasStage).getByText(dictionary.score.status.pending)).toBeInTheDocument();
+      expect(within(canvasStage).getByRole("button", { name: dictionary.buttons.clearPage })).toBeEnabled();
     });
 
     expect(within(canvasStage).queryByRole("button", { name: dictionary.buttons.undoStroke })).not.toBeInTheDocument();
@@ -148,7 +147,7 @@ describe("PrototypePracticeSheet", () => {
 
     await user.click(within(canvasStage).getByTestId("practice-template-next"));
 
-    expect(within(canvasStage).getByText(dictionary.score.status.waiting)).toBeInTheDocument();
+    expect(within(canvasStage).queryByTestId("practice-canvas-score")).not.toBeInTheDocument();
     expect(within(canvasStage).queryByRole("button", { name: dictionary.buttons.undoStroke })).not.toBeInTheDocument();
     expect(within(canvasStage).getByRole("button", { name: dictionary.buttons.clearPage })).toBeDisabled();
   });
