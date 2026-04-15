@@ -101,10 +101,11 @@ export function PracticeCanvas({
               pointerEvents="none"
               className="fill-[color:rgba(255,255,255,0.15)] stroke-[color:var(--border-soft)]"
             />
-            {selectedTemplate.glyph ? (
+            {selectedTemplate.glyph || selectedTemplate.glyphAsset ? (
               <TemplateGlyphLayer
                 template={selectedTemplate}
                 fill="rgba(146,122,90,0.4)"
+                opacity={selectedTemplate.glyphAsset ? 0.18 : 1}
                 testId={`practice-guide-glyph-${selectedTemplate.id}`}
               />
             ) : (

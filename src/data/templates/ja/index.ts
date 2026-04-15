@@ -1,4 +1,5 @@
 import { WritingTemplate } from "@/types/writing";
+import { applyHiraganaGlyphAssets } from "./hiragana/glyph-assets";
 
 // あ行 (vowels)
 import { jaHiraganaATemplate } from "./hiragana/a";
@@ -116,7 +117,7 @@ import { jaKatakanaWoTemplate } from "./katakana/wo";
 // ン
 import { jaKatakanaNTemplate } from "./katakana/n";
 
-export const hiraganaTemplates: WritingTemplate[] = [
+const hiraganaBaseTemplates: WritingTemplate[] = [
   // あ行
   jaHiraganaATemplate,
   jaHiraganaITemplate,
@@ -175,6 +176,8 @@ export const hiraganaTemplates: WritingTemplate[] = [
   // ん
   jaHiraganaNTemplate,
 ];
+
+export const hiraganaTemplates: WritingTemplate[] = applyHiraganaGlyphAssets(hiraganaBaseTemplates);
 
 export const katakanaTemplates: WritingTemplate[] = [
   // ア行

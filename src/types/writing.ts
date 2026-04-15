@@ -25,6 +25,13 @@ export type StrokeGuide = {
   holdMs?: number;
 };
 
+export type PracticeTemplateGroup = {
+  id: string;
+  label: LocalizedText;
+  description?: LocalizedText;
+  templateIds: string[];
+};
+
 export type TemplateGlyphPath = {
   d: string;
   fillRule?: "nonzero" | "evenodd";
@@ -34,6 +41,12 @@ export type TemplateGlyphPath = {
 export type TemplateGlyphPlacement = {
   x: number;
   y: number;
+  width: number;
+  height: number;
+};
+
+export type GlyphAsset = {
+  src: string;
   width: number;
   height: number;
 };
@@ -57,6 +70,7 @@ export type WritingTemplate = {
   guidePathD: string;
   strokeGuides?: StrokeGuide[];
   glyph?: TemplateGlyph;
+  glyphAsset?: GlyphAsset;
   viewBox: [number, number, number, number];
   gridLabel: LocalizedText;
 };
@@ -68,5 +82,6 @@ export type LanguagePack = {
   direction: WritingDirection;
   stage: LanguagePackStage;
   summary: LocalizedText;
+  templateGroups: PracticeTemplateGroup[];
   templates: WritingTemplate[];
 };

@@ -10,13 +10,16 @@ const DEFAULT_GLYPH_PLACEMENT = {
 
 function getGlyphTransform(template: WritingTemplate) {
   const glyph = template.glyph;
+  const glyphAsset = template.glyphAsset;
 
-  if (!glyph) {
+  if (!glyph && !glyphAsset) {
     return null;
   }
 
-  const placement = glyph.placement ?? DEFAULT_GLYPH_PLACEMENT;
-  const [minX, minY, viewBoxWidth, viewBoxHeight] = glyph.viewBox;
+  const placement = glyph?.placement ?? DEFAULT_GLYPH_PLACEMENT;
+  const [minX, minY, viewBoxWidth, viewBoxHeight] = glyph
+    ? glyph.viewBox
+    : [0, 0, glyphAsset?.width ?? 0, glyphAsset?.height ?? 0];
   const scale = Math.min(placement.width / viewBoxWidth, placement.height / viewBoxHeight);
   const renderedWidth = viewBoxWidth * scale;
   const renderedHeight = viewBoxHeight * scale;
@@ -41,7 +44,7 @@ export function TemplateGlyphLayer({
   opacity = 1,
   testId,
 }: TemplateGlyphLayerProps) {
-  if (!template.glyph) {
+  if (!template.glyph && !template.glyphAsset) {
     return null;
   }
 
@@ -54,15 +57,26 @@ export function TemplateGlyphLayer({
   return (
     <g data-testid={testId} mask={maskId ? `url(#${maskId})` : undefined} opacity={opacity}>
       <g transform={transform}>
-        {template.glyph.paths.map((path, index) => (
-          <path
-            key={`${template.id}-glyph-path-${index}`}
-            d={path.d}
-            fill={fill}
-            fillRule={path.fillRule}
-            clipRule={path.clipRule}
+        {template.glyphAsset ? (
+          <image
+            href={template.glyphAsset.src}
+            x="0"
+            y="0"
+            width={template.glyphAsset.width}
+            height={template.glyphAsset.height}
+            preserveAspectRatio="none"
           />
-        ))}
+        ) : (
+          template.glyph?.paths.map((path, index) => (
+            <path
+              key={`${template.id}-glyph-path-${index}`}
+              d={path.d}
+              fill={fill}
+              fillRule={path.fillRule}
+              clipRule={path.clipRule}
+            />
+          ))
+        )}
       </g>
     </g>
   );
@@ -76,7 +90,7 @@ type TemplateGlyphMarkProps = {
 };
 
 export function TemplateGlyphMark({ template, label, className, testId }: TemplateGlyphMarkProps) {
-  if (!template.glyph) {
+  if (!template.glyph && !template.glyphAsset) {
     return (
       <div
         data-testid={testId}

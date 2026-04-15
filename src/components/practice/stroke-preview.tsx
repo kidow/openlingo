@@ -37,7 +37,7 @@ export function StrokePreview({
   const sortedStrokes = useMemo(() => {
     return [...(template.strokeGuides ?? [])].sort((a, b) => a.order - b.order);
   }, [template.strokeGuides]);
-  const usesGlyphReveal = Boolean(template.glyph);
+  const usesGlyphReveal = Boolean(template.glyph || template.glyphAsset);
   const revealMaskId = useId().replace(/:/g, "");
 
   const [autoPlayEnabled, setAutoPlayEnabled] = useState(autoplay);
@@ -205,7 +205,11 @@ export function StrokePreview({
             />
             {usesGlyphReveal ? (
               <>
-                <TemplateGlyphLayer template={template} fill="rgba(146,122,90,0.25)" />
+                <TemplateGlyphLayer
+                  template={template}
+                  fill="rgba(146,122,90,0.25)"
+                  opacity={template.glyphAsset ? 0.16 : 1}
+                />
                 <defs>
                   <mask id={revealMaskId} maskUnits="userSpaceOnUse">
                     <rect x="0" y="0" width="100" height="100" fill="black" />
@@ -228,6 +232,7 @@ export function StrokePreview({
                 <TemplateGlyphLayer
                   template={template}
                   fill="rgba(79,54,24,0.9)"
+                  opacity={template.glyphAsset ? 0.72 : 1}
                   maskId={revealMaskId}
                   testId={`stroke-preview-glyph-${template.id}`}
                 />
