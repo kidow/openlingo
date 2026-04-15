@@ -5,7 +5,6 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { AppDictionary } from "@/i18n/dictionaries";
 import { cn } from "@/lib/utils";
 import { WritingTemplate } from "@/types/writing";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { TemplateGlyphLayer } from "@/components/practice/template-glyph";
 
@@ -41,10 +40,7 @@ export function StrokePreview({
   const usesGlyphReveal = Boolean(template.glyph);
   const revealMaskId = useId().replace(/:/g, "");
 
-  const [isPlaying, setIsPlaying] = useState(false);
   const [autoPlayEnabled, setAutoPlayEnabled] = useState(autoplay);
-  const [speed, setSpeed] = useState(1);
-  const [currentStrokeOrder, setCurrentStrokeOrder] = useState<number | null>(null);
 
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
   const animationsRef = useRef<Animation[]>([]);
@@ -72,8 +68,6 @@ export function StrokePreview({
     playbackTokenRef.current += 1;
     animationsRef.current.forEach((animation) => animation.cancel());
     animationsRef.current = [];
-    setIsPlaying(false);
-    setCurrentStrokeOrder(null);
   }, []);
 
   useEffect(() => {
@@ -101,8 +95,6 @@ export function StrokePreview({
     resetStyles();
 
     const token = playbackTokenRef.current;
-    setIsPlaying(true);
-
     do {
       for (let index = 0; index < sortedStrokes.length; index += 1) {
         if (token !== playbackTokenRef.current) {
@@ -118,10 +110,9 @@ export function StrokePreview({
 
         const length = path.getTotalLength();
         const duration = Math.round(
-          (stroke.durationMs ?? clamp(length * BASE_STROKE_DURATION, MIN_STROKE_DURATION, MAX_STROKE_DURATION)) / speed
+          stroke.durationMs ?? clamp(length * BASE_STROKE_DURATION, MIN_STROKE_DURATION, MAX_STROKE_DURATION)
         );
 
-        setCurrentStrokeOrder(stroke.order);
         const animation = path.animate(
           [
             { strokeDashoffset: `${length}`, opacity: 1 },
@@ -156,17 +147,11 @@ export function StrokePreview({
         resetStyles();
       }
     } while (loop && token === playbackTokenRef.current);
-
-    if (token === playbackTokenRef.current) {
-      setIsPlaying(false);
-      setCurrentStrokeOrder(null);
-    }
-  }, [loop, resetStyles, sortedStrokes, speed, stopPlayback]);
+  }, [loop, resetStyles, sortedStrokes, stopPlayback]);
 
   useEffect(() => {
     pathRefs.current = pathRefs.current.slice(0, sortedStrokes.length);
     resetStyles();
-    setCurrentStrokeOrder(null);
 
     if (autoPlayEnabled) {
       void runPlayback();
@@ -202,17 +187,13 @@ export function StrokePreview({
           <CardDescription>{previewDescription}</CardDescription>
         </CardHeader>
       )}
-      <CardContent className={cn("space-y-4", isOverlay ? "p-4" : "")}>
-        {isOverlay ? (
-          <div className="space-y-1">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
-              {previewTitle}
-            </div>
-            <p className="text-sm leading-5 text-[color:var(--muted-foreground)]">{previewDescription}</p>
-          </div>
-        ) : null}
-        <div className="relative overflow-hidden rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-4">
-          <svg viewBox={template.viewBox.join(" ")} className="aspect-square w-full">
+      <CardContent
+        className={cn(
+          "relative overflow-hidden rounded-[24px] bg-[color:var(--paper)] p-4",
+          isOverlay ? "p-4" : ""
+        )}
+      >
+        <svg viewBox={template.viewBox.join(" ")} className="aspect-square w-full">
             <rect
               x="6"
               y="6"
@@ -280,45 +261,7 @@ export function StrokePreview({
                 ))}
               </>
             )}
-          </svg>
-        </div>
-
-        <div className="rounded-[20px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] px-4 py-3 text-xs uppercase tracking-[0.16em] text-[color:var(--muted-foreground)]">
-          {currentStrokeOrder === null
-            ? dictionary.sections.strokePreviewIdle
-            : dictionary.sections.strokePreviewPlaying.replace("{order}", String(currentStrokeOrder))}
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          <Button variant="ghost" onClick={() => void runPlayback()} disabled={isPlaying}>
-            {dictionary.buttons.replayStrokePreview}
-          </Button>
-          <button
-            type="button"
-            onClick={() => setAutoPlayEnabled((current) => !current)}
-            className="rounded-full border border-[color:var(--border-soft)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted-foreground)]"
-          >
-            {dictionary.buttons.toggleStrokeAutoplay}: {autoPlayEnabled ? dictionary.common.on : dictionary.common.off}
-          </button>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {[0.75, 1, 1.25].map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setSpeed(option)}
-              className={cn(
-                "rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em]",
-                speed === option
-                  ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)] text-[color:var(--foreground)]"
-                  : "border-[color:var(--border-soft)] bg-white/60 text-[color:var(--muted-foreground)]"
-              )}
-            >
-              {option}x
-            </button>
-          ))}
-        </div>
+        </svg>
       </CardContent>
     </Card>
   );
