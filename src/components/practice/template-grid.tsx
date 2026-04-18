@@ -217,7 +217,7 @@ export function TemplateGrid({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+          <div className="flex flex-wrap items-start gap-3">
             {filteredChineseTemplates.map((template) => {
               const active = template.id === selectedTemplateId;
 
@@ -227,7 +227,7 @@ export function TemplateGrid({
                   type="button"
                   onClick={() => onSelectTemplate(template.id)}
                   className={cn(
-                    "border px-3 py-3 text-left transition-colors sm:px-4",
+                    "inline-flex w-fit flex-none flex-col items-start border px-3 py-3 text-left transition-colors sm:px-4",
                     active
                       ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                       : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
@@ -275,7 +275,7 @@ export function TemplateGrid({
                   <Badge className="rounded-none">{groupedTemplates.length}</Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                <div className="flex flex-wrap items-start gap-3">
                   {groupedTemplates.map((template) => {
                     const active = template.id === selectedTemplateId;
 
@@ -285,7 +285,7 @@ export function TemplateGrid({
                         type="button"
                         onClick={() => onSelectTemplate(template.id)}
                         className={cn(
-                          "border px-3 py-3 text-left transition-colors sm:px-4",
+                          "inline-flex w-fit flex-none flex-col items-start border px-3 py-3 text-left transition-colors sm:px-4",
                           active
                             ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                             : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
