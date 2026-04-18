@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__650a71ea-d397-4787-a950-9204e9d8b269__get_metadata"
+    ]
+  }
+}

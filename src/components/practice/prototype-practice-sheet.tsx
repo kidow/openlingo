@@ -13,6 +13,10 @@ import { TemplateGrid } from "@/components/practice/template-grid";
 import { JapaneseExampleSheet } from "@/components/practice/japanese-example-sheet";
 import { RussianExampleSheet } from "@/components/practice/russian-example-sheet";
 import { ArabicExampleSheet } from "@/components/practice/arabic-example-sheet";
+import { GermanExampleSheet } from "@/components/practice/german-example-sheet";
+import { FrenchExampleSheet } from "@/components/practice/french-example-sheet";
+import { SpanishExampleSheet } from "@/components/practice/spanish-example-sheet";
+import { PortugueseExampleSheet } from "@/components/practice/portuguese-example-sheet";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
@@ -243,6 +247,46 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
           ) : null}
           {selectedLanguage.id === "ar" ? (
             <ArabicExampleSheet
+              dictionary={dictionary}
+              selectedTemplateId={selectedTemplate.id}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+              open={isExampleSheetOpen}
+              onOpenChange={setIsExampleSheetOpen}
+            />
+          ) : null}
+          {selectedLanguage.id === "de" ? (
+            <GermanExampleSheet
+              dictionary={dictionary}
+              selectedTemplateId={selectedTemplate.id}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+              open={isExampleSheetOpen}
+              onOpenChange={setIsExampleSheetOpen}
+            />
+          ) : null}
+          {selectedLanguage.id === "fr" ? (
+            <FrenchExampleSheet
+              dictionary={dictionary}
+              selectedTemplateId={selectedTemplate.id}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+              open={isExampleSheetOpen}
+              onOpenChange={setIsExampleSheetOpen}
+            />
+          ) : null}
+          {selectedLanguage.id === "es" ? (
+            <SpanishExampleSheet
+              dictionary={dictionary}
+              selectedTemplateId={selectedTemplate.id}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+              open={isExampleSheetOpen}
+              onOpenChange={setIsExampleSheetOpen}
+            />
+          ) : null}
+          {selectedLanguage.id === "pt" ? (
+            <PortugueseExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
               selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}

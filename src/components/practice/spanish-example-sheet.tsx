@@ -5,17 +5,17 @@ import { useEffect, useMemo, useState } from "react";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { ExampleWordsSheet } from "@/components/practice/example-words-sheet";
 import {
-  DEFAULT_ARABIC_VOICE_NAME,
+  DEFAULT_SPANISH_VOICE_NAME,
   getDisplayVoiceName,
-  getArabicVoiceOptions,
-  getDefaultArabicVoice,
+  getDefaultSpanishVoice,
+  getSpanishVoiceOptions,
   loadSpeechSynthesisVoices,
   isSpeechSynthesisSupported,
   speakText,
 } from "@/lib/speech-synthesis";
-import { arabicExampleWordsByTemplateId } from "@/data/templates/ar/examples";
+import { spanishExampleWordsByTemplateId } from "@/data/templates/es/examples";
 
-type ArabicExampleSheetProps = {
+type SpanishExampleSheetProps = {
   dictionary: AppDictionary;
   selectedTemplateId: string;
   selectedTemplateLabel: string;
@@ -24,14 +24,14 @@ type ArabicExampleSheetProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-export function ArabicExampleSheet({
+export function SpanishExampleSheet({
   dictionary,
   selectedTemplateId,
   selectedTemplateLabel,
   selectedTemplateNativeLabel,
   open,
   onOpenChange,
-}: ArabicExampleSheetProps) {
+}: SpanishExampleSheetProps) {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(null);
   const isSpeechSupported = isSpeechSynthesisSupported();
@@ -54,15 +54,15 @@ export function ArabicExampleSheet({
     };
   }, [isSpeechSupported]);
 
-  const exampleWords = arabicExampleWordsByTemplateId[selectedTemplateId] ?? [];
-  const voiceOptions = useMemo(() => getArabicVoiceOptions(voices), [voices]);
-  const defaultVoice = useMemo(() => getDefaultArabicVoice(voices), [voices]);
+  const exampleWords = spanishExampleWordsByTemplateId[selectedTemplateId] ?? [];
+  const voiceOptions = useMemo(() => getSpanishVoiceOptions(voices), [voices]);
+  const defaultVoice = useMemo(() => getDefaultSpanishVoice(voices), [voices]);
   const activeVoice =
     voiceOptions.find((voice) => voice.name === selectedVoiceName) ?? defaultVoice ?? voiceOptions[0] ?? null;
-  const activeVoiceLabel = activeVoice ? getDisplayVoiceName(activeVoice.name) : DEFAULT_ARABIC_VOICE_NAME;
+  const activeVoiceLabel = activeVoice ? getDisplayVoiceName(activeVoice.name) : DEFAULT_SPANISH_VOICE_NAME;
 
   function handleSpeak(word: string) {
-    speakText(word, "ar-SA", activeVoice);
+    speakText(word, "es-ES", activeVoice);
   }
 
   return (
@@ -70,7 +70,7 @@ export function ArabicExampleSheet({
       dictionary={dictionary}
       title={dictionary.sections.exampleWordsTitle}
       description={dictionary.sections.exampleWordsDescription}
-      languageLabel="العربية"
+      languageLabel="Español"
       selectedTemplateLabel={selectedTemplateLabel}
       selectedTemplateNativeLabel={selectedTemplateNativeLabel}
       open={open}
@@ -79,14 +79,13 @@ export function ArabicExampleSheet({
       voiceOptions={voiceOptions}
       activeVoiceName={activeVoice?.name ?? null}
       activeVoiceLabel={activeVoiceLabel}
-      defaultVoiceName={DEFAULT_ARABIC_VOICE_NAME}
+      defaultVoiceName={DEFAULT_SPANISH_VOICE_NAME}
       isSpeechSupported={isSpeechSupported}
       speechUnavailableText={dictionary.sections.exampleWordsSpeechUnavailable}
       exampleWordsUnavailableText={dictionary.sections.exampleWordsUnavailable}
       exampleWords={exampleWords}
       onSelectVoiceName={setSelectedVoiceName}
       onSpeak={handleSpeak}
-      layoutDirection="rtl"
     />
   );
 }

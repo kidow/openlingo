@@ -58,6 +58,11 @@ type VoiceSelectionOptions = {
   allowedVoiceNames?: string[];
 };
 
+type VoiceProfileOptions = {
+  languagePrefix: string;
+  voiceNames: string[];
+};
+
 export function getVoiceOptionsForLanguage(
   voices: SpeechSynthesisVoice[],
   { languagePrefix, preferredVoiceNames = [], allowedVoiceNames = [] }: VoiceSelectionOptions
@@ -162,6 +167,138 @@ export function getDefaultRussianVoice(voices: SpeechSynthesisVoice[]) {
     languagePrefix: "ru",
     preferredVoiceNames: [DEFAULT_RUSSIAN_VOICE_NAME],
     allowedVoiceNames: RUSSIAN_VOICE_PROFILE,
+  });
+}
+
+export const DEFAULT_ARABIC_VOICE_NAME = "Google العربية";
+export const ARABIC_VOICE_PROFILE = [
+  DEFAULT_ARABIC_VOICE_NAME,
+  "Maged",
+  "Microsoft Hamed Online (Natural) - Arabic (Saudi Arabia)",
+];
+
+export function getArabicVoiceOptions(voices: SpeechSynthesisVoice[]) {
+  return getVoiceOptionsForLanguage(voices, {
+    languagePrefix: "ar",
+    preferredVoiceNames: [DEFAULT_ARABIC_VOICE_NAME],
+    allowedVoiceNames: ARABIC_VOICE_PROFILE,
+  });
+}
+
+export function getDefaultArabicVoice(voices: SpeechSynthesisVoice[]) {
+  return getDefaultVoiceForLanguage(voices, {
+    languagePrefix: "ar",
+    preferredVoiceNames: [DEFAULT_ARABIC_VOICE_NAME],
+    allowedVoiceNames: ARABIC_VOICE_PROFILE,
+  });
+}
+
+export const DEFAULT_FRENCH_VOICE_NAME = "Google français";
+export const FRENCH_VOICE_PROFILE = [
+  DEFAULT_FRENCH_VOICE_NAME,
+  "Thomas",
+  "Amelie",
+  "Microsoft Denise Online (Natural) - French (France)",
+];
+
+function getVoiceProfileIndex(voiceName: string, voiceNames: string[]) {
+  const normalizedName = normalizeVoiceName(voiceName);
+
+  return voiceNames.findIndex((candidateName) => normalizeVoiceName(candidateName) === normalizedName);
+}
+
+export function getVoiceOptionsForProfile(voices: SpeechSynthesisVoice[], { languagePrefix, voiceNames }: VoiceProfileOptions) {
+  return voices
+    .filter((voice) => matchesAnyVoiceName(voice, voiceNames) || voice.lang.toLowerCase().startsWith(languagePrefix))
+    .filter((voice) => matchesAnyVoiceName(voice, voiceNames))
+    .sort((left, right) => {
+      const leftIndex = getVoiceProfileIndex(left.name, voiceNames);
+      const rightIndex = getVoiceProfileIndex(right.name, voiceNames);
+
+      if (leftIndex !== rightIndex) {
+        return leftIndex - rightIndex;
+      }
+
+      return left.name.localeCompare(right.name);
+    });
+}
+
+export function getDefaultVoiceForProfile(voices: SpeechSynthesisVoice[], { languagePrefix, voiceNames }: VoiceProfileOptions) {
+  for (const voiceName of voiceNames) {
+    const matchedVoice = voices.find((voice) => matchesVoiceName(voice, voiceName));
+
+    if (matchedVoice) {
+      return matchedVoice;
+    }
+  }
+
+  return getDefaultVoiceForLanguage(voices, { languagePrefix, allowedVoiceNames: voiceNames });
+}
+
+export const DEFAULT_PORTUGUESE_VOICE_NAME = "Google português do Brasil";
+export const PORTUGUESE_VOICE_PROFILE = [
+  "Google português do Brasil",
+  "Google português",
+  "Joana",
+  "Luciana",
+  "Microsoft Fernanda Online (Natural) - Portuguese (Brazil)",
+];
+
+export function getPortugueseVoiceOptions(voices: SpeechSynthesisVoice[]) {
+  return getVoiceOptionsForProfile(voices, {
+    languagePrefix: "pt",
+    voiceNames: PORTUGUESE_VOICE_PROFILE,
+  });
+}
+
+export function getDefaultPortugueseVoice(voices: SpeechSynthesisVoice[]) {
+  return getDefaultVoiceForProfile(voices, {
+    languagePrefix: "pt",
+    voiceNames: PORTUGUESE_VOICE_PROFILE,
+  });
+}
+
+export const DEFAULT_GERMAN_VOICE_NAME = "Google Deutsch";
+export const GERMAN_VOICE_PROFILE = [
+  DEFAULT_GERMAN_VOICE_NAME,
+  "Anna",
+  "Markus",
+  "Microsoft Katja Online (Natural) - German (Germany)",
+];
+
+export function getGermanVoiceOptions(voices: SpeechSynthesisVoice[]) {
+  return getVoiceOptionsForProfile(voices, {
+    languagePrefix: "de",
+    voiceNames: GERMAN_VOICE_PROFILE,
+  });
+}
+
+export function getDefaultGermanVoice(voices: SpeechSynthesisVoice[]) {
+  return getDefaultVoiceForProfile(voices, {
+    languagePrefix: "de",
+    voiceNames: GERMAN_VOICE_PROFILE,
+  });
+}
+
+export const DEFAULT_SPANISH_VOICE_NAME = "Google español";
+export const SPANISH_VOICE_PROFILE = [
+  DEFAULT_SPANISH_VOICE_NAME,
+  "Jorge",
+  "Monica",
+  "Microsoft Elvira Online (Natural) - Spanish (Spain)",
+];
+
+export function getSpanishVoiceOptions(voices: SpeechSynthesisVoice[]) {
+  return getVoiceOptionsForProfile(voices, {
+    languagePrefix: "es",
+    voiceNames: SPANISH_VOICE_PROFILE,
+  });
+}
+
+export function getDefaultSpanishVoice(voices: SpeechSynthesisVoice[]) {
+  return getDefaultVoiceForProfile(voices, {
+    languagePrefix: "es",
+    voiceNames: SPANISH_VOICE_PROFILE,
   });
 }
 
