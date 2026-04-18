@@ -38,10 +38,10 @@ import { enAlphabetTemplates } from "@/data/templates/en/alphabet";
 import { jaTemplates } from "@/data/templates/ja";
 import { ruTemplates } from "@/data/templates/ru";
 import { arTemplates } from "@/data/templates/ar";
-import { deTemplates } from "@/data/templates/de";
-import { esTemplates } from "@/data/templates/es";
-import { frTemplates } from "@/data/templates/fr";
-import { ptTemplates } from "@/data/templates/pt";
+import { deTemplateGroups, deTemplates } from "@/data/templates/de";
+import { esTemplateGroups, esTemplates } from "@/data/templates/es";
+import { frTemplateGroups, frTemplates } from "@/data/templates/fr";
+import { ptTemplateGroups, ptTemplates } from "@/data/templates/pt";
 import { itTemplateGroups, itTemplates } from "@/data/templates/it";
 import { hiraganaTemplates, katakanaTemplates } from "@/data/templates/ja";
 import { zhHansTemplates } from "@/data/templates/zh/zh-hans";
@@ -372,10 +372,7 @@ export const languagePacks: LanguagePack[] = [
       ko: "라틴 알파벳에 움라우트와 에스체트를 추가하여 분음 부호 렌더링을 검증합니다.",
       en: "Extends the Latin base with Umlauts and Eszett to validate diacritic rendering support.",
     },
-    templateGroups: createCaseGroups(deTemplates, {
-      first: { ko: "대문자", en: "Uppercase" },
-      second: { ko: "소문자", en: "Lowercase" },
-    }),
+    templateGroups: deTemplateGroups,
     templates: deTemplates,
   },
   {
@@ -391,10 +388,7 @@ export const languagePacks: LanguagePack[] = [
       ko: "라틴 알파벳에 에녜(Ñ)를 추가하여 물결표 분음 부호 렌더링을 검증합니다.",
       en: "Extends the Latin base with Eñe to validate tilde diacritic rendering support.",
     },
-    templateGroups: createCaseGroups(esTemplates, {
-      first: { ko: "대문자", en: "Uppercase" },
-      second: { ko: "소문자", en: "Lowercase" },
-    }),
+    templateGroups: esTemplateGroups,
     templates: esTemplates,
   },
   {
@@ -410,10 +404,7 @@ export const languagePacks: LanguagePack[] = [
       ko: "악상, 세디유, 합자 등 다양한 분음 부호로 렌더링 범위를 넓힙니다.",
       en: "Accents, cedilla, and ligature broaden diacritic rendering coverage beyond simple dots.",
     },
-    templateGroups: createCaseGroups(frTemplates, {
-      first: { ko: "대문자", en: "Uppercase" },
-      second: { ko: "소문자", en: "Lowercase" },
-    }),
+    templateGroups: frTemplateGroups,
     templates: frTemplates,
   },
   {
@@ -429,10 +420,7 @@ export const languagePacks: LanguagePack[] = [
       ko: "악상, 세딜랴, 틸, 트레마 등 다양한 분음 부호로 라틴 문자 렌더링 범위를 넓힙니다.",
       en: "Accents, cedilla, tilde, and diaeresis broaden diacritic rendering coverage for Latin scripts.",
     },
-    templateGroups: createCaseGroups(ptTemplates, {
-      first: { ko: "대문자", en: "Uppercase" },
-      second: { ko: "소문자", en: "Lowercase" },
-    }),
+    templateGroups: ptTemplateGroups,
     templates: ptTemplates,
   },
   {
@@ -445,8 +433,8 @@ export const languagePacks: LanguagePack[] = [
     direction: "ltr",
     stage: "Prototype",
     summary: {
-      ko: "기본 알파벳, 외래 문자, 악센트 문자를 나눠 이탈리아어 문자를 연습합니다.",
-      en: "Practice Italian letters in separate groups for base, foreign, and accented forms.",
+      ko: "기본 문자와 특수 문자를 대문자/소문자로 나눠 이탈리아어 문자를 연습합니다.",
+      en: "Practice Italian letters in separate uppercase/lowercase groups for basic and special forms.",
     },
     templateGroups: itTemplateGroups,
     templates: itTemplates,

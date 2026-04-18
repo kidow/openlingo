@@ -1,4 +1,4 @@
-import { WritingTemplate } from "@/types/writing";
+import { PracticeTemplateGroup, WritingTemplate } from "@/types/writing";
 import {
   ptLowercaseLatinAlphabetTemplates,
   ptUppercaseLatinAlphabetTemplates,
@@ -78,4 +78,43 @@ export const ptTemplates: WritingTemplate[] = [
   ...ptUppercaseAccentedTemplates,
   ...ptLowercaseLatinAlphabetTemplates,
   ...ptLowercaseAccentedTemplates,
+];
+
+export const ptTemplateGroups: PracticeTemplateGroup[] = [
+  {
+    id: "basic-uppercase",
+    label: { ko: "기본 문자 - 대문자", en: "Basic letters - Uppercase" },
+    description: {
+      ko: "포르투갈어 표준 알파벳의 대문자를 연습합니다.",
+      en: "Practice uppercase standard Portuguese letters.",
+    },
+    templateIds: ptUppercaseLatinAlphabetTemplates.map((template) => template.id),
+  },
+  {
+    id: "basic-lowercase",
+    label: { ko: "기본 문자 - 소문자", en: "Basic letters - Lowercase" },
+    description: {
+      ko: "포르투갈어 표준 알파벳의 소문자를 연습합니다.",
+      en: "Practice lowercase standard Portuguese letters.",
+    },
+    templateIds: ptLowercaseLatinAlphabetTemplates.map((template) => template.id),
+  },
+  {
+    id: "special-uppercase",
+    label: { ko: "특수 문자 - 대문자", en: "Special letters - Uppercase" },
+    description: {
+      ko: "악센트와 세딜랴, 틸, 트레마의 대문자를 따로 연습합니다.",
+      en: "Practice uppercase accented letters, cedilla, tilde, and diaeresis separately.",
+    },
+    templateIds: ptUppercaseAccentedTemplates.map((template) => template.id),
+  },
+  {
+    id: "special-lowercase",
+    label: { ko: "특수 문자 - 소문자", en: "Special letters - Lowercase" },
+    description: {
+      ko: "악센트와 세딜랴, 틸, 트레마의 소문자를 따로 연습합니다.",
+      en: "Practice lowercase accented letters, cedilla, tilde, and diaeresis separately.",
+    },
+    templateIds: ptLowercaseAccentedTemplates.map((template) => template.id),
+  },
 ];

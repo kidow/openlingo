@@ -299,30 +299,39 @@ function createGroupFromTemplates(id: string, label: { ko: string; en: string },
 
 export const itTemplateGroups: PracticeTemplateGroup[] = [
   createGroupFromTemplates(
-    "basic",
-    { ko: "기본 문자", en: "Basic letters" },
-    [...itUppercaseBasicTemplates, ...itLowercaseBasicTemplates],
+    "basic-uppercase",
+    { ko: "기본 문자 - 대문자", en: "Basic letters - Uppercase" },
+    itUppercaseBasicTemplates,
     {
-      ko: "이탈리아어 표준 알파벳 21자를 연습합니다.",
-      en: "Practice the 21 standard Italian letters.",
+      ko: "이탈리아어 표준 알파벳의 대문자를 연습합니다.",
+      en: "Practice uppercase standard Italian letters.",
     }
   ),
   createGroupFromTemplates(
-    "foreign",
-    { ko: "외래 문자", en: "Foreign letters" },
-    [...itUppercaseForeignTemplates, ...itLowercaseForeignTemplates],
+    "basic-lowercase",
+    { ko: "기본 문자 - 소문자", en: "Basic letters - Lowercase" },
+    itLowercaseBasicTemplates,
     {
-      ko: "J, K, W, X, Y는 외래어 표기에서 쓰는 문자입니다.",
-      en: "J, K, W, X, Y are used mainly in foreign loanwords.",
+      ko: "이탈리아어 표준 알파벳의 소문자를 연습합니다.",
+      en: "Practice lowercase standard Italian letters.",
     }
   ),
   createGroupFromTemplates(
-    "accents",
-    { ko: "악센트 문자", en: "Accent letters" },
-    [...itUppercaseAccentTemplates, ...itLowercaseAccentTemplates],
+    "special-uppercase",
+    { ko: "특수 문자 - 대문자", en: "Special letters - Uppercase" },
+    [...itUppercaseForeignTemplates, ...itUppercaseAccentTemplates],
     {
-      ko: "강세와 장단을 나타내는 악센트 문자를 연습합니다.",
-      en: "Practice accented letters used for stress and vowel quality.",
+      ko: "외래 문자와 악센트 문자의 대문자를 따로 연습합니다.",
+      en: "Practice uppercase foreign letters and accented letters separately.",
+    }
+  ),
+  createGroupFromTemplates(
+    "special-lowercase",
+    { ko: "특수 문자 - 소문자", en: "Special letters - Lowercase" },
+    [...itLowercaseForeignTemplates, ...itLowercaseAccentTemplates],
+    {
+      ko: "외래 문자와 악센트 문자의 소문자를 따로 연습합니다.",
+      en: "Practice lowercase foreign letters and accented letters separately.",
     }
   ),
 ];

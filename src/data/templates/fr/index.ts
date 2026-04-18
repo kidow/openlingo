@@ -1,4 +1,4 @@
-import { WritingTemplate } from "@/types/writing";
+import { PracticeTemplateGroup, WritingTemplate } from "@/types/writing";
 import { frLatinAlphabetTemplates } from "./alphabet";
 /* A variants */
 import { frUppercaseAGraveTemplate } from "./uppercase-a-grave";
@@ -68,4 +68,73 @@ export const frTemplates: WritingTemplate[] = [
   frLowercaseUDiaeresisTemplate,
   frUppercaseOeLigatureTemplate,
   frLowercaseOeLigatureTemplate,
+];
+
+export const frTemplateGroups: PracticeTemplateGroup[] = [
+  {
+    id: "basic-uppercase",
+    label: { ko: "기본 문자 - 대문자", en: "Basic letters - Uppercase" },
+    description: {
+      ko: "프랑스어 표준 알파벳의 대문자를 연습합니다.",
+      en: "Practice uppercase standard French letters.",
+    },
+    templateIds: frLatinAlphabetTemplates.slice(0, 26).map((template) => template.id),
+  },
+  {
+    id: "basic-lowercase",
+    label: { ko: "기본 문자 - 소문자", en: "Basic letters - Lowercase" },
+    description: {
+      ko: "프랑스어 표준 알파벳의 소문자를 연습합니다.",
+      en: "Practice lowercase standard French letters.",
+    },
+    templateIds: frLatinAlphabetTemplates.slice(26).map((template) => template.id),
+  },
+  {
+    id: "special-uppercase",
+    label: { ko: "특수 문자 - 대문자", en: "Special letters - Uppercase" },
+    description: {
+      ko: "악센트 문자와 합자 대문자를 따로 연습합니다.",
+      en: "Practice uppercase accented letters and ligatures separately.",
+    },
+    templateIds: [
+      frUppercaseAGraveTemplate.id,
+      frUppercaseACircumflexTemplate.id,
+      frUppercaseCCedillaTemplate.id,
+      frUppercaseEAcuteTemplate.id,
+      frUppercaseEGraveTemplate.id,
+      frUppercaseECircumflexTemplate.id,
+      frUppercaseEDiaeresisTemplate.id,
+      frUppercaseICircumflexTemplate.id,
+      frUppercaseIDiaeresisTemplate.id,
+      frUppercaseOCircumflexTemplate.id,
+      frUppercaseUGraveTemplate.id,
+      frUppercaseUCircumflexTemplate.id,
+      frUppercaseUDiaeresisTemplate.id,
+      frUppercaseOeLigatureTemplate.id,
+    ],
+  },
+  {
+    id: "special-lowercase",
+    label: { ko: "특수 문자 - 소문자", en: "Special letters - Lowercase" },
+    description: {
+      ko: "악센트 문자와 합자 소문자를 따로 연습합니다.",
+      en: "Practice lowercase accented letters and ligatures separately.",
+    },
+    templateIds: [
+      frLowercaseAGraveTemplate.id,
+      frLowercaseACircumflexTemplate.id,
+      frLowercaseCCedillaTemplate.id,
+      frLowercaseEAcuteTemplate.id,
+      frLowercaseEGraveTemplate.id,
+      frLowercaseECircumflexTemplate.id,
+      frLowercaseEDiaeresisTemplate.id,
+      frLowercaseICircumflexTemplate.id,
+      frLowercaseIDiaeresisTemplate.id,
+      frLowercaseOCircumflexTemplate.id,
+      frLowercaseUGraveTemplate.id,
+      frLowercaseUCircumflexTemplate.id,
+      frLowercaseUDiaeresisTemplate.id,
+      frLowercaseOeLigatureTemplate.id,
+    ],
+  },
 ];
