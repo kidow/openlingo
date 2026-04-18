@@ -87,19 +87,31 @@ type TemplateGlyphMarkProps = {
   label: string;
   className?: string;
   testId?: string;
+  renderMode?: "glyph" | "printed";
 };
 
-export function TemplateGlyphMark({ template, label, className, testId }: TemplateGlyphMarkProps) {
-  if (!template.glyph && !template.glyphAsset) {
-    return (
-      <div
-        data-testid={testId}
-        aria-label={label}
-        className={cn("font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]", className)}
-      >
-        {template.nativeLabel}
-      </div>
-    );
+export function TemplateGlyphMark({
+  template,
+  label,
+  className,
+  testId,
+  renderMode = "glyph",
+}: TemplateGlyphMarkProps) {
+  const shouldRenderPrinted = renderMode === "printed";
+
+  if ((!template.glyph && !template.glyphAsset) || shouldRenderPrinted) {
+      return (
+        <div
+          data-testid={testId}
+          aria-label={label}
+          className={cn(
+            "font-[family-name:var(--font-cyrillic-print)] text-2xl leading-none text-[color:var(--foreground)]",
+            className
+          )}
+        >
+          {template.nativeLabel}
+        </div>
+      );
   }
 
   return (

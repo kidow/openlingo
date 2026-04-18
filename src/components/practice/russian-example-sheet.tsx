@@ -1,23 +1,23 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Play, X } from "lucide-react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
-  DEFAULT_JAPANESE_VOICE_NAME,
+  DEFAULT_RUSSIAN_VOICE_NAME,
   getDisplayVoiceName,
-  getDefaultJapaneseVoice,
-  getJapaneseVoiceOptions,
+  getDefaultRussianVoice,
+  getRussianVoiceOptions,
   loadSpeechSynthesisVoices,
   isSpeechSynthesisSupported,
-  speakJapaneseText,
+  speakText,
 } from "@/lib/speech-synthesis";
-import { japaneseExampleWordsByTemplateId } from "@/data/templates/ja/examples";
+import { russianExampleWordsByTemplateId } from "@/data/templates/ru/examples";
 
-type JapaneseExampleSheetProps = {
+type RussianExampleSheetProps = {
   dictionary: AppDictionary;
   selectedTemplateId: string;
   selectedTemplateLabel: string;
@@ -26,14 +26,14 @@ type JapaneseExampleSheetProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-export function JapaneseExampleSheet({
+export function RussianExampleSheet({
   dictionary,
   selectedTemplateId,
   selectedTemplateLabel,
   selectedTemplateNativeLabel,
   open,
   onOpenChange,
-}: JapaneseExampleSheetProps) {
+}: RussianExampleSheetProps) {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceName, setSelectedVoiceName] = useState<string | null>(null);
   const isSpeechSupported = isSpeechSynthesisSupported();
@@ -56,14 +56,14 @@ export function JapaneseExampleSheet({
     };
   }, [isSpeechSupported]);
 
-  const exampleWords = japaneseExampleWordsByTemplateId[selectedTemplateId] ?? [];
-  const voiceOptions = useMemo(() => getJapaneseVoiceOptions(voices), [voices]);
-  const defaultVoice = useMemo(() => getDefaultJapaneseVoice(voices), [voices]);
+  const exampleWords = russianExampleWordsByTemplateId[selectedTemplateId] ?? [];
+  const voiceOptions = useMemo(() => getRussianVoiceOptions(voices), [voices]);
+  const defaultVoice = useMemo(() => getDefaultRussianVoice(voices), [voices]);
   const activeVoice =
     voiceOptions.find((voice) => voice.name === selectedVoiceName) ?? defaultVoice ?? voiceOptions[0] ?? null;
 
   function handleSpeak(word: string) {
-    speakJapaneseText(word, activeVoice);
+    speakText(word, "ru-RU", activeVoice);
   }
 
   return (
@@ -73,10 +73,10 @@ export function JapaneseExampleSheet({
           <div className="flex items-start justify-between gap-4">
             <div className="grid gap-1">
               <SheetTitle className="font-[family-name:var(--font-display)] text-2xl text-[color:var(--foreground)]">
-                {dictionary.sections.japaneseExamplesTitle}
+                {dictionary.sections.exampleWordsTitle}
               </SheetTitle>
               <SheetDescription className="max-w-2xl text-sm leading-6 text-[color:var(--muted-foreground)]">
-                {dictionary.sections.japaneseExamplesDescription}
+                {dictionary.sections.exampleWordsDescription}
               </SheetDescription>
             </div>
             <SheetClose asChild>
@@ -89,9 +89,7 @@ export function JapaneseExampleSheet({
 
         <SheetBody className="grid gap-5">
           <div className="grid gap-2 rounded-[24px] border border-[color:var(--border-soft)] bg-[color:rgba(252,249,241,0.55)] p-4">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-              日本語
-            </div>
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">Русский</div>
             <div className="font-[family-name:var(--font-display)] text-5xl leading-none text-[color:var(--foreground)]">
               {selectedTemplateNativeLabel}
             </div>
@@ -101,10 +99,10 @@ export function JapaneseExampleSheet({
           <div className="grid gap-3">
             <div className="flex items-center justify-between gap-3">
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                {dictionary.sections.japaneseVoiceSelectorTitle}
+                {dictionary.sections.exampleVoiceSelectorTitle}
               </div>
               <div className="text-xs text-[color:var(--muted-foreground)]">
-                {activeVoice ? getDisplayVoiceName(activeVoice.name) : DEFAULT_JAPANESE_VOICE_NAME}
+                {activeVoice ? getDisplayVoiceName(activeVoice.name) : DEFAULT_RUSSIAN_VOICE_NAME}
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -125,7 +123,7 @@ export function JapaneseExampleSheet({
                       ].join(" ")}
                     >
                       <span className="max-w-[16rem] truncate">{getDisplayVoiceName(voice.name)}</span>
-                      {voice.name === DEFAULT_JAPANESE_VOICE_NAME ? (
+                      {voice.name === DEFAULT_RUSSIAN_VOICE_NAME ? (
                         <span className="rounded-full border border-[color:var(--border-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.16em]">
                           default
                         </span>
@@ -135,7 +133,7 @@ export function JapaneseExampleSheet({
                 })
               ) : (
                 <div className="text-sm text-[color:var(--muted-foreground)]">
-                  {dictionary.sections.japaneseExamplesSpeechUnavailable}
+                  {dictionary.sections.exampleWordsSpeechUnavailable}
                 </div>
               )}
             </div>
@@ -173,7 +171,7 @@ export function JapaneseExampleSheet({
             </div>
           ) : (
             <div className="rounded-[20px] border border-dashed border-[color:var(--border-soft)] bg-white/50 p-5 text-sm leading-6 text-[color:var(--muted-foreground)]">
-              {dictionary.sections.japaneseExamplesUnavailable}
+              {dictionary.sections.exampleWordsUnavailable}
             </div>
           )}
         </SheetBody>

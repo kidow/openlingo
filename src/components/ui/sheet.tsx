@@ -52,12 +52,6 @@ const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 
 SheetHeader.displayName = "SheetHeader";
 
-const SheetFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("mt-auto flex flex-col gap-2 px-5 pb-5 md:px-6", className)} {...props} />
-);
-
-SheetFooter.displayName = "SheetFooter";
-
 const SheetBody = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div className={cn("min-h-0 flex-1 overflow-y-auto px-5 pb-5 pt-4 md:px-6", className)} {...props} />
 );
@@ -70,7 +64,6 @@ export {
   SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetPortal,
   SheetTitle,

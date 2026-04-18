@@ -23,13 +23,19 @@ export type AppDictionary = {
     title: string;
     description: string;
   };
-    sections: {
-      languagePacksTitle: string;
-      practiceCardsTitle: string;
-      japaneseExamplesTitle: string;
-      japaneseExamplesDescription: string;
-      japaneseVoiceSelectorTitle: string;
-      japaneseExamplesSpeechReady: string;
+  sections: {
+    languagePacksTitle: string;
+    practiceCardsTitle: string;
+    exampleWordsTitle: string;
+    exampleWordsDescription: string;
+    exampleVoiceSelectorTitle: string;
+    exampleWordsSpeechReady: string;
+    exampleWordsSpeechUnavailable: string;
+    exampleWordsUnavailable: string;
+    japaneseExamplesTitle: string;
+    japaneseExamplesDescription: string;
+    japaneseVoiceSelectorTitle: string;
+    japaneseExamplesSpeechReady: string;
       japaneseExamplesSpeechUnavailable: string;
       japaneseExamplesUnavailable: string;
       worksheetEyebrow: string;
@@ -108,6 +114,12 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
     sections: {
       languagePacksTitle: "연습 언어 팩",
       practiceCardsTitle: "연습 카드",
+      exampleWordsTitle: "예시 단어",
+      exampleWordsDescription: "선택한 글자로 시작하는 단어를 보고, 필요하면 발음도 바로 들어보세요.",
+      exampleVoiceSelectorTitle: "음성 선택",
+      exampleWordsSpeechReady: "기기 음성 재생을 사용할 수 있습니다.",
+      exampleWordsSpeechUnavailable: "현재 브라우저에서는 음성 재생을 사용할 수 없습니다.",
+      exampleWordsUnavailable: "이 글자에 대한 예시 단어를 아직 준비하지 않았습니다.",
       japaneseExamplesTitle: "예시 단어",
       japaneseExamplesDescription: "선택한 글자로 시작하는 단어를 보고, 필요하면 발음도 바로 들어보세요.",
       japaneseVoiceSelectorTitle: "음성 선택",
@@ -209,6 +221,12 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
     sections: {
       languagePacksTitle: "Language packs",
       practiceCardsTitle: "Practice cards",
+      exampleWordsTitle: "Example words",
+      exampleWordsDescription: "Review words that start with the selected character, and play the pronunciation when you need it.",
+      exampleVoiceSelectorTitle: "Voice selection",
+      exampleWordsSpeechReady: "Device speech playback is available.",
+      exampleWordsSpeechUnavailable: "Speech playback is not available in this browser.",
+      exampleWordsUnavailable: "Example words for this character are not available yet.",
       japaneseExamplesTitle: "Example words",
       japaneseExamplesDescription: "Review words that start with the selected character, and play the pronunciation when you need it.",
       japaneseVoiceSelectorTitle: "Voice selection",

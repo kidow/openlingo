@@ -17,7 +17,7 @@ type TemplateGridProps = {
   selectedLanguage: (typeof languagePacks)[number];
   selectedTemplateId: string;
   onSelectTemplate: (templateId: string) => void;
-  onOpenJapaneseExamples?: () => void;
+  onOpenExampleWords?: () => void;
 };
 
 type ChineseStrokeBucket = {
@@ -62,10 +62,11 @@ export function TemplateGrid({
   selectedLanguage,
   selectedTemplateId,
   onSelectTemplate,
-  onOpenJapaneseExamples,
+  onOpenExampleWords,
 }: TemplateGridProps) {
   const templatesById = new Map(selectedLanguage.templates.map((template) => [template.id, template]));
   const isChinesePack = selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant";
+  const usePrintedCardGlyphs = selectedLanguage.id === "ru";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("all");
   const [selectedStrokeBucketId, setSelectedStrokeBucketId] = useState("all");
@@ -140,9 +141,9 @@ export function TemplateGrid({
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge className="rounded-none">{isChinesePack ? filteredChineseTemplates.length : selectedLanguage.templates.length}</Badge>
-          {selectedLanguage.id === "ja" && onOpenJapaneseExamples ? (
-            <Button type="button" variant="ghost" size="sm" onClick={onOpenJapaneseExamples} className="rounded-none">
-              {dictionary.sections.japaneseExamplesTitle}
+          {["ja", "ru"].includes(selectedLanguage.id) && onOpenExampleWords ? (
+            <Button type="button" variant="ghost" size="sm" onClick={onOpenExampleWords} className="rounded-none">
+              {dictionary.sections.exampleWordsTitle}
             </Button>
           ) : null}
         </div>
@@ -237,6 +238,7 @@ export function TemplateGrid({
                     label={`${getLocalizedText(template.label, locale)} glyph`}
                     testId={`worksheet-template-card-glyph-${template.id}`}
                     className="h-10 w-10"
+                    renderMode={usePrintedCardGlyphs ? "printed" : "glyph"}
                   />
                   <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
                     {getLocalizedText(template.label, locale)}
@@ -294,6 +296,7 @@ export function TemplateGrid({
                           label={`${getLocalizedText(template.label, locale)} glyph`}
                           testId={`worksheet-template-card-glyph-${template.id}`}
                           className="h-10 w-10"
+                          renderMode={usePrintedCardGlyphs ? "printed" : "glyph"}
                         />
                         <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
                           {getLocalizedText(template.label, locale)}

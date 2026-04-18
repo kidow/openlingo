@@ -1,3 +1,4 @@
+import { applyRussianGlyphAssets } from "./glyph-assets";
 import { WritingTemplate } from "@/types/writing";
 
 // Uppercase А-Н
@@ -144,7 +145,8 @@ export const lowercaseTemplates: WritingTemplate[] = [
   ruLowercaseYaTemplate,
 ];
 
-export const ruTemplates: WritingTemplate[] = [
-  ...uppercaseTemplates,
-  ...lowercaseTemplates,
-];
+const ruBaseTemplates: WritingTemplate[] = [...uppercaseTemplates, ...lowercaseTemplates];
+
+export const ruTemplates: WritingTemplate[] = applyRussianGlyphAssets(ruBaseTemplates);
+
+export const russianTemplates: WritingTemplate[] = ruTemplates;

@@ -16,6 +16,7 @@
   --ink: #2d2114;
   --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --font-body: "Avenir Next", "Pretendard Variable", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-cyrillic-print: "Noto Sans", "Segoe UI", Arial, "Avenir Next", sans-serif;
 }
 
 * {
@@ -52,4 +53,3 @@ a {
 ::selection {
   background: rgba(143, 99, 49, 0.18);
 }
-
