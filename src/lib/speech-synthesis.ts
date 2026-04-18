@@ -39,6 +39,12 @@ export function loadSpeechSynthesisVoices(timeoutMs = 1500): Promise<SpeechSynth
 }
 
 export const DEFAULT_JAPANESE_VOICE_NAME = "Google 日本語";
+export const JAPANESE_VOICE_PROFILE = [
+  DEFAULT_JAPANESE_VOICE_NAME,
+  "Kyoko",
+  "Otoya",
+  "Microsoft Nanami Online (Natural) - Japanese (Japan)",
+];
 
 function normalizeVoiceName(value: string) {
   return value.trim().toLowerCase();
@@ -119,6 +125,7 @@ export function getJapaneseVoiceOptions(voices: SpeechSynthesisVoice[]) {
   return getVoiceOptionsForLanguage(voices, {
     languagePrefix: "ja",
     preferredVoiceNames: [DEFAULT_JAPANESE_VOICE_NAME],
+    allowedVoiceNames: JAPANESE_VOICE_PROFILE,
   });
 }
 
@@ -126,6 +133,7 @@ export function getDefaultJapaneseVoice(voices: SpeechSynthesisVoice[]) {
   return getDefaultVoiceForLanguage(voices, {
     languagePrefix: "ja",
     preferredVoiceNames: [DEFAULT_JAPANESE_VOICE_NAME],
+    allowedVoiceNames: JAPANESE_VOICE_PROFILE,
   });
 }
 
