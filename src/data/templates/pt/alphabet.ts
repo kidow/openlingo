@@ -74,9 +74,9 @@ const LETTER_SEGMENTS: Record<string, SegmentId[]> = {
   Z: ["top", "diagAsc", "bottom"],
 };
 
-const portugueseUppercaseLetters = Object.keys(LETTER_SEGMENTS);
-
 function createPortugueseLatinTemplates(caseStyle: "uppercase" | "lowercase"): WritingTemplate[] {
+  const portugueseUppercaseLetters = Object.keys(LETTER_SEGMENTS);
+
   return portugueseUppercaseLetters.map((letter) => {
     const lowercaseLetter = letter.toLowerCase();
     const segments = LETTER_SEGMENTS[letter];
@@ -126,7 +126,10 @@ function createPortugueseLatinTemplates(caseStyle: "uppercase" | "lowercase"): W
   });
 }
 
+export const ptUppercaseLatinAlphabetTemplates: WritingTemplate[] = createPortugueseLatinTemplates("uppercase");
+export const ptLowercaseLatinAlphabetTemplates: WritingTemplate[] = createPortugueseLatinTemplates("lowercase");
+
 export const ptLatinAlphabetTemplates: WritingTemplate[] = [
-  ...createPortugueseLatinTemplates("uppercase"),
-  ...createPortugueseLatinTemplates("lowercase"),
+  ...ptUppercaseLatinAlphabetTemplates,
+  ...ptLowercaseLatinAlphabetTemplates,
 ];

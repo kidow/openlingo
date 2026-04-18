@@ -425,8 +425,8 @@ export const languagePacks: LanguagePack[] = [
     direction: "ltr",
     stage: "Prototype",
     summary: {
-      ko: "악상, 세딜랴, 틸 등 다양한 분음 부호로 라틴 문자 렌더링 범위를 넓힙니다.",
-      en: "Accents, cedilla, and tilde broaden diacritic rendering coverage for Latin scripts.",
+      ko: "악상, 세딜랴, 틸, 트레마 등 다양한 분음 부호로 라틴 문자 렌더링 범위를 넓힙니다.",
+      en: "Accents, cedilla, tilde, and diaeresis broaden diacritic rendering coverage for Latin scripts.",
     },
     templateGroups: createCaseGroups(ptTemplates, {
       first: { ko: "대문자", en: "Uppercase" },

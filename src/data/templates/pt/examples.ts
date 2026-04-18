@@ -334,6 +334,14 @@ const uAcuteExamples = createCaseExamples([
   { word: "cúmulo", reading: "쿠물루", meaning: "최고점" },
 ]);
 
+const uDiaeresisExamples = createCaseExamples([
+  { word: "über", reading: "위버", meaning: "위에, 넘어서" },
+  { word: "müller", reading: "뮐러", meaning: "뮐러" },
+  { word: "für", reading: "퓌르", meaning: "위해" },
+  { word: "grün", reading: "그륀", meaning: "초록색" },
+  { word: "kühne", reading: "퀴네", meaning: "대담한" },
+]);
+
 export const portugueseExampleWordsByTemplateId: Record<string, ExampleWord[]> = {
   ...createCaseExampleMap("a", aExamples),
   ...createCaseExampleMap("b", bExamples),
@@ -385,4 +393,6 @@ export const portugueseExampleWordsByTemplateId: Record<string, ExampleWord[]> =
   ...createExampleMap("pt-lowercase-o-tilde", oTildeExamples.lowercase),
   ...createExampleMap("pt-uppercase-u-acute", uAcuteExamples.uppercase),
   ...createExampleMap("pt-lowercase-u-acute", uAcuteExamples.lowercase),
+  ...createExampleMap("pt-uppercase-u-diaeresis", uDiaeresisExamples.uppercase),
+  ...createExampleMap("pt-lowercase-u-diaeresis", uDiaeresisExamples.lowercase),
 };

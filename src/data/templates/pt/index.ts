@@ -1,5 +1,8 @@
 import { WritingTemplate } from "@/types/writing";
-import { ptLatinAlphabetTemplates } from "./alphabet";
+import {
+  ptLowercaseLatinAlphabetTemplates,
+  ptUppercaseLatinAlphabetTemplates,
+} from "./alphabet";
 /* A variants */
 import { ptUppercaseAGraveTemplate } from "./uppercase-a-grave";
 import { ptLowercaseAGraveTemplate } from "./lowercase-a-grave";
@@ -30,33 +33,49 @@ import { ptLowercaseOTildeTemplate } from "./lowercase-o-tilde";
 /* U acute */
 import { ptUppercaseUAcuteTemplate } from "./uppercase-u-acute";
 import { ptLowercaseUAcuteTemplate } from "./lowercase-u-acute";
+/* U diaeresis */
+import { ptUppercaseUDiaeresisTemplate } from "./uppercase-u-diaeresis";
+import { ptLowercaseUDiaeresisTemplate } from "./lowercase-u-diaeresis";
 
 /* Standard Latin A–Z (uppercase + lowercase) */
-/* Accented: À/à, Á/á, Â/â, Ã/ã, Ç/ç, É/é, Ê/ê, Í/í, Ó/ó, Ô/ô, Õ/õ, Ú/ú */
-export const ptTemplates: WritingTemplate[] = [
-  ...ptLatinAlphabetTemplates,
+/* Accented: À/à, Á/á, Â/â, Ã/ã, Ç/ç, É/é, Ê/ê, Í/í, Ó/ó, Ô/ô, Õ/õ, Ú/ú, Ü/ü */
+const ptUppercaseAccentedTemplates: WritingTemplate[] = [
   ptUppercaseAGraveTemplate,
-  ptLowercaseAGraveTemplate,
   ptUppercaseAAcuteTemplate,
-  ptLowercaseAAcuteTemplate,
   ptUppercaseACircumflexTemplate,
-  ptLowercaseACircumflexTemplate,
   ptUppercaseATildeTemplate,
-  ptLowercaseATildeTemplate,
   ptUppercaseCCedillaTemplate,
-  ptLowercaseCCedillaTemplate,
   ptUppercaseEAcuteTemplate,
-  ptLowercaseEAcuteTemplate,
   ptUppercaseECircumflexTemplate,
-  ptLowercaseECircumflexTemplate,
   ptUppercaseIAcuteTemplate,
-  ptLowercaseIAcuteTemplate,
   ptUppercaseOAcuteTemplate,
-  ptLowercaseOAcuteTemplate,
   ptUppercaseOCircumflexTemplate,
-  ptLowercaseOCircumflexTemplate,
   ptUppercaseOTildeTemplate,
-  ptLowercaseOTildeTemplate,
   ptUppercaseUAcuteTemplate,
+  ptUppercaseUDiaeresisTemplate,
+];
+
+const ptLowercaseAccentedTemplates: WritingTemplate[] = [
+  ptLowercaseAGraveTemplate,
+  ptLowercaseAAcuteTemplate,
+  ptLowercaseACircumflexTemplate,
+  ptLowercaseATildeTemplate,
+  ptLowercaseCCedillaTemplate,
+  ptLowercaseEAcuteTemplate,
+  ptLowercaseECircumflexTemplate,
+  ptLowercaseIAcuteTemplate,
+  ptLowercaseOAcuteTemplate,
+  ptLowercaseOCircumflexTemplate,
+  ptLowercaseOTildeTemplate,
   ptLowercaseUAcuteTemplate,
+  ptLowercaseUDiaeresisTemplate,
+];
+
+/* Portuguese counts accented letters as separate practice cards here:
+   39 uppercase templates + 39 lowercase templates */
+export const ptTemplates: WritingTemplate[] = [
+  ...ptUppercaseLatinAlphabetTemplates,
+  ...ptUppercaseAccentedTemplates,
+  ...ptLowercaseLatinAlphabetTemplates,
+  ...ptLowercaseAccentedTemplates,
 ];
