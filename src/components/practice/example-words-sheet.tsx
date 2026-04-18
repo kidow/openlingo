@@ -141,7 +141,7 @@ export function ExampleWordsSheet({
                     <div
                       className={cn(
                         "flex flex-wrap items-center gap-x-3 gap-y-1",
-                        isRtlLayout && "flex-row-reverse justify-end"
+                        isRtlLayout && "flex-row-reverse justify-start"
                       )}
                     >
                       {isRtlLayout ? (

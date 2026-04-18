@@ -230,24 +230,94 @@ export function getDefaultRussianVoice(voices: SpeechSynthesisVoice[]) {
 export const DEFAULT_ARABIC_VOICE_NAME = "Google العربية";
 export const ARABIC_VOICE_PROFILE = [
   DEFAULT_ARABIC_VOICE_NAME,
+  "Google Arabic",
   "Maged",
+  "Tarik",
+  "Naayf",
+  "Hamed",
+  "Hoda",
+  "Salma",
+  "Reem",
+  "Layla",
+  "Laila",
+  "Noura",
+  "Nour",
+  "Maha",
+  "Sana",
+  "Mariam",
+  "Zeinab",
+  "Zariyah",
   "Microsoft Hamed Online (Natural) - Arabic (Saudi Arabia)",
+  "Microsoft Naayf Online (Natural) - Arabic (Saudi Arabia)",
+  "Microsoft Abdullah Online (Natural) - Arabic (Saudi Arabia)",
+  "Microsoft Amina Online (Natural) - Arabic (Morocco)",
+  "Microsoft Fatima Online (Natural) - Arabic (Morocco)",
+  "Microsoft Salma Online (Natural) - Arabic (Egypt)",
+  "Microsoft Hoda Online (Natural) - Arabic (Egypt)",
+  "Microsoft Reem Online (Natural) - Arabic (Egypt)",
 ];
 
-export function getArabicVoiceOptions(voices: SpeechSynthesisVoice[]) {
-  return getVoiceOptionsForLanguage(voices, {
-    languagePrefix: "ar",
-    preferredVoiceNames: [DEFAULT_ARABIC_VOICE_NAME],
-    allowedVoiceNames: ARABIC_VOICE_PROFILE,
+function isArabicVoiceName(voice: SpeechSynthesisVoice) {
+  const normalizedName = voice.name.toLowerCase();
+
+  return normalizedName.includes("arabic") || normalizedName.includes("العربية");
+}
+
+function isArabicVoice(voice: SpeechSynthesisVoice) {
+  return voice.lang.toLowerCase().startsWith("ar") || isArabicVoiceName(voice);
+}
+
+function sortVoicesByPreference(voices: SpeechSynthesisVoice[], preferredVoiceNames: string[]) {
+  return [...voices].sort((left, right) => {
+    const leftIsPreferred = preferredVoiceNames.length > 0 ? matchesAnyVoiceName(left, preferredVoiceNames) : false;
+    const rightIsPreferred = preferredVoiceNames.length > 0 ? matchesAnyVoiceName(right, preferredVoiceNames) : false;
+
+    if (leftIsPreferred && !rightIsPreferred) {
+      return -1;
+    }
+
+    if (!leftIsPreferred && rightIsPreferred) {
+      return 1;
+    }
+
+    if (left.default && !right.default) {
+      return -1;
+    }
+
+    if (!left.default && right.default) {
+      return 1;
+    }
+
+    return left.name.localeCompare(right.name);
   });
 }
 
+export function getArabicVoiceOptions(voices: SpeechSynthesisVoice[]) {
+  const arabicVoices = voices.filter((voice) => isArabicVoice(voice) || matchesAnyVoiceName(voice, ARABIC_VOICE_PROFILE));
+
+  if (arabicVoices.length > 0) {
+    return sortVoicesByPreference(arabicVoices, [DEFAULT_ARABIC_VOICE_NAME]);
+  }
+
+  return sortVoicesByPreference(voices, [DEFAULT_ARABIC_VOICE_NAME]);
+}
+
 export function getDefaultArabicVoice(voices: SpeechSynthesisVoice[]) {
-  return getDefaultVoiceForLanguage(voices, {
-    languagePrefix: "ar",
-    preferredVoiceNames: [DEFAULT_ARABIC_VOICE_NAME],
-    allowedVoiceNames: ARABIC_VOICE_PROFILE,
-  });
+  for (const preferredName of ARABIC_VOICE_PROFILE) {
+    const matchedVoice = voices.find((voice) => matchesVoiceName(voice, preferredName));
+
+    if (matchedVoice) {
+      return matchedVoice;
+    }
+  }
+
+  const arabicVoice = voices.find((voice) => isArabicVoice(voice));
+
+  if (arabicVoice) {
+    return arabicVoice;
+  }
+
+  return voices.find((voice) => voice.default) ?? null;
 }
 
 export const DEFAULT_FRENCH_VOICE_NAME = "Google français";
