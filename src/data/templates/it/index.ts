@@ -1,4 +1,4 @@
-import { WritingTemplate } from "@/types/writing";
+import { PracticeTemplateGroup, WritingTemplate } from "@/types/writing";
 import {
   ptLowercaseLatinAlphabetTemplates,
   ptUppercaseLatinAlphabetTemplates,
@@ -21,6 +21,7 @@ const ITALIAN_GRID_LABEL = {
 
 const GRAVE_UPPER = "M54 14 L42 6";
 const GRAVE_LOWER = "M54 26 L42 18";
+const ITALIAN_FOREIGN_LETTERS = new Set(["it-j", "it-k", "it-w", "it-x", "it-y", "it-lower-j", "it-lower-k", "it-lower-w", "it-lower-x", "it-lower-y"]);
 
 const ptAlphabetTemplates = [...ptUppercaseLatinAlphabetTemplates, ...ptLowercaseLatinAlphabetTemplates];
 const ptBaseTemplateMap = new Map(ptAlphabetTemplates.map((template) => [template.id, template]));
@@ -143,6 +144,10 @@ function createItalianAccentFromBase(
 
 const itUppercaseBaseTemplates = ptUppercaseLatinAlphabetTemplates.map(cloneBaseLatinTemplate);
 const itLowercaseBaseTemplates = ptLowercaseLatinAlphabetTemplates.map(cloneBaseLatinTemplate);
+const itUppercaseBasicTemplates = itUppercaseBaseTemplates.filter((template) => !ITALIAN_FOREIGN_LETTERS.has(template.id));
+const itLowercaseBasicTemplates = itLowercaseBaseTemplates.filter((template) => !ITALIAN_FOREIGN_LETTERS.has(template.id));
+const itUppercaseForeignTemplates = itUppercaseBaseTemplates.filter((template) => ITALIAN_FOREIGN_LETTERS.has(template.id));
+const itLowercaseForeignTemplates = itLowercaseBaseTemplates.filter((template) => ITALIAN_FOREIGN_LETTERS.has(template.id));
 
 const itUppercaseAccentTemplates = [
   cloneAccentTemplate(ptUppercaseAGraveTemplate, {
@@ -275,8 +280,49 @@ const itLowercaseAccentTemplates = [
 ];
 
 export const itTemplates: WritingTemplate[] = [
-  ...itUppercaseBaseTemplates,
+  ...itUppercaseBasicTemplates,
   ...itUppercaseAccentTemplates,
-  ...itLowercaseBaseTemplates,
+  ...itLowercaseBasicTemplates,
   ...itLowercaseAccentTemplates,
+  ...itUppercaseForeignTemplates,
+  ...itLowercaseForeignTemplates,
+];
+
+function createGroupFromTemplates(id: string, label: { ko: string; en: string }, templates: WritingTemplate[], description?: { ko: string; en: string }): PracticeTemplateGroup {
+  return {
+    id,
+    label,
+    description,
+    templateIds: templates.map((template) => template.id),
+  };
+}
+
+export const itTemplateGroups: PracticeTemplateGroup[] = [
+  createGroupFromTemplates(
+    "basic",
+    { ko: "기본 문자", en: "Basic letters" },
+    [...itUppercaseBasicTemplates, ...itLowercaseBasicTemplates],
+    {
+      ko: "이탈리아어 표준 알파벳 21자를 연습합니다.",
+      en: "Practice the 21 standard Italian letters.",
+    }
+  ),
+  createGroupFromTemplates(
+    "foreign",
+    { ko: "외래 문자", en: "Foreign letters" },
+    [...itUppercaseForeignTemplates, ...itLowercaseForeignTemplates],
+    {
+      ko: "J, K, W, X, Y는 외래어 표기에서 쓰는 문자입니다.",
+      en: "J, K, W, X, Y are used mainly in foreign loanwords.",
+    }
+  ),
+  createGroupFromTemplates(
+    "accents",
+    { ko: "악센트 문자", en: "Accent letters" },
+    [...itUppercaseAccentTemplates, ...itLowercaseAccentTemplates],
+    {
+      ko: "강세와 장단을 나타내는 악센트 문자를 연습합니다.",
+      en: "Practice accented letters used for stress and vowel quality.",
+    }
+  ),
 ];
