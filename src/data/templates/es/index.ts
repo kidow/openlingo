@@ -1,15 +1,18 @@
 import { PracticeTemplateGroup, WritingTemplate } from "@/types/writing";
 import { esLatinAlphabetTemplates } from "./alphabet";
+import { applySpanishGlyphAssets } from "./glyph-assets";
 import { esUppercaseEnyeTemplate } from "./uppercase-enye";
 import { esLowercaseEnyeTemplate } from "./lowercase-enye";
 
 /* Standard Latin A–Z (uppercase + lowercase) */
 /* Eñe: Ñ/ñ */
-export const esTemplates: WritingTemplate[] = [
+const esBaseTemplates: WritingTemplate[] = [
   ...esLatinAlphabetTemplates,
   esUppercaseEnyeTemplate,
   esLowercaseEnyeTemplate,
 ];
+
+export const esTemplates: WritingTemplate[] = applySpanishGlyphAssets(esBaseTemplates);
 
 export const esTemplateGroups: PracticeTemplateGroup[] = [
   {
