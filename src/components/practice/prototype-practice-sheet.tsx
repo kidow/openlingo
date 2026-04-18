@@ -17,6 +17,7 @@ import { GermanExampleSheet } from "@/components/practice/german-example-sheet";
 import { FrenchExampleSheet } from "@/components/practice/french-example-sheet";
 import { SpanishExampleSheet } from "@/components/practice/spanish-example-sheet";
 import { PortugueseExampleSheet } from "@/components/practice/portuguese-example-sheet";
+import { ItalianExampleSheet } from "@/components/practice/italian-example-sheet";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
@@ -287,6 +288,16 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
           ) : null}
           {selectedLanguage.id === "pt" ? (
             <PortugueseExampleSheet
+              dictionary={dictionary}
+              selectedTemplateId={selectedTemplate.id}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+              open={isExampleSheetOpen}
+              onOpenChange={setIsExampleSheetOpen}
+            />
+          ) : null}
+          {selectedLanguage.id === "it" ? (
+            <ItalianExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
               selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}

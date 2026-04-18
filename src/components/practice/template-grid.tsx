@@ -141,7 +141,7 @@ export function TemplateGrid({
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge className="rounded-none">{isChinesePack ? filteredChineseTemplates.length : selectedLanguage.templates.length}</Badge>
-          {["ja", "ru", "ar", "de", "es", "fr", "pt"].includes(selectedLanguage.id) && onOpenExampleWords ? (
+          {["ja", "ru", "ar", "de", "es", "fr", "pt", "it"].includes(selectedLanguage.id) && onOpenExampleWords ? (
             <Button type="button" variant="ghost" size="sm" onClick={onOpenExampleWords} className="rounded-none">
               {dictionary.sections.exampleWordsTitle}
             </Button>

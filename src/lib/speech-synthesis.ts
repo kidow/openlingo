@@ -266,6 +266,28 @@ export function getDefaultPortugueseVoice(voices: SpeechSynthesisVoice[]) {
   });
 }
 
+export const DEFAULT_ITALIAN_VOICE_NAME = "Google italiano";
+export const ITALIAN_VOICE_PROFILE = [
+  "Google italiano",
+  "Microsoft Diego Online (Natural) - Italian (Italy)",
+  "Microsoft Elsa Online (Natural) - Italian (Italy)",
+  "Microsoft Isabella Online (Natural) - Italian (Italy)",
+];
+
+export function getItalianVoiceOptions(voices: SpeechSynthesisVoice[]) {
+  return getVoiceOptionsForProfile(voices, {
+    languagePrefix: "it",
+    voiceNames: ITALIAN_VOICE_PROFILE,
+  });
+}
+
+export function getDefaultItalianVoice(voices: SpeechSynthesisVoice[]) {
+  return getDefaultVoiceForProfile(voices, {
+    languagePrefix: "it",
+    voiceNames: ITALIAN_VOICE_PROFILE,
+  });
+}
+
 export const DEFAULT_GERMAN_VOICE_NAME = "Google Deutsch";
 export const GERMAN_VOICE_PROFILE = [
   DEFAULT_GERMAN_VOICE_NAME,

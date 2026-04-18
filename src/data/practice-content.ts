@@ -42,6 +42,7 @@ import { deTemplates } from "@/data/templates/de";
 import { esTemplates } from "@/data/templates/es";
 import { frTemplates } from "@/data/templates/fr";
 import { ptTemplates } from "@/data/templates/pt";
+import { itTemplates } from "@/data/templates/it";
 import { hiraganaTemplates, katakanaTemplates } from "@/data/templates/ja";
 import { zhHansTemplates } from "@/data/templates/zh/zh-hans";
 import { zhHantTemplates } from "@/data/templates/zh/zh-hant";
@@ -433,6 +434,25 @@ export const languagePacks: LanguagePack[] = [
       second: { ko: "소문자", en: "Lowercase" },
     }),
     templates: ptTemplates,
+  },
+  {
+    id: "it",
+    label: {
+      ko: "이탈리아어",
+      en: "Italian",
+    },
+    nativeLabel: "Italiano",
+    direction: "ltr",
+    stage: "Prototype",
+    summary: {
+      ko: "기본 라틴 알파벳과 이탈리아어에서 쓰는 악센트 문자를 함께 연습합니다.",
+      en: "Practice the basic Latin alphabet together with accented Italian letters.",
+    },
+    templateGroups: createCaseGroups(itTemplates, {
+      first: { ko: "대문자", en: "Uppercase" },
+      second: { ko: "소문자", en: "Lowercase" },
+    }),
+    templates: itTemplates,
   },
   {
     id: "zh-hans",
