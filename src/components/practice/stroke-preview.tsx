@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef } from "react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
 import { cn } from "@/lib/utils";
@@ -40,16 +40,10 @@ export function StrokePreview({
   const usesGlyphReveal = Boolean(template.glyph || template.glyphAsset);
   const revealMaskId = useId().replace(/:/g, "");
 
-  const [autoPlayEnabled, setAutoPlayEnabled] = useState(autoplay);
-
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
   const animationsRef = useRef<Animation[]>([]);
   const playbackTokenRef = useRef(0);
   const reducedMotionRef = useRef(false);
-
-  useEffect(() => {
-    setAutoPlayEnabled(autoplay);
-  }, [autoplay]);
 
   const resetStyles = useCallback(() => {
     pathRefs.current.forEach((path) => {
@@ -153,7 +147,7 @@ export function StrokePreview({
     pathRefs.current = pathRefs.current.slice(0, sortedStrokes.length);
     resetStyles();
 
-    if (autoPlayEnabled) {
+    if (autoplay) {
       void runPlayback();
     } else {
       stopPlayback();
@@ -162,7 +156,7 @@ export function StrokePreview({
     return () => {
       stopPlayback();
     };
-  }, [autoPlayEnabled, resetStyles, runPlayback, sortedStrokes.length, stopPlayback, template.id]);
+  }, [autoplay, resetStyles, runPlayback, sortedStrokes.length, stopPlayback, template.id]);
 
   if (!sortedStrokes.length) {
     return null;

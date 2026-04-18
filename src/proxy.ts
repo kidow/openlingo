@@ -35,6 +35,11 @@ function getLocaleFromPathname(pathname: string) {
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  if (pathname === "/manifest.webmanifest" || pathname.endsWith("/manifest.webmanifest")) {
+    return NextResponse.next();
+  }
+
   const pathnameLocale = getLocaleFromPathname(pathname);
   const detectedLocale = pathnameLocale ?? detectLocale(request);
 
@@ -56,5 +61,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.svg|manifest.webmanifest).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|icon-192.png|icon-512.png|apple-icon.png|sw.js).*)",
+  ],
 };

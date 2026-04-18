@@ -930,10 +930,10 @@ public/
 
 ### 15.7 설치형 웹앱
 
-- manifest 작성
-- 아이콘 구성
-- service worker 구성
-- 오프라인 캐시 점검
+- `src/app/manifest.ts`로 request-time locale-aware manifest 제공
+- `src/app/icon-192.png`, `src/app/icon-512.png`, `src/app/apple-icon.png` 아이콘 구성
+- `public/sw.js` service worker 등록
+- 오프라인 캐시 점검 및 필요시 보강
 
 ### 15.8 테스트
 
