@@ -3,7 +3,4 @@ node_modules
 dist
 coverage
 *.tsbuildinfo
-.omc
-.claude/settings.local.json
-.omx
 .superpowers
