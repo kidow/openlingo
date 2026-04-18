@@ -20,6 +20,7 @@ import { PortugueseExampleSheet } from "@/components/practice/portuguese-example
 import { ItalianExampleSheet } from "@/components/practice/italian-example-sheet";
 import { ChineseExampleSheet } from "@/components/practice/chinese-example-sheet";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
+import { useExampleWordsAction } from "@/components/layout/example-words-action-context";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
   return {
@@ -37,6 +38,7 @@ type PrototypePracticeSheetProps = {
 };
 
 export function PrototypePracticeSheet({ locale, dictionary }: PrototypePracticeSheetProps) {
+  const { setAction } = useExampleWordsAction();
   const [selectedLanguageId, setSelectedLanguageId] = useState(languagePacks[0].id);
   const [selectedTemplateId, setSelectedTemplateId] = useState(DEFAULT_TEMPLATE.id);
   const [strokes, setStrokes] = useState<Stroke[]>([]);
@@ -49,6 +51,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
+  const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it"].includes(selectedLanguage.id);
 
   function resetPracticeState(options?: { closeExampleSheet?: boolean }) {
     activeStrokeIdRef.current = null;
@@ -77,6 +80,20 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
 
     return () => window.clearTimeout(timeoutId);
   }, [selectedTemplate, strokes]);
+
+  useEffect(() => {
+    if (!supportsExampleWords) {
+      setAction(null);
+      return;
+    }
+
+    setAction({
+      label: dictionary.sections.exampleWordsTitle,
+      onOpen: () => setIsExampleSheetOpen(true),
+    });
+
+    return () => setAction(null);
+  }, [dictionary.sections.exampleWordsTitle, selectedLanguage.id, setAction, supportsExampleWords]);
 
   function handleLanguageSelect(languageId: string) {
     const nextLanguage = languagePacks.find((pack) => pack.id === languageId) ?? languagePacks[0];
@@ -228,7 +245,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             selectedLanguage={selectedLanguage}
             selectedTemplateId={selectedTemplate.id}
             onSelectTemplate={handleTemplateSelect}
-            onOpenExampleWords={() => setIsExampleSheetOpen(true)}
           />
           {selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant" ? (
             <ChineseExampleSheet

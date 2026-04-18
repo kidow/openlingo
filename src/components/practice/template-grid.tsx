@@ -6,7 +6,6 @@ import { BookOpenText, Search } from "lucide-react";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TemplateGlyphMark } from "@/components/practice/template-glyph";
 import { languagePacks } from "@/data/practice-content";
@@ -17,7 +16,6 @@ type TemplateGridProps = {
   selectedLanguage: (typeof languagePacks)[number];
   selectedTemplateId: string;
   onSelectTemplate: (templateId: string) => void;
-  onOpenExampleWords?: () => void;
 };
 
 type ChineseStrokeBucket = {
@@ -66,7 +64,6 @@ export function TemplateGrid({
   selectedLanguage,
   selectedTemplateId,
   onSelectTemplate,
-  onOpenExampleWords,
 }: TemplateGridProps) {
   const templatesById = new Map(selectedLanguage.templates.map((template) => [template.id, template]));
   const isChinesePack = selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant";
@@ -105,10 +102,6 @@ export function TemplateGrid({
   const chineseStrokeBucket =
     chineseStrokeBuckets.find((bucket) => bucket.id === selectedStrokeBucketId) ?? chineseStrokeBuckets[0];
   const showChineseStrokeBuckets = selectedCategoryId !== "strokes";
-  const selectedChineseTemplate = templatesById.get(selectedTemplateId);
-  const shouldShowChineseExampleWordsButton =
-    isChinesePack && selectedChineseTemplate ? !isChineseBasicStrokeTemplate(selectedChineseTemplate.id) : false;
-
   const filteredChineseTemplates = isChinesePack
     ? selectedLanguage.templates.filter((template) => {
         if (!chineseCategoryTemplateIds.includes(template.id)) {
@@ -157,12 +150,6 @@ export function TemplateGrid({
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge className="rounded-none">{isChinesePack ? filteredChineseTemplates.length : selectedLanguage.templates.length}</Badge>
-          {(["ja", "ru", "ar", "de", "es", "fr", "pt", "it"].includes(selectedLanguage.id) || shouldShowChineseExampleWordsButton) &&
-          onOpenExampleWords ? (
-            <Button type="button" variant="ghost" size="sm" onClick={onOpenExampleWords} className="rounded-none">
-              {dictionary.sections.exampleWordsTitle}
-            </Button>
-          ) : null}
         </div>
       </div>
 

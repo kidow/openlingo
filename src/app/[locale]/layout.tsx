@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { AppHeader } from "@/components/layout/app-header";
+import { ExampleWordsActionProvider } from "@/components/layout/example-words-action-context";
 import { AppLocale, isAppLocale, LOCALES } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
@@ -57,9 +58,11 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const dictionary = getDictionary(locale);
 
   return (
-    <div className="min-h-screen">
-      <AppHeader locale={locale} dictionary={dictionary.header} />
-      {children}
-    </div>
+    <ExampleWordsActionProvider>
+      <div className="min-h-screen">
+        <AppHeader locale={locale} dictionary={dictionary.header} />
+        {children}
+      </div>
+    </ExampleWordsActionProvider>
   );
 }
