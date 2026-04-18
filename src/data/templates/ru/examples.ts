@@ -1,14 +1,6 @@
-export type RussianExampleWord = {
-  word: string;
-  reading: string;
-  meaning: string;
-};
+import { ExampleWord } from "../example-words";
 
-type BaseExampleSet = {
-  word: string;
-  reading: string;
-  meaning: string;
-};
+type BaseExampleSet = ExampleWord;
 
 function capitalizeWord(word: string) {
   return word.slice(0, 1).toUpperCase() + word.slice(1);
@@ -288,7 +280,7 @@ const yaExamples = createCaseExamples([
   { word: "ясно", reading: "야스노", meaning: "분명한" },
 ]);
 
-export const russianExampleWordsByTemplateId: Record<string, RussianExampleWord[]> = {
+export const russianExampleWordsByTemplateId: Record<string, ExampleWord[]> = {
   "ru-uppercase-a": aExamples.uppercase,
   "ru-lowercase-a": aExamples.lowercase,
   "ru-uppercase-be": beExamples.uppercase,

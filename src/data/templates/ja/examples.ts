@@ -1,10 +1,6 @@
-export type JapaneseExampleWord = {
-  word: string;
-  reading: string;
-  meaning: string;
-};
+import { ExampleWord } from "../example-words";
 
-const hiraganaExampleWordsByTemplateId: Record<string, JapaneseExampleWord[]> = {
+const hiraganaExampleWordsByTemplateId: Record<string, ExampleWord[]> = {
   "ja-hiragana-a": [
     { word: "あい", reading: "아이", meaning: "사랑" },
     { word: "あさ", reading: "아사", meaning: "아침" },
@@ -336,7 +332,7 @@ function hiraganaToKatakana(text: string) {
     .join("");
 }
 
-const katakanaExampleWordsByTemplateId: Record<string, JapaneseExampleWord[]> = Object.fromEntries(
+const katakanaExampleWordsByTemplateId: Record<string, ExampleWord[]> = Object.fromEntries(
   Object.entries(hiraganaExampleWordsByTemplateId).map(([templateId, words]) => [
     templateId.replace("ja-hiragana-", "ja-katakana-"),
     words.map((item) => ({
@@ -346,7 +342,7 @@ const katakanaExampleWordsByTemplateId: Record<string, JapaneseExampleWord[]> = 
   ])
 );
 
-export const japaneseExampleWordsByTemplateId: Record<string, JapaneseExampleWord[]> = {
+export const japaneseExampleWordsByTemplateId: Record<string, ExampleWord[]> = {
   ...hiraganaExampleWordsByTemplateId,
   ...katakanaExampleWordsByTemplateId,
 };

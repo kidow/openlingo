@@ -2,7 +2,7 @@ export function isSpeechSynthesisSupported() {
   return typeof window !== "undefined" && "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
 }
 
-export function getSpeechSynthesisVoices() {
+export function getSpeechSynthesisVoices(): SpeechSynthesisVoice[] {
   if (!isSpeechSynthesisSupported()) {
     return [];
   }
@@ -10,7 +10,7 @@ export function getSpeechSynthesisVoices() {
   return window.speechSynthesis.getVoices();
 }
 
-export function loadSpeechSynthesisVoices(timeoutMs = 1500) {
+export function loadSpeechSynthesisVoices(timeoutMs = 1500): Promise<SpeechSynthesisVoice[]> {
   if (!isSpeechSynthesisSupported()) {
     return Promise.resolve([]);
   }
