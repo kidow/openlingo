@@ -1,11 +1,12 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { BookOpenText, Search } from "lucide-react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
 import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TemplateGlyphMark } from "@/components/practice/template-glyph";
 import { languagePacks } from "@/data/practice-content";
@@ -16,6 +17,7 @@ type TemplateGridProps = {
   selectedLanguage: (typeof languagePacks)[number];
   selectedTemplateId: string;
   onSelectTemplate: (templateId: string) => void;
+  onOpenJapaneseExamples?: () => void;
 };
 
 type ChineseStrokeBucket = {
@@ -60,18 +62,13 @@ export function TemplateGrid({
   selectedLanguage,
   selectedTemplateId,
   onSelectTemplate,
+  onOpenJapaneseExamples,
 }: TemplateGridProps) {
   const templatesById = new Map(selectedLanguage.templates.map((template) => [template.id, template]));
   const isChinesePack = selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState("all");
   const [selectedStrokeBucketId, setSelectedStrokeBucketId] = useState("all");
-
-  useEffect(() => {
-    setSearchQuery("");
-    setSelectedCategoryId("all");
-    setSelectedStrokeBucketId("all");
-  }, [selectedLanguage.id]);
 
   const templateGroups = selectedLanguage.templateGroups.length
     ? selectedLanguage.templateGroups
@@ -143,6 +140,11 @@ export function TemplateGrid({
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge className="rounded-none">{isChinesePack ? filteredChineseTemplates.length : selectedLanguage.templates.length}</Badge>
+          {selectedLanguage.id === "ja" && onOpenJapaneseExamples ? (
+            <Button type="button" variant="ghost" size="sm" onClick={onOpenJapaneseExamples} className="rounded-none">
+              {dictionary.sections.japaneseExamplesTitle}
+            </Button>
+          ) : null}
         </div>
       </div>
 

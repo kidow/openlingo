@@ -10,6 +10,7 @@ import { Stroke, StrokePoint } from "@/types/writing";
 import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
 import { PracticeCanvas } from "@/components/practice/practice-canvas";
 import { TemplateGrid } from "@/components/practice/template-grid";
+import { JapaneseExampleSheet } from "@/components/practice/japanese-example-sheet";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
@@ -33,6 +34,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [score, setScore] = useState<number | null>(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+  const [isJapaneseExampleSheetOpen, setIsJapaneseExampleSheetOpen] = useState(false);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
 
@@ -40,12 +42,15 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
 
-  function resetPracticeState() {
+  function resetPracticeState(options?: { closeJapaneseExampleSheet?: boolean }) {
     activeStrokeIdRef.current = null;
     activePointerIdRef.current = null;
     setStrokes([]);
     setScore(null);
     setIsPreviewVisible(false);
+    if (options?.closeJapaneseExampleSheet) {
+      setIsJapaneseExampleSheetOpen(false);
+    }
   }
 
   const selectedTemplateIndex = selectedLanguage.templates.findIndex((template) => template.id === selectedTemplate.id);
@@ -71,7 +76,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     startTransition(() => {
       setSelectedLanguageId(nextLanguage.id);
       setSelectedTemplateId(nextLanguage.templates[0].id);
-      resetPracticeState();
+      resetPracticeState({ closeJapaneseExampleSheet: true });
     });
   }
 
@@ -204,13 +209,25 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
         </section>
       }
       templateGrid={
-        <TemplateGrid
-          locale={locale}
-          dictionary={dictionary}
-          selectedLanguage={selectedLanguage}
-          selectedTemplateId={selectedTemplate.id}
-          onSelectTemplate={handleTemplateSelect}
-        />
+        <div className="grid gap-4">
+          <TemplateGrid
+            key={selectedLanguage.id}
+            locale={locale}
+            dictionary={dictionary}
+            selectedLanguage={selectedLanguage}
+            selectedTemplateId={selectedTemplate.id}
+            onSelectTemplate={handleTemplateSelect}
+            onOpenJapaneseExamples={() => setIsJapaneseExampleSheetOpen(true)}
+          />
+          <JapaneseExampleSheet
+            dictionary={dictionary}
+            selectedTemplateId={selectedTemplate.id}
+            selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+            selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+            open={selectedLanguage.id === "ja" && isJapaneseExampleSheetOpen}
+            onOpenChange={setIsJapaneseExampleSheetOpen}
+          />
+        </div>
       }
     />
   );

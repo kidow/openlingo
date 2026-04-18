@@ -23,13 +23,19 @@ export type AppDictionary = {
     title: string;
     description: string;
   };
-  sections: {
-    languagePacksTitle: string;
-    practiceCardsTitle: string;
-    worksheetEyebrow: string;
-    worksheetScoringNote: string;
-    practiceToolsTitle: string;
-    practiceToolsDescription: string;
+    sections: {
+      languagePacksTitle: string;
+      practiceCardsTitle: string;
+      japaneseExamplesTitle: string;
+      japaneseExamplesDescription: string;
+      japaneseVoiceSelectorTitle: string;
+      japaneseExamplesSpeechReady: string;
+      japaneseExamplesSpeechUnavailable: string;
+      japaneseExamplesUnavailable: string;
+      worksheetEyebrow: string;
+      worksheetScoringNote: string;
+      practiceToolsTitle: string;
+      practiceToolsDescription: string;
     scoreTitle: string;
     scoreDescription: string;
     sessionNotesTitle: string;
@@ -46,6 +52,8 @@ export type AppDictionary = {
     clearPage: string;
     replayStrokePreview: string;
     toggleStrokeAutoplay: string;
+    closePanel: string;
+    playPronunciation: string;
   };
   common: {
     on: string;
@@ -100,6 +108,12 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
     sections: {
       languagePacksTitle: "연습 언어 팩",
       practiceCardsTitle: "연습 카드",
+      japaneseExamplesTitle: "예시 단어",
+      japaneseExamplesDescription: "선택한 글자로 시작하는 단어를 보고, 필요하면 발음도 바로 들어보세요.",
+      japaneseVoiceSelectorTitle: "음성 선택",
+      japaneseExamplesSpeechReady: "기기 음성 재생을 사용할 수 있습니다.",
+      japaneseExamplesSpeechUnavailable: "현재 브라우저에서는 음성 재생을 사용할 수 없습니다.",
+      japaneseExamplesUnavailable: "이 글자에 대한 예시 단어를 아직 준비하지 않았습니다.",
       worksheetEyebrow: "워크시트",
       worksheetScoringNote: "채점기는 대략적인 경로 유사도 추정을 사용해, 정적인 목업이 아니라 실제 연습 루프처럼 느껴지도록 구성했습니다.",
       practiceToolsTitle: "연습 도구",
@@ -120,6 +134,8 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       clearPage: "지우기",
       replayStrokePreview: "다시 보기",
       toggleStrokeAutoplay: "자동 재생",
+      closePanel: "패널 닫기",
+      playPronunciation: "발음 재생",
     },
     common: {
       on: "켜짐",
@@ -193,6 +209,12 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
     sections: {
       languagePacksTitle: "Language packs",
       practiceCardsTitle: "Practice cards",
+      japaneseExamplesTitle: "Example words",
+      japaneseExamplesDescription: "Review words that start with the selected character, and play the pronunciation when you need it.",
+      japaneseVoiceSelectorTitle: "Voice selection",
+      japaneseExamplesSpeechReady: "Device speech playback is available.",
+      japaneseExamplesSpeechUnavailable: "Speech playback is not available in this browser.",
+      japaneseExamplesUnavailable: "Example words for this character are not available yet.",
       worksheetEyebrow: "Worksheet",
       worksheetScoringNote: "The scorer uses a rough path-similarity estimate so the interaction feels like a real practice loop, not a static mock.",
       practiceToolsTitle: "Practice tools",
@@ -213,6 +235,8 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
       clearPage: "Clear page",
       replayStrokePreview: "Replay",
       toggleStrokeAutoplay: "Autoplay",
+      closePanel: "Close panel",
+      playPronunciation: "Play pronunciation",
     },
     common: {
       on: "On",
