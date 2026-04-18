@@ -1,3 +1,4 @@
+import { applyArabicGlyphAssets } from "./glyph-assets";
 import { WritingTemplate } from "@/types/writing";
 
 import { arAlifTemplate } from "./alif";
@@ -29,7 +30,7 @@ import { arHaLetterTemplate } from "./ha-letter";
 import { arWawTemplate } from "./waw";
 import { arYaTemplate } from "./ya";
 
-export const arTemplates: WritingTemplate[] = [
+const arBaseTemplates: WritingTemplate[] = [
   arAlifTemplate,
   arBaTemplate,
   arTaTemplate,
@@ -59,3 +60,5 @@ export const arTemplates: WritingTemplate[] = [
   arWawTemplate,
   arYaTemplate,
 ];
+
+export const arTemplates: WritingTemplate[] = applyArabicGlyphAssets(arBaseTemplates);
