@@ -26,6 +26,10 @@ type ChineseStrokeBucket = {
   matches: (strokeCount: number) => boolean;
 };
 
+function isChineseBasicStrokeTemplate(templateId: string) {
+  return templateId.includes("-stroke-");
+}
+
 function getChineseStrokeBuckets(locale: AppLocale): ChineseStrokeBucket[] {
   return [
     {
@@ -94,10 +98,16 @@ export function TemplateGrid({
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const chineseCategoryTemplateIds =
     selectedCategoryId === "all"
-      ? selectedLanguage.templates.map((item) => item.id)
+      ? selectedLanguage.templates
+          .filter((item) => !isChineseBasicStrokeTemplate(item.id))
+          .map((item) => item.id)
       : selectedLanguage.templateGroups.find((group) => group.id === selectedCategoryId)?.templateIds ?? [];
   const chineseStrokeBucket =
     chineseStrokeBuckets.find((bucket) => bucket.id === selectedStrokeBucketId) ?? chineseStrokeBuckets[0];
+  const showChineseStrokeBuckets = selectedCategoryId !== "strokes";
+  const selectedChineseTemplate = templatesById.get(selectedTemplateId);
+  const shouldShowChineseExampleWordsButton =
+    isChinesePack && selectedChineseTemplate ? !isChineseBasicStrokeTemplate(selectedChineseTemplate.id) : false;
 
   const filteredChineseTemplates = isChinesePack
     ? selectedLanguage.templates.filter((template) => {
@@ -105,9 +115,15 @@ export function TemplateGrid({
           return false;
         }
 
-        const strokeCount = template.strokeGuides?.length ?? 0;
-        if (!chineseStrokeBucket.matches(strokeCount)) {
+        if (selectedStrokeBucketId !== "all" && isChineseBasicStrokeTemplate(template.id)) {
           return false;
+        }
+
+        if (showChineseStrokeBuckets) {
+          const strokeCount = template.strokeGuides?.length ?? 0;
+          if (!chineseStrokeBucket.matches(strokeCount)) {
+            return false;
+          }
         }
 
         if (!normalizedQuery) {
@@ -141,7 +157,8 @@ export function TemplateGrid({
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge className="rounded-none">{isChinesePack ? filteredChineseTemplates.length : selectedLanguage.templates.length}</Badge>
-          {["ja", "ru", "ar", "de", "es", "fr", "pt", "it"].includes(selectedLanguage.id) && onOpenExampleWords ? (
+          {(["ja", "ru", "ar", "de", "es", "fr", "pt", "it"].includes(selectedLanguage.id) || shouldShowChineseExampleWordsButton) &&
+          onOpenExampleWords ? (
             <Button type="button" variant="ghost" size="sm" onClick={onOpenExampleWords} className="rounded-none">
               {dictionary.sections.exampleWordsTitle}
             </Button>
@@ -198,23 +215,25 @@ export function TemplateGrid({
               ))}
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {chineseStrokeBuckets.map((bucket) => (
-                <button
-                  key={bucket.id}
-                  type="button"
-                  onClick={() => setSelectedStrokeBucketId(bucket.id)}
-                  className={cn(
-                    "border px-3 py-1.5 text-xs uppercase tracking-[0.16em] transition-colors",
-                    selectedStrokeBucketId === bucket.id
-                      ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
-                      : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
-                  )}
-                >
-                  {bucket.label}
-                </button>
-              ))}
-            </div>
+            {showChineseStrokeBuckets ? (
+              <div className="flex flex-wrap gap-2">
+                {chineseStrokeBuckets.map((bucket) => (
+                  <button
+                    key={bucket.id}
+                    type="button"
+                    onClick={() => setSelectedStrokeBucketId(bucket.id)}
+                    className={cn(
+                      "border px-3 py-1.5 text-xs uppercase tracking-[0.16em] transition-colors",
+                      selectedStrokeBucketId === bucket.id
+                        ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
+                        : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
+                    )}
+                  >
+                    {bucket.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="flex flex-wrap items-start gap-3">

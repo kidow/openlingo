@@ -18,6 +18,7 @@ import { FrenchExampleSheet } from "@/components/practice/french-example-sheet";
 import { SpanishExampleSheet } from "@/components/practice/spanish-example-sheet";
 import { PortugueseExampleSheet } from "@/components/practice/portuguese-example-sheet";
 import { ItalianExampleSheet } from "@/components/practice/italian-example-sheet";
+import { ChineseExampleSheet } from "@/components/practice/chinese-example-sheet";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
@@ -88,9 +89,12 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   }
 
   function handleTemplateSelect(templateId: string) {
+    const shouldCloseExampleSheet =
+      (selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant") && templateId.includes("-stroke-");
+
     startTransition(() => {
       setSelectedTemplateId(templateId);
-      resetPracticeState();
+      resetPracticeState({ closeExampleSheet: shouldCloseExampleSheet });
     });
   }
 
@@ -226,6 +230,17 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             onSelectTemplate={handleTemplateSelect}
             onOpenExampleWords={() => setIsExampleSheetOpen(true)}
           />
+          {selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant" ? (
+            <ChineseExampleSheet
+              dictionary={dictionary}
+              languageId={selectedLanguage.id}
+              selectedTemplateId={selectedTemplate.id}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+              open={isExampleSheetOpen}
+              onOpenChange={setIsExampleSheetOpen}
+            />
+          ) : null}
           {selectedLanguage.id === "ja" ? (
             <JapaneseExampleSheet
               dictionary={dictionary}

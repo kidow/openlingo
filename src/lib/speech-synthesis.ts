@@ -46,6 +46,25 @@ export const JAPANESE_VOICE_PROFILE = [
   "Microsoft Nanami Online (Natural) - Japanese (Japan)",
 ];
 
+export const DEFAULT_CHINESE_SIMPLIFIED_VOICE_NAME = "Google 普通话（中国大陆）";
+export const DEFAULT_CHINESE_TRADITIONAL_VOICE_NAME = "Google 國語（臺灣）";
+
+export const CHINESE_SIMPLIFIED_VOICE_PROFILE = [
+  DEFAULT_CHINESE_SIMPLIFIED_VOICE_NAME,
+  "Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)",
+  "Google 國語（臺灣）",
+  "Ting-Ting",
+  "Sin-ji",
+];
+
+export const CHINESE_TRADITIONAL_VOICE_PROFILE = [
+  DEFAULT_CHINESE_TRADITIONAL_VOICE_NAME,
+  "Sin-ji",
+  "Ting-Ting",
+  "Google 普通话（中国大陆）",
+  "Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)",
+];
+
 function normalizeVoiceName(value: string) {
   return value.trim().toLowerCase();
 }
@@ -134,6 +153,36 @@ export function getDefaultJapaneseVoice(voices: SpeechSynthesisVoice[]) {
     languagePrefix: "ja",
     preferredVoiceNames: [DEFAULT_JAPANESE_VOICE_NAME],
     allowedVoiceNames: JAPANESE_VOICE_PROFILE,
+  });
+}
+
+type ChineseVoiceVariant = "simplified" | "traditional";
+
+function getChineseVoiceProfile(variant: ChineseVoiceVariant) {
+  return variant === "simplified" ? CHINESE_SIMPLIFIED_VOICE_PROFILE : CHINESE_TRADITIONAL_VOICE_PROFILE;
+}
+
+function getChineseDefaultVoiceName(variant: ChineseVoiceVariant) {
+  return variant === "simplified" ? DEFAULT_CHINESE_SIMPLIFIED_VOICE_NAME : DEFAULT_CHINESE_TRADITIONAL_VOICE_NAME;
+}
+
+export function getChineseVoiceOptions(voices: SpeechSynthesisVoice[], variant: ChineseVoiceVariant) {
+  const voiceNames = getChineseVoiceProfile(variant);
+
+  return getVoiceOptionsForLanguage(voices, {
+    languagePrefix: "zh",
+    preferredVoiceNames: [getChineseDefaultVoiceName(variant)],
+    allowedVoiceNames: voiceNames,
+  });
+}
+
+export function getDefaultChineseVoice(voices: SpeechSynthesisVoice[], variant: ChineseVoiceVariant) {
+  const voiceNames = getChineseVoiceProfile(variant);
+
+  return getDefaultVoiceForLanguage(voices, {
+    languagePrefix: "zh",
+    preferredVoiceNames: [getChineseDefaultVoiceName(variant)],
+    allowedVoiceNames: voiceNames,
   });
 }
 

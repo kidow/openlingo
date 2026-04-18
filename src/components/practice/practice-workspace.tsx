@@ -1,6 +1,7 @@
 "use client";
 
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { RefreshCw } from "lucide-react";
 
 const PULL_ACTIVATION_ZONE = 96;
 const PULL_THRESHOLD = 88;
@@ -25,6 +26,8 @@ export function PracticeWorkspace({ tabsBand, canvasStage, templateGrid }: Pract
   const touchStateRef = useRef<TouchState | null>(null);
   const pullDistanceRef = useRef(0);
   const refreshingRef = useRef(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const main = mainRef.current;
@@ -36,6 +39,7 @@ export function PracticeWorkspace({ tabsBand, canvasStage, templateGrid }: Pract
     const updatePullDistance = (value: number) => {
       const nextValue = Math.max(0, Math.min(value, MAX_PULL_DISTANCE));
       pullDistanceRef.current = nextValue;
+      setPullDistance(nextValue);
     };
 
     const clearTouchState = () => {
@@ -54,6 +58,7 @@ export function PracticeWorkspace({ tabsBand, canvasStage, templateGrid }: Pract
       }
 
       refreshingRef.current = true;
+      setIsRefreshing(true);
       updatePullDistance(MAX_PULL_DISTANCE);
 
       window.setTimeout(() => {
@@ -156,12 +161,32 @@ export function PracticeWorkspace({ tabsBand, canvasStage, templateGrid }: Pract
     };
   }, []);
 
+  const refreshProgress = Math.min(pullDistance / PULL_THRESHOLD, 1);
+
   return (
     <main
       ref={mainRef}
       data-testid="practice-workspace"
-      className="mx-auto h-[calc(100dvh-88px)] w-full max-w-[1600px] overflow-y-auto overscroll-y-contain"
+      className="relative mx-auto h-[calc(100dvh-88px)] w-full max-w-[1600px] overflow-y-auto overscroll-y-contain"
     >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+        <div
+          className={[
+            "flex h-16 w-16 items-center justify-center rounded-full border border-[color:var(--border-soft)] bg-[color:rgba(252,249,241,0.92)] shadow-[0_14px_28px_rgba(69,48,20,0.16)] backdrop-blur-sm transition-all duration-200",
+            pullDistance > 0 || isRefreshing ? "scale-100 opacity-100" : "scale-90 opacity-0",
+          ].join(" ")}
+        >
+          <RefreshCw
+            className={[
+              "h-7 w-7 text-[color:var(--accent)] transition-transform duration-150",
+              isRefreshing ? "animate-spin" : "",
+            ].join(" ")}
+            style={{
+              transform: isRefreshing ? undefined : `rotate(${refreshProgress * 180}deg)`,
+            }}
+          />
+        </div>
+      </div>
       <section className="bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(246,240,231,0.97))] pb-8">
         {tabsBand}
         <div className="grid gap-6">
