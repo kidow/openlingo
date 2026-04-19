@@ -157,11 +157,11 @@ const jaTemplateGroups = [
 
 const zhHansHskTemplates = buildChineseHskPracticeTemplates("zh-hans");
 const zhHansHskTemplateGroups = buildChineseHskTemplateGroups("zh-hans");
-const zhHansHskTemplateIds = new Set(zhHansHskTemplates.map((template) => template.id));
+const zhHansHskNativeLabels = new Set(zhHansHskTemplates.map((template) => template.nativeLabel));
 const zhHansStrokeTemplates = zhHansTemplates.slice(0, BASIC_STROKES.length);
 const zhHansBasicCharacterTemplates = zhHansTemplates
   .slice(BASIC_STROKES.length)
-  .filter((template) => !zhHansHskTemplateIds.has(template.id));
+  .filter((template) => !zhHansHskNativeLabels.has(template.nativeLabel));
 
 const zhHansTemplateGroups = [
   createGroupFromIds("strokes", { ko: "기본 필획", en: "Basic strokes" }, getTemplateIds(zhHansStrokeTemplates)),
