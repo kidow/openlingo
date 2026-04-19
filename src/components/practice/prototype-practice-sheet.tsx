@@ -51,7 +51,9 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
-  const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it"].includes(selectedLanguage.id);
+  const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hans", "zh-hant"].includes(
+    selectedLanguage.id
+  );
 
   function resetPracticeState(options?: { closeExampleSheet?: boolean }) {
     activeStrokeIdRef.current = null;

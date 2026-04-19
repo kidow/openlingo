@@ -162,27 +162,21 @@ function getChineseVoiceProfile(variant: ChineseVoiceVariant) {
   return variant === "simplified" ? CHINESE_SIMPLIFIED_VOICE_PROFILE : CHINESE_TRADITIONAL_VOICE_PROFILE;
 }
 
-function getChineseDefaultVoiceName(variant: ChineseVoiceVariant) {
-  return variant === "simplified" ? DEFAULT_CHINESE_SIMPLIFIED_VOICE_NAME : DEFAULT_CHINESE_TRADITIONAL_VOICE_NAME;
-}
-
 export function getChineseVoiceOptions(voices: SpeechSynthesisVoice[], variant: ChineseVoiceVariant) {
   const voiceNames = getChineseVoiceProfile(variant);
 
-  return getVoiceOptionsForLanguage(voices, {
+  return getVoiceOptionsForProfile(voices, {
     languagePrefix: "zh",
-    preferredVoiceNames: [getChineseDefaultVoiceName(variant)],
-    allowedVoiceNames: voiceNames,
+    voiceNames,
   });
 }
 
 export function getDefaultChineseVoice(voices: SpeechSynthesisVoice[], variant: ChineseVoiceVariant) {
   const voiceNames = getChineseVoiceProfile(variant);
 
-  return getDefaultVoiceForLanguage(voices, {
+  return getDefaultVoiceForProfile(voices, {
     languagePrefix: "zh",
-    preferredVoiceNames: [getChineseDefaultVoiceName(variant)],
-    allowedVoiceNames: voiceNames,
+    voiceNames,
   });
 }
 

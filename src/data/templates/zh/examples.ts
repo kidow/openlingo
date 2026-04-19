@@ -1,14 +1,39 @@
 import { ExampleWord } from "../example-words";
 
 type ChineseExampleSet = ExampleWord[];
+type ChineseExampleSuffixMap = Record<string, ChineseExampleSet>;
 
-function createExampleMap(prefix: "zh-hans" | "zh-hant", examplesBySuffix: Record<string, ChineseExampleSet>) {
+function createExampleMap(prefix: "zh-hans" | "zh-hant", examplesBySuffix: ChineseExampleSuffixMap) {
   return Object.fromEntries(
     Object.entries(examplesBySuffix).map(([suffix, examples]) => [`${prefix}-${suffix}`, examples])
   ) as Record<string, ExampleWord[]>;
 }
 
-const baseExamplesBySuffix: Record<string, ChineseExampleSet> = {
+function createVariantExamples(
+  baseExamplesBySuffix: ChineseExampleSuffixMap,
+  wordOverridesBySuffix: Record<string, string[]>
+) {
+  return Object.fromEntries(
+    Object.entries(baseExamplesBySuffix).map(([suffix, examples]) => {
+      const overrides = wordOverridesBySuffix[suffix];
+
+      if (!overrides) {
+        return [suffix, examples];
+      }
+
+      return [
+        suffix,
+        examples.map((example, index) => {
+          const overrideWord = overrides[index];
+
+          return overrideWord ? { ...example, word: overrideWord } : example;
+        }),
+      ];
+    })
+  ) as ChineseExampleSuffixMap;
+}
+
+const simplifiedExamplesBySuffix: ChineseExampleSuffixMap = {
   yi: [
     { word: "一人", reading: "yī rén", meaning: "한 사람" },
     { word: "一天", reading: "yī tiān", meaning: "하루" },
@@ -131,7 +156,25 @@ const baseExamplesBySuffix: Record<string, ChineseExampleSet> = {
   ],
 };
 
+const traditionalWordOverridesBySuffix: Record<string, string[]> = {
+  da: ["大學", "大家"],
+  xiao: ["小心", "小學"],
+  shang: ["上學", "上班"],
+  zuo: ["左邊", "左手"],
+  you: ["右邊", "右手"],
+  zhong: ["中國", "中心"],
+  kou: ["口水", "開口"],
+  huo: ["火車", "火山"],
+  mu: ["木頭", "樹木"],
+  tian: ["天氣", "天空"],
+  di: ["地方", "地圖"],
+  nv: ["女人", "女兒"],
+  zi: ["孩子", "兒子"],
+};
+
+const traditionalExamplesBySuffix = createVariantExamples(simplifiedExamplesBySuffix, traditionalWordOverridesBySuffix);
+
 export const chineseExampleWordsByTemplateId: Record<string, ExampleWord[]> = {
-  ...createExampleMap("zh-hans", baseExamplesBySuffix),
-  ...createExampleMap("zh-hant", baseExamplesBySuffix),
+  ...createExampleMap("zh-hans", simplifiedExamplesBySuffix),
+  ...createExampleMap("zh-hant", traditionalExamplesBySuffix),
 };
