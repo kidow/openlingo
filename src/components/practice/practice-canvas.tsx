@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, EyeOff, RotateCcw, Volume2 } from "lucide-react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
 import { Stroke, WritingTemplate } from "@/types/writing";
@@ -21,10 +21,13 @@ type PracticeCanvasProps = {
   canGoPrevious: boolean;
   canGoNext: boolean;
   isPreviewVisible: boolean;
+  pronunciationButtonLabel?: string;
+  pronunciationButtonDisabled?: boolean;
   onPreviousTemplate: () => void;
   onNextTemplate: () => void;
   onClearCanvas: () => void;
   onTogglePreview: () => void;
+  onPlayPronunciation?: () => void;
   onBeginStroke: (event: React.PointerEvent<SVGSVGElement>) => void;
   onMoveStroke: (event: React.PointerEvent<SVGSVGElement>) => void;
   onEndStroke: (event: React.PointerEvent<SVGSVGElement>) => void;
@@ -38,10 +41,13 @@ export function PracticeCanvas({
   canGoPrevious,
   canGoNext,
   isPreviewVisible,
+  pronunciationButtonLabel,
+  pronunciationButtonDisabled = false,
   onPreviousTemplate,
   onNextTemplate,
   onClearCanvas,
   onTogglePreview,
+  onPlayPronunciation,
   onBeginStroke,
   onMoveStroke,
   onEndStroke,
@@ -228,6 +234,20 @@ export function PracticeCanvas({
               >
                 {isPreviewVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </Button>
+              {onPlayPronunciation ? (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={onPlayPronunciation}
+                  disabled={pronunciationButtonDisabled}
+                  aria-label={pronunciationButtonLabel ?? dictionary.buttons.playPronunciation}
+                  data-testid="practice-template-pronunciation"
+                  className="rounded-full"
+                >
+                  <Volume2 className="size-4" />
+                </Button>
+              ) : null}
               <Button
                 type="button"
                 size="icon"

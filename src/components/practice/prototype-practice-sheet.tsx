@@ -1,11 +1,34 @@
 "use client";
 
-import { startTransition, useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 
 import { languagePacks } from "@/data/practice-content";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
+import {
+  getArabicVoiceOptions,
+  getDefaultVoiceForProfile,
+  getDefaultGermanVoice,
+  getDefaultItalianVoice,
+  getDefaultPortugueseVoice,
+  getDefaultRussianVoice,
+  getDefaultSpanishVoice,
+  getDefaultJapaneseVoice,
+  getGermanVoiceOptions,
+  getItalianVoiceOptions,
+  getJapaneseVoiceOptions,
+  getPortugueseVoiceOptions,
+  getRussianVoiceOptions,
+  getSpanishVoiceOptions,
+  getVoiceOptionsForProfile,
+  FRENCH_VOICE_PROFILE,
+  getDefaultArabicVoice,
+  isSpeechSynthesisSupported,
+  loadSpeechSynthesisVoices,
+  speakJapaneseText,
+  speakText,
+} from "@/lib/speech-synthesis";
 import { Stroke, StrokePoint } from "@/types/writing";
 import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
 import { PracticeCanvas } from "@/components/practice/practice-canvas";
@@ -45,15 +68,65 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [score, setScore] = useState<number | null>(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [isExampleSheetOpen, setIsExampleSheetOpen] = useState(false);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
 
   const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
+  const isJapanesePack = selectedLanguage.id === "ja";
+  const isArabicPack = selectedLanguage.id === "ar";
+  const isRussianPack = selectedLanguage.id === "ru";
+  const isGermanPack = selectedLanguage.id === "de";
+  const isSpanishPack = selectedLanguage.id === "es";
+  const isFrenchPack = selectedLanguage.id === "fr";
+  const isPortuguesePack = selectedLanguage.id === "pt";
+  const isItalianPack = selectedLanguage.id === "it";
+  const isCanvasPronunciationPack =
+    isJapanesePack ||
+    isArabicPack ||
+    isRussianPack ||
+    isGermanPack ||
+    isSpanishPack ||
+    isFrenchPack ||
+    isPortuguesePack ||
+    isItalianPack;
+  const isCanvasPronunciationSupported = isCanvasPronunciationPack && isSpeechSynthesisSupported();
   const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hans", "zh-hant"].includes(
     selectedLanguage.id
   );
+
+  const selectedPackVoice = useMemo(() => {
+    if (!isSpeechSynthesisSupported()) {
+      return null;
+    }
+
+    switch (selectedLanguage.id) {
+      case "ja":
+        return getDefaultJapaneseVoice(voices) ?? getJapaneseVoiceOptions(voices)[0] ?? null;
+      case "ar":
+        return getDefaultArabicVoice(voices) ?? getArabicVoiceOptions(voices)[0] ?? null;
+      case "ru":
+        return getDefaultRussianVoice(voices) ?? getRussianVoiceOptions(voices)[0] ?? null;
+      case "de":
+        return getDefaultGermanVoice(voices) ?? getGermanVoiceOptions(voices)[0] ?? null;
+      case "es":
+        return getDefaultSpanishVoice(voices) ?? getSpanishVoiceOptions(voices)[0] ?? null;
+      case "fr":
+        return (
+          getDefaultVoiceForProfile(voices, { languagePrefix: "fr", voiceNames: FRENCH_VOICE_PROFILE }) ??
+          getVoiceOptionsForProfile(voices, { languagePrefix: "fr", voiceNames: FRENCH_VOICE_PROFILE })[0] ??
+          null
+        );
+      case "pt":
+        return getDefaultPortugueseVoice(voices) ?? getPortugueseVoiceOptions(voices)[0] ?? null;
+      case "it":
+        return getDefaultItalianVoice(voices) ?? getItalianVoiceOptions(voices)[0] ?? null;
+      default:
+        return null;
+    }
+  }, [selectedLanguage.id, voices]);
 
   function resetPracticeState(options?: { closeExampleSheet?: boolean }) {
     activeStrokeIdRef.current = null;
@@ -65,6 +138,24 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setIsExampleSheetOpen(false);
     }
   }
+
+  useEffect(() => {
+    if (!isSpeechSynthesisSupported()) {
+      return;
+    }
+
+    let isActive = true;
+
+    void loadSpeechSynthesisVoices().then((loadedVoices) => {
+      if (isActive) {
+        setVoices(loadedVoices);
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   const selectedTemplateIndex = selectedLanguage.templates.findIndex((template) => template.id === selectedTemplate.id);
   const canGoPrevious = selectedTemplateIndex > 0;
@@ -191,6 +282,35 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     handleTemplateSelect(selectedLanguage.templates[selectedTemplateIndex + 1].id);
   }
 
+  function handlePlayPronunciation() {
+    switch (selectedLanguage.id) {
+      case "ja":
+        speakJapaneseText(selectedTemplate.nativeLabel, selectedPackVoice);
+        return;
+      case "ar":
+        speakText(selectedTemplate.nativeLabel, "ar-SA", selectedPackVoice);
+        return;
+      case "ru":
+        speakText(selectedTemplate.nativeLabel, "ru-RU", selectedPackVoice);
+        return;
+      case "de":
+        speakText(selectedTemplate.nativeLabel, "de-DE", selectedPackVoice);
+        return;
+      case "es":
+        speakText(selectedTemplate.nativeLabel, "es-ES", selectedPackVoice);
+        return;
+      case "fr":
+        speakText(selectedTemplate.nativeLabel, "fr-FR", selectedPackVoice);
+        return;
+      case "pt":
+        speakText(selectedTemplate.nativeLabel, "pt-BR", selectedPackVoice);
+        return;
+      case "it":
+        speakText(selectedTemplate.nativeLabel, "it-IT", selectedPackVoice);
+        return;
+    }
+  }
+
   return (
     <PracticeWorkspace
       tabsBand={
@@ -225,10 +345,13 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             canGoPrevious={canGoPrevious}
             canGoNext={canGoNext}
             isPreviewVisible={isPreviewVisible}
+            pronunciationButtonLabel={`${dictionary.buttons.playPronunciation}: ${selectedTemplate.nativeLabel}`}
+            pronunciationButtonDisabled={!isCanvasPronunciationSupported}
             onPreviousTemplate={handlePreviousTemplate}
             onNextTemplate={handleNextTemplate}
             onClearCanvas={clearCanvas}
             onTogglePreview={() => setIsPreviewVisible((current) => !current)}
+            onPlayPronunciation={isCanvasPronunciationPack ? handlePlayPronunciation : undefined}
             onBeginStroke={beginStroke}
             onMoveStroke={moveStroke}
             onEndStroke={endStroke}
