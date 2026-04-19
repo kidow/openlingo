@@ -13,6 +13,7 @@ import { frUppercaseEAcuteTemplate } from "@/data/templates/fr/uppercase-e-acute
 import { frLowercaseEAcuteTemplate } from "@/data/templates/fr/lowercase-e-acute";
 import { frUppercaseUGraveTemplate } from "@/data/templates/fr/uppercase-u-grave";
 import { frLowercaseUGraveTemplate } from "@/data/templates/fr/lowercase-u-grave";
+import { applyItalianGlyphAssets } from "./glyph-assets";
 
 const ITALIAN_GRID_LABEL = {
   ko: "이탈리아 문자 연습 칸",
@@ -279,7 +280,7 @@ const itLowercaseAccentTemplates = [
   }),
 ];
 
-export const itTemplates: WritingTemplate[] = [
+const itBaseTemplates: WritingTemplate[] = [
   ...itUppercaseBasicTemplates,
   ...itUppercaseAccentTemplates,
   ...itLowercaseBasicTemplates,
@@ -287,6 +288,8 @@ export const itTemplates: WritingTemplate[] = [
   ...itUppercaseForeignTemplates,
   ...itLowercaseForeignTemplates,
 ];
+
+export const itTemplates: WritingTemplate[] = applyItalianGlyphAssets(itBaseTemplates);
 
 function createGroupFromTemplates(id: string, label: { ko: string; en: string }, templates: WritingTemplate[], description?: { ko: string; en: string }): PracticeTemplateGroup {
   return {

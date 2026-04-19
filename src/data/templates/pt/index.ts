@@ -1,4 +1,5 @@
 import { PracticeTemplateGroup, WritingTemplate } from "@/types/writing";
+import { applyPortugueseGlyphAssets } from "./glyph-assets";
 import {
   ptLowercaseLatinAlphabetTemplates,
   ptUppercaseLatinAlphabetTemplates,
@@ -73,12 +74,14 @@ const ptLowercaseAccentedTemplates: WritingTemplate[] = [
 
 /* Portuguese counts accented letters as separate practice cards here:
    39 uppercase templates + 39 lowercase templates */
-export const ptTemplates: WritingTemplate[] = [
+const ptBaseTemplates: WritingTemplate[] = [
   ...ptUppercaseLatinAlphabetTemplates,
   ...ptUppercaseAccentedTemplates,
   ...ptLowercaseLatinAlphabetTemplates,
   ...ptLowercaseAccentedTemplates,
 ];
+
+export const ptTemplates: WritingTemplate[] = applyPortugueseGlyphAssets(ptBaseTemplates);
 
 export const ptTemplateGroups: PracticeTemplateGroup[] = [
   {

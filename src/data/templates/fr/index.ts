@@ -1,5 +1,6 @@
 import { PracticeTemplateGroup, WritingTemplate } from "@/types/writing";
 import { frLatinAlphabetTemplates } from "./alphabet";
+import { applyFrenchGlyphAssets } from "./glyph-assets";
 /* A variants */
 import { frUppercaseAGraveTemplate } from "./uppercase-a-grave";
 import { frLowercaseAGraveTemplate } from "./lowercase-a-grave";
@@ -38,7 +39,7 @@ import { frLowercaseOeLigatureTemplate } from "./lowercase-oe-ligature";
 
 /* Standard Latin A–Z (uppercase + lowercase) */
 /* Accented: À/à, Â/â, Ç/ç, É/é, È/è, Ê/ê, Ë/ë, Î/î, Ï/ï, Ô/ô, Ù/ù, Û/û, Ü/ü, Œ/œ */
-export const frTemplates: WritingTemplate[] = [
+const frBaseTemplates: WritingTemplate[] = [
   ...frLatinAlphabetTemplates,
   frUppercaseAGraveTemplate,
   frLowercaseAGraveTemplate,
@@ -69,6 +70,8 @@ export const frTemplates: WritingTemplate[] = [
   frUppercaseOeLigatureTemplate,
   frLowercaseOeLigatureTemplate,
 ];
+
+export const frTemplates: WritingTemplate[] = applyFrenchGlyphAssets(frBaseTemplates);
 
 export const frTemplateGroups: PracticeTemplateGroup[] = [
   {
