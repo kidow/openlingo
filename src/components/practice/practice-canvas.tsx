@@ -100,6 +100,20 @@ export function PracticeCanvas({
                 >
                   <ChevronLeft className="size-4" />
                 </Button>
+                {onPlayPronunciation ? (
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={onPlayPronunciation}
+                    disabled={pronunciationButtonDisabled}
+                    aria-label={pronunciationButtonLabel ?? dictionary.buttons.playPronunciation}
+                    data-testid="practice-template-pronunciation"
+                    className="rounded-full"
+                  >
+                    <Volume2 className="size-4" />
+                  </Button>
+                ) : null}
                 <Button
                   type="button"
                   size="icon"

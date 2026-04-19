@@ -73,7 +73,6 @@ export function TemplateGrid({
   const templatesById = new Map(selectedLanguage.templates.map((template) => [template.id, template]));
   const isChineseSimplifiedPack = selectedLanguage.id === "zh-hans";
   const isChineseTraditionalPack = selectedLanguage.id === "zh-hant";
-  const isChinesePack = isChineseSimplifiedPack || isChineseTraditionalPack;
   const usePrintedCardGlyphs = selectedLanguage.id === "ru";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState(() =>
@@ -97,13 +96,16 @@ export function TemplateGrid({
   const chineseCategories = templateGroups.map((group) => ({
     id: group.id,
     label: getLocalizedText(group.label, locale),
-    count: group.templateIds.length,
+    count: group.displayCount ?? group.templateIds.length,
   }));
 
   const chineseStrokeBuckets = getChineseStrokeBuckets(locale);
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const chineseStrokeBucket =
     chineseStrokeBuckets.find((bucket) => bucket.id === selectedStrokeBucketId) ?? chineseStrokeBuckets[0];
+  const selectedChineseCategory = templateGroups.find((group) => group.id === selectedCategoryId);
+  const selectedChineseCategoryCount = selectedChineseCategory?.displayCount ?? selectedChineseCategory?.templateIds.length;
+  const showChineseStrokeBuckets = isChineseTraditionalPack && selectedCategoryId !== "strokes";
 
   function getChineseCategoryTemplateIds() {
     if (selectedCategoryId === "all") {
@@ -123,8 +125,6 @@ export function TemplateGrid({
                   .filter((item) => !isChineseBasicStrokeTemplate(item.id))
                   .map((item) => item.id)
               : selectedLanguage.templateGroups.find((group) => group.id === selectedCategoryId)?.templateIds ?? [];
-          const showChineseStrokeBuckets = selectedCategoryId !== "strokes";
-
           if (!chineseCategoryTemplateIds.includes(template.id)) {
             return false;
           }
@@ -200,7 +200,9 @@ export function TemplateGrid({
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Badge className="rounded-none">{isChinesePack ? filteredChineseTemplates.length : selectedLanguage.templates.length}</Badge>
+          <Badge className="rounded-none">
+            {isChineseSimplifiedPack && selectedChineseCategoryCount ? selectedChineseCategoryCount : selectedLanguage.templates.length}
+          </Badge>
         </div>
       </div>
 

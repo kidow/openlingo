@@ -30,6 +30,7 @@ export type PracticeTemplateGroup = {
   label: LocalizedText;
   description?: LocalizedText;
   templateIds: string[];
+  displayCount?: number;
 };
 
 export type TemplateGlyphPath = {

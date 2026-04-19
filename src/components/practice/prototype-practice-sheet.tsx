@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { languagePacks } from "@/data/practice-content";
 import { AppDictionary } from "@/i18n/dictionaries";
@@ -8,7 +8,9 @@ import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
 import {
   getArabicVoiceOptions,
+  getChineseVoiceOptions,
   getDefaultVoiceForProfile,
+  getDefaultChineseVoice,
   getDefaultGermanVoice,
   getDefaultEnglishVoice,
   getDefaultItalianVoice,
@@ -73,6 +75,11 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
+  const isSpeechSupported = useSyncExternalStore(
+    () => () => {},
+    () => isSpeechSynthesisSupported(),
+    () => false
+  );
 
   const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
   const selectedTemplate =
@@ -87,6 +94,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const isItalianPack = selectedLanguage.id === "it";
   const isKoreanPack = selectedLanguage.id === "ko";
   const isEnglishPack = selectedLanguage.id === "en";
+  const isChineseSimplifiedHskPack = selectedLanguage.id === "zh-hans" && selectedTemplate.mode === "word";
   const isCanvasPronunciationPack =
     isJapanesePack ||
     isArabicPack ||
@@ -97,14 +105,15 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     isPortuguesePack ||
     isItalianPack ||
     isKoreanPack ||
-    isEnglishPack;
-  const isCanvasPronunciationSupported = isCanvasPronunciationPack && isSpeechSynthesisSupported();
-  const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hans", "zh-hant"].includes(
+    isEnglishPack ||
+    isChineseSimplifiedHskPack;
+  const isCanvasPronunciationSupported = isCanvasPronunciationPack && isSpeechSupported;
+  const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hant"].includes(
     selectedLanguage.id
   );
 
   const selectedPackVoice = useMemo(() => {
-    if (!isSpeechSynthesisSupported()) {
+    if (!isSpeechSupported) {
       return null;
     }
 
@@ -131,11 +140,13 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
         return getDefaultItalianVoice(voices) ?? getItalianVoiceOptions(voices)[0] ?? null;
       case "en":
         return getDefaultEnglishVoice(voices) ?? getEnglishVoiceOptions(voices)[0] ?? null;
+      case "zh-hans":
+        return getDefaultChineseVoice(voices, "simplified") ?? getChineseVoiceOptions(voices, "simplified")[0] ?? null;
       case "ko":
       default:
         return null;
     }
-  }, [selectedLanguage.id, voices]);
+  }, [isSpeechSupported, selectedLanguage.id, voices]);
 
   function resetPracticeState(options?: { closeExampleSheet?: boolean }) {
     activeStrokeIdRef.current = null;
@@ -149,7 +160,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   }
 
   useEffect(() => {
-    if (!isSpeechSynthesisSupported()) {
+    if (!isSpeechSupported) {
       return;
     }
 
@@ -164,7 +175,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     return () => {
       isActive = false;
     };
-  }, []);
+  }, [isSpeechSupported]);
 
   const selectedTemplateIndex = selectedLanguage.templates.findIndex((template) => template.id === selectedTemplate.id);
   const canGoPrevious = selectedTemplateIndex > 0;
@@ -323,8 +334,16 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       case "en":
         speakText(selectedTemplate.nativeLabel, "en-US", selectedPackVoice);
         return;
+      case "zh-hans":
+        speakText(selectedTemplate.label.ko, "zh-CN", selectedPackVoice);
+        return;
     }
   }
+
+  const pronunciationButtonLabel =
+    selectedLanguage.id === "zh-hans" && selectedTemplate.mode === "word"
+      ? `${dictionary.buttons.playPronunciation}: ${selectedTemplate.label.ko}`
+      : `${dictionary.buttons.playPronunciation}: ${selectedTemplate.nativeLabel}`;
 
   return (
     <PracticeWorkspace
@@ -360,7 +379,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             canGoPrevious={canGoPrevious}
             canGoNext={canGoNext}
             isPreviewVisible={isPreviewVisible}
-            pronunciationButtonLabel={`${dictionary.buttons.playPronunciation}: ${selectedTemplate.nativeLabel}`}
+            pronunciationButtonLabel={pronunciationButtonLabel}
             pronunciationButtonDisabled={!isCanvasPronunciationSupported}
             onPreviousTemplate={handlePreviousTemplate}
             onNextTemplate={handleNextTemplate}
@@ -383,7 +402,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             selectedTemplateId={selectedTemplate.id}
             onSelectTemplate={handleTemplateSelect}
           />
-          {selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant" ? (
+          {selectedLanguage.id === "zh-hant" ? (
             <ChineseExampleSheet
               dictionary={dictionary}
               languageId={selectedLanguage.id}
