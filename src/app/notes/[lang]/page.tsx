@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { NoteShell } from "@/components/notes/note-shell";
-import { NoteMdxRenderer } from "@/components/notes/note-mdx-renderer";
 import { getNoteHref } from "@/lib/notes-routing";
 import { loadNote, resolveNoteMetadata } from "@/lib/notes-content";
 
@@ -55,8 +54,6 @@ export default async function NotesLanguagePage({
   }
 
   return (
-    <NoteShell entry={note.entry} frontmatter={note.frontmatter} tocItems={note.tocItems}>
-      <NoteMdxRenderer source={note.mdxSource} />
-    </NoteShell>
+    <NoteShell entry={note.entry} frontmatter={note.frontmatter} tocItems={note.tocItems} content={note.content} />
   );
 }

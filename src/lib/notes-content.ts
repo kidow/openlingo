@@ -3,8 +3,9 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { serialize } from "next-mdx-remote/serialize";
+import { compileMDX } from "next-mdx-remote/rsc";
 
+import { createNoteMdxComponents } from "@/components/notes/mdx-components";
 import { getNoteEntry } from "@/lib/notes-routing";
 import { createNoteSlugger } from "@/lib/note-slugs";
 import type { LoadedNote, NoteFrontmatter, TocItem } from "@/types/notes";
@@ -98,24 +99,29 @@ export async function loadNote(lang: string): Promise<LoadedNote | null> {
     return null;
   }
 
-  const mdxSource = await serialize<NoteFrontmatter>(source, {
-    parseFrontmatter: true,
+  const slugger = createNoteSlugger();
+  const { content, frontmatter } = await compileMDX<NoteFrontmatter>({
+    source,
+    components: createNoteMdxComponents(slugger),
+    options: {
+      parseFrontmatter: true,
+    },
   });
-  const parsedFrontmatter = mdxSource.frontmatter as Partial<NoteFrontmatter>;
-  const frontmatter: NoteFrontmatter = {
-    title: parsedFrontmatter.title ?? "",
-    description: parsedFrontmatter.description ?? "",
-    lang: parsedFrontmatter.lang ?? lang,
-    updatedAt: parsedFrontmatter.updatedAt ?? "",
-    seoTitle: parsedFrontmatter.seoTitle,
-    seoDescription: parsedFrontmatter.seoDescription,
-    ogImage: parsedFrontmatter.ogImage,
+
+  const normalizedFrontmatter: NoteFrontmatter = {
+    title: frontmatter.title ?? "",
+    description: frontmatter.description ?? "",
+    lang: frontmatter.lang ?? lang,
+    updatedAt: frontmatter.updatedAt ?? "",
+    seoTitle: frontmatter.seoTitle,
+    seoDescription: frontmatter.seoDescription,
+    ogImage: frontmatter.ogImage,
   };
 
   return {
     entry: getNoteEntry(lang)!,
-    frontmatter,
-    mdxSource,
+    frontmatter: normalizedFrontmatter,
+    content,
     tocItems: extractTocItems(source),
   };
 }

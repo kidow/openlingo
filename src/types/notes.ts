@@ -1,4 +1,4 @@
-import type { MDXRemoteSerializeResult } from "next-mdx-remote";
+import type { ReactNode } from "react";
 
 import type { LocalizedText } from "@/i18n/config";
 import type { WritingDirection } from "@/types/writing";
@@ -31,6 +31,6 @@ export type NoteEntry = {
 export type LoadedNote = {
   entry: NoteEntry;
   frontmatter: NoteFrontmatter;
-  mdxSource: MDXRemoteSerializeResult<NoteFrontmatter>;
+  content: ReactNode;
   tocItems: TocItem[];
 };

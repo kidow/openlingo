@@ -29,9 +29,6 @@ export function NoteLanguageNav({ currentLang }: NoteLanguageNavProps) {
             )}
           >
             <span className="font-medium">{getLocalizedText(entry.label)}</span>
-            <span className="rounded-full border border-[color:var(--border-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.16em]">
-              {entry.lang}
-            </span>
             <span className="text-xs opacity-80">{entry.nativeLabel}</span>
           </Link>
         );

@@ -1,9 +1,8 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { getLocalizedText } from "@/i18n/config";
 import { cn } from "@/lib/utils";
-import { NoteHeadingProvider } from "@/components/notes/mdx-components";
 import { NoteLanguageNav } from "@/components/notes/note-language-nav";
 import type { NoteEntry, NoteFrontmatter, TocItem } from "@/types/notes";
 
@@ -11,14 +10,14 @@ type NoteShellProps = {
   entry: NoteEntry;
   frontmatter: NoteFrontmatter;
   tocItems: TocItem[];
-  children: ReactNode;
+  content: ReactNode;
 };
 
 function formatUpdatedAt(value: string) {
   return value;
 }
 
-export function NoteShell({ entry, frontmatter, tocItems, children }: NoteShellProps) {
+export function NoteShell({ entry, frontmatter, tocItems, content }: NoteShellProps) {
   const isRtl = entry.direction === "rtl";
 
   return (
@@ -51,7 +50,7 @@ export function NoteShell({ entry, frontmatter, tocItems, children }: NoteShellP
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
           <article dir={entry.direction} className={cn("grid gap-8", isRtl && "text-right")}>
-            <NoteHeadingProvider>{children}</NoteHeadingProvider>
+            {content}
           </article>
 
           <aside className="lg:sticky lg:top-6">
