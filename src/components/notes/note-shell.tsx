@@ -30,9 +30,6 @@ export function NoteShell({ entry, frontmatter, tocItems, content }: NoteShellPr
             <div className={cn("flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]", isRtl && "justify-end")}>
               <span>{getLocalizedText(entry.label)}</span>
               <span className="rounded-full border border-[color:var(--border-soft)] bg-white/60 px-2.5 py-1 text-[10px]">
-                {entry.lang}
-              </span>
-              <span className="rounded-full border border-[color:var(--border-soft)] bg-white/60 px-2.5 py-1 text-[10px]">
                 {formatUpdatedAt(frontmatter.updatedAt)}
               </span>
             </div>

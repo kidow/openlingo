@@ -28,7 +28,7 @@ export default async function PracticeLanguageLayout({
   return (
     <ExampleWordsActionProvider>
       <div className="min-h-screen">
-        <AppHeader dictionary={dictionary.header} homeHref={getDefaultPracticeLanguageHref()} />
+        <AppHeader dictionary={dictionary.header} homeHref={getDefaultPracticeLanguageHref()} activeSection="practice" />
         {children}
       </div>
     </ExampleWordsActionProvider>

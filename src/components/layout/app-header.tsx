@@ -6,13 +6,15 @@ import Link from "next/link";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { Button } from "@/components/ui/button";
 import { useExampleWordsAction } from "@/components/layout/example-words-action-context";
+import { cn } from "@/lib/utils";
 
 type AppHeaderProps = {
   dictionary: AppDictionary["header"];
   homeHref?: string;
+  activeSection?: "practice" | "notes";
 };
 
-export function AppHeader({ dictionary, homeHref = "/practice/ko" }: AppHeaderProps) {
+export function AppHeader({ dictionary, homeHref = "/practice/ko", activeSection }: AppHeaderProps) {
   const { action } = useExampleWordsAction();
 
   return (
@@ -31,7 +33,34 @@ export function AppHeader({ dictionary, homeHref = "/practice/ko" }: AppHeaderPr
           </span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <nav aria-label="Practice and notes navigation" className="flex items-center gap-2">
+            <Link
+              href="/practice"
+              aria-current={activeSection === "practice" ? "page" : undefined}
+              className={cn(
+                "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                activeSection === "practice"
+                  ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)] text-[color:var(--foreground)]"
+                  : "border-[color:var(--border-soft)] bg-[color:var(--paper)] text-[color:var(--muted-foreground)] hover:bg-[color:var(--paper-strong)] hover:text-[color:var(--foreground)]"
+              )}
+            >
+              Practice
+            </Link>
+            <Link
+              href="/notes"
+              aria-current={activeSection === "notes" ? "page" : undefined}
+              className={cn(
+                "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                activeSection === "notes"
+                  ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)] text-[color:var(--foreground)]"
+                  : "border-[color:var(--border-soft)] bg-[color:var(--paper)] text-[color:var(--muted-foreground)] hover:bg-[color:var(--paper-strong)] hover:text-[color:var(--foreground)]"
+              )}
+            >
+              Notes
+            </Link>
+          </nav>
+
           {action ? (
             <Button type="button" variant="ghost" size="sm" onClick={action.onOpen} className="rounded-full px-4">
               {action.label}

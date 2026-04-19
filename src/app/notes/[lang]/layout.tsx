@@ -19,7 +19,7 @@ export default function NotesLanguageLayout({
   return (
     <ExampleWordsActionProvider>
       <div className="min-h-screen">
-        <AppHeader dictionary={dictionary.header} homeHref={getDefaultNotesHref()} />
+        <AppHeader dictionary={dictionary.header} homeHref={getDefaultNotesHref()} activeSection="notes" />
         {children}
       </div>
     </ExampleWordsActionProvider>
