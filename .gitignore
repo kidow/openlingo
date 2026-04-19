@@ -7,3 +7,4 @@ coverage
 .claude/settings.local.json
 .omx
 .superpowers
+.worktrees
