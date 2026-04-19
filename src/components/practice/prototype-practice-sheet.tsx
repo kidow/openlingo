@@ -4,7 +4,7 @@ import { startTransition, useEffect, useMemo, useRef, useState, useSyncExternalS
 
 import { languagePacks } from "@/data/practice-content";
 import { AppDictionary } from "@/i18n/dictionaries";
-import { AppLocale, getLocalizedText } from "@/i18n/config";
+import { getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
 import {
   getArabicVoiceOptions,
@@ -60,11 +60,10 @@ function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElemen
 const DEFAULT_TEMPLATE = languagePacks[0].templates[0];
 
 type PrototypePracticeSheetProps = {
-  locale: AppLocale;
   dictionary: AppDictionary;
 };
 
-export function PrototypePracticeSheet({ locale, dictionary }: PrototypePracticeSheetProps) {
+export function PrototypePracticeSheet({ dictionary }: PrototypePracticeSheetProps) {
   const { setAction } = useExampleWordsAction();
   const [selectedLanguageId, setSelectedLanguageId] = useState(languagePacks[0].id);
   const [selectedTemplateId, setSelectedTemplateId] = useState(DEFAULT_TEMPLATE.id);
@@ -353,7 +352,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
           selectedId={selectedLanguage.id}
           onSelect={handleLanguageSelect}
           items={languagePacks.map((pack) => {
-            const packLabel = getLocalizedText(pack.label, locale);
+            const packLabel = getLocalizedText(pack.label);
 
             return {
               id: pack.id,
@@ -396,7 +395,6 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
         <div className="grid gap-4">
           <TemplateGrid
             key={selectedLanguage.id}
-            locale={locale}
             dictionary={dictionary}
             selectedLanguage={selectedLanguage}
             selectedTemplateId={selectedTemplate.id}
@@ -407,7 +405,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
               dictionary={dictionary}
               languageId={selectedLanguage.id}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -417,7 +415,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <JapaneseExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -427,7 +425,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <RussianExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -437,7 +435,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <ArabicExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -447,7 +445,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <GermanExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -457,7 +455,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <FrenchExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -467,7 +465,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <SpanishExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -477,7 +475,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <PortugueseExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}
@@ -487,7 +485,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             <ItalianExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
-              selectedTemplateLabel={getLocalizedText(selectedTemplate.label, locale)}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
               selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
               open={isExampleSheetOpen}
               onOpenChange={setIsExampleSheetOpen}

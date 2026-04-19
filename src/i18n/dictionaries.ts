@@ -14,9 +14,7 @@ export type AppDictionary = {
   };
   header: {
     homeLabel: string;
-    localeLabel: string;
     wordmark: string;
-    locales: Record<AppLocale, string>;
   };
   hero: {
     badge: string;
@@ -99,12 +97,7 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
     },
     header: {
       homeLabel: "OpenLingo 홈으로 이동",
-      localeLabel: "인터페이스 언어",
       wordmark: "OpenLingo",
-      locales: {
-        ko: "한국어",
-        en: "English",
-      },
     },
     hero: {
       badge: "OpenLingo 프로토타입",
@@ -206,12 +199,7 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
     },
     header: {
       homeLabel: "Go to OpenLingo home",
-      localeLabel: "Interface language",
       wordmark: "OpenLingo",
-      locales: {
-        ko: "한국어",
-        en: "English",
-      },
     },
     hero: {
       badge: "OpenLingo prototype",
@@ -307,6 +295,6 @@ const dictionaries: Record<AppLocale, AppDictionary> = {
   },
 };
 
-export function getDictionary(locale: AppLocale) {
-  return dictionaries[locale];
+export function getDictionary() {
+  return dictionaries.ko;
 }

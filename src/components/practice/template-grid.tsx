@@ -4,7 +4,7 @@ import { ChangeEvent, useState } from "react";
 import { BookOpenText, Search } from "lucide-react";
 
 import { AppDictionary } from "@/i18n/dictionaries";
-import { AppLocale, getLocalizedText } from "@/i18n/config";
+import { getLocalizedText } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { TemplateGlyphMark } from "@/components/practice/template-glyph";
@@ -12,7 +12,6 @@ import { languagePacks } from "@/data/practice-content";
 import { WritingTemplate } from "@/types/writing";
 
 type TemplateGridProps = {
-  locale: AppLocale;
   dictionary: AppDictionary;
   selectedLanguage: (typeof languagePacks)[number];
   selectedTemplateId: string;
@@ -33,38 +32,37 @@ function getChineseTemplateStrokeCount(template: WritingTemplate) {
   return template.strokeCount ?? template.strokeGuides?.length ?? 0;
 }
 
-function getChineseStrokeBuckets(locale: AppLocale): ChineseStrokeBucket[] {
+function getChineseStrokeBuckets(): ChineseStrokeBucket[] {
   return [
     {
       id: "all",
-      label: locale === "ko" ? "전체 획수" : "All stroke counts",
+      label: "전체 획수",
       matches: () => true,
     },
     {
       id: "1-2",
-      label: locale === "ko" ? "1-2획" : "1-2 strokes",
+      label: "1-2획",
       matches: (strokeCount) => strokeCount >= 1 && strokeCount <= 2,
     },
     {
       id: "3-4",
-      label: locale === "ko" ? "3-4획" : "3-4 strokes",
+      label: "3-4획",
       matches: (strokeCount) => strokeCount >= 3 && strokeCount <= 4,
     },
     {
       id: "5-8",
-      label: locale === "ko" ? "5-8획" : "5-8 strokes",
+      label: "5-8획",
       matches: (strokeCount) => strokeCount >= 5 && strokeCount <= 8,
     },
     {
       id: "9+",
-      label: locale === "ko" ? "9획+" : "9+ strokes",
+      label: "9획+",
       matches: (strokeCount) => strokeCount >= 9,
     },
   ];
 }
 
 export function TemplateGrid({
-  locale,
   dictionary,
   selectedLanguage,
   selectedTemplateId,
@@ -95,11 +93,11 @@ export function TemplateGrid({
 
   const chineseCategories = templateGroups.map((group) => ({
     id: group.id,
-    label: getLocalizedText(group.label, locale),
+    label: getLocalizedText(group.label),
     count: group.displayCount ?? group.templateIds.length,
   }));
 
-  const chineseStrokeBuckets = getChineseStrokeBuckets(locale);
+  const chineseStrokeBuckets = getChineseStrokeBuckets();
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const chineseStrokeBucket =
     chineseStrokeBuckets.find((bucket) => bucket.id === selectedStrokeBucketId) ?? chineseStrokeBuckets[0];
@@ -145,9 +143,9 @@ export function TemplateGrid({
           }
 
           const searchableText = [
-            getLocalizedText(template.label, locale),
+            getLocalizedText(template.label),
             template.nativeLabel,
-            getLocalizedText(template.description, locale),
+            getLocalizedText(template.description),
           ]
             .join(" ")
             .toLowerCase();
@@ -174,13 +172,13 @@ export function TemplateGrid({
       >
         <TemplateGlyphMark
           template={template}
-          label={`${getLocalizedText(template.label, locale)} glyph`}
+          label={`${getLocalizedText(template.label)} glyph`}
           testId={`worksheet-template-card-glyph-${template.id}`}
           className="h-10 w-10"
           renderMode={usePrintedCardGlyphs ? "printed" : "glyph"}
         />
         <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-          {getLocalizedText(template.label, locale)}
+          {getLocalizedText(template.label)}
         </div>
       </button>
     );
@@ -232,7 +230,7 @@ export function TemplateGrid({
         <div className="mt-4 grid gap-4">
           <label className="grid gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-              {locale === "ko" ? "검색" : "Search"}
+              검색
             </span>
             <div className="flex items-center gap-2 border border-[color:var(--border-soft)] bg-white/60 px-3 py-2">
               <Search className="size-4 shrink-0 text-[color:var(--muted-foreground)]" />
@@ -240,7 +238,7 @@ export function TemplateGrid({
                 type="search"
                 value={searchQuery}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
-                placeholder={locale === "ko" ? "한자, 필획, 설명 검색" : "Search strokes, characters, descriptions"}
+                placeholder="한자, 필획, 설명 검색"
                 className="w-full bg-transparent text-sm outline-none placeholder:text-[color:var(--muted-foreground)]"
               />
             </div>
@@ -258,7 +256,7 @@ export function TemplateGrid({
                     : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
                 )}
               >
-                {locale === "ko" ? "전체" : "All"}
+                전체
               </button>
               {chineseCategories.map((category) => (
                 <button
@@ -316,11 +314,11 @@ export function TemplateGrid({
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-sm font-medium text-[color:var(--foreground)]">
-                      {getLocalizedText(group.label, locale)}
+                      {getLocalizedText(group.label)}
                     </div>
                     {group.description ? (
                       <div className="text-xs text-[color:var(--muted-foreground)]">
-                        {getLocalizedText(group.description, locale)}
+                        {getLocalizedText(group.description)}
                       </div>
                     ) : null}
                   </div>

@@ -56,10 +56,10 @@ function drawStroke(surface: HTMLElement) {
 
 describe("PrototypePracticeSheet", () => {
   it("renders language packs as tabs for the canvas workflow", async () => {
-    const dictionary = getDictionary("ko");
+    const dictionary = getDictionary();
     const user = userEvent.setup();
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+    render(<PrototypePracticeSheet dictionary={dictionary} />);
 
     const workspace = screen.getByTestId("practice-workspace");
     const languagePackBand = within(workspace).getByTestId("language-pack-tabs-band");
@@ -88,9 +88,9 @@ describe("PrototypePracticeSheet", () => {
   });
 
   it("renders the template library as a full grid below the practice canvas", () => {
-    const dictionary = getDictionary("ko");
+    const dictionary = getDictionary();
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+    render(<PrototypePracticeSheet dictionary={dictionary} />);
 
     const workspace = screen.getByTestId("practice-workspace");
     const canvasStage = within(workspace).getByTestId("practice-canvas-stage");
@@ -102,10 +102,10 @@ describe("PrototypePracticeSheet", () => {
   });
 
   it("renders canvas-attached controls for score, navigation, and ink actions", async () => {
-    const dictionary = getDictionary("ko");
+    const dictionary = getDictionary();
     const user = userEvent.setup();
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+    render(<PrototypePracticeSheet dictionary={dictionary} />);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const previousButton = within(canvasStage).getByTestId("practice-template-previous");
@@ -128,10 +128,10 @@ describe("PrototypePracticeSheet", () => {
   });
 
   it("resets strokes and score status when template navigation changes the selected worksheet", async () => {
-    const dictionary = getDictionary("ko");
+    const dictionary = getDictionary();
     const user = userEvent.setup();
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+    render(<PrototypePracticeSheet dictionary={dictionary} />);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const surface = within(canvasStage).getByTestId("practice-canvas-surface");
@@ -154,9 +154,9 @@ describe("PrototypePracticeSheet", () => {
 
   it("keeps stroke preview in a canvas overlay instead of a separate tab-panel workflow", async () => {
     const user = userEvent.setup();
-    const dictionary = getDictionary("ko");
+    const dictionary = getDictionary();
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+    render(<PrototypePracticeSheet dictionary={dictionary} />);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const previewControl = within(canvasStage).getByRole("button", {
@@ -172,9 +172,9 @@ describe("PrototypePracticeSheet", () => {
 
   it("dismisses the canvas preview overlay when drawing begins", async () => {
     const user = userEvent.setup();
-    const dictionary = getDictionary("ko");
+    const dictionary = getDictionary();
 
-    render(<PrototypePracticeSheet locale="ko" dictionary={dictionary} />);
+    render(<PrototypePracticeSheet dictionary={dictionary} />);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const previewControl = within(canvasStage).getByRole("button", {
