@@ -46,6 +46,7 @@ import { FrenchExampleSheet } from "@/components/practice/french-example-sheet";
 import { SpanishExampleSheet } from "@/components/practice/spanish-example-sheet";
 import { PortugueseExampleSheet } from "@/components/practice/portuguese-example-sheet";
 import { ItalianExampleSheet } from "@/components/practice/italian-example-sheet";
+import { EnglishExampleSheet } from "@/components/practice/english-example-sheet";
 import { ChineseExampleSheet } from "@/components/practice/chinese-example-sheet";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
 import { useExampleWordsAction } from "@/components/layout/example-words-action-context";
@@ -106,7 +107,7 @@ export function PrototypePracticeSheet({ dictionary, selectedLanguageId = DEFAUL
     isEnglishPack ||
     isChineseSimplifiedHskPack;
   const isCanvasPronunciationSupported = isCanvasPronunciationPack && isSpeechSupported;
-  const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hant"].includes(
+  const supportsExampleWords = ["en", "ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hant"].includes(
     selectedLanguage.id
   );
 
@@ -453,6 +454,16 @@ export function PrototypePracticeSheet({ dictionary, selectedLanguageId = DEFAUL
           ) : null}
           {selectedLanguage.id === "it" ? (
             <ItalianExampleSheet
+              dictionary={dictionary}
+              selectedTemplateId={selectedTemplate.id}
+              selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
+              selectedTemplateNativeLabel={selectedTemplate.nativeLabel}
+              open={isExampleSheetOpen}
+              onOpenChange={setIsExampleSheetOpen}
+            />
+          ) : null}
+          {selectedLanguage.id === "en" ? (
+            <EnglishExampleSheet
               dictionary={dictionary}
               selectedTemplateId={selectedTemplate.id}
               selectedTemplateLabel={getLocalizedText(selectedTemplate.label)}
