@@ -16,12 +16,12 @@ type TouchState = {
 };
 
 type PracticeWorkspaceProps = {
-  tabsBand: ReactNode;
+  topBand: ReactNode;
   canvasStage: ReactNode;
   templateGrid: ReactNode;
 };
 
-export function PracticeWorkspace({ tabsBand, canvasStage, templateGrid }: PracticeWorkspaceProps) {
+export function PracticeWorkspace({ topBand, canvasStage, templateGrid }: PracticeWorkspaceProps) {
   const mainRef = useRef<HTMLElement | null>(null);
   const touchStateRef = useRef<TouchState | null>(null);
   const pullDistanceRef = useRef(0);
@@ -188,7 +188,7 @@ export function PracticeWorkspace({ tabsBand, canvasStage, templateGrid }: Pract
         </div>
       </div>
       <section className="bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(246,240,231,0.97))] pb-8">
-        {tabsBand}
+        {topBand}
         <div className="grid gap-6">
           <div className="min-h-[28rem]">{canvasStage}</div>
           {templateGrid}

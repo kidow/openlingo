@@ -9,16 +9,17 @@ import { useExampleWordsAction } from "@/components/layout/example-words-action-
 
 type AppHeaderProps = {
   dictionary: AppDictionary["header"];
+  homeHref?: string;
 };
 
-export function AppHeader({ dictionary }: AppHeaderProps) {
+export function AppHeader({ dictionary, homeHref = "/practice/ko" }: AppHeaderProps) {
   const { action } = useExampleWordsAction();
 
   return (
     <header className="border-b border-[color:var(--border-soft)] bg-[color:rgba(252,248,241,0.82)]">
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-4 px-4 py-3 md:px-6 lg:px-8">
         <Link
-          href="/"
+          href={homeHref}
           aria-label={dictionary.homeLabel}
           className="flex items-center gap-3 rounded-full px-1 py-1 transition-opacity hover:opacity-90"
         >

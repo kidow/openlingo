@@ -1,11 +1,12 @@
 "use client";
 
-import { startTransition, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { languagePacks } from "@/data/practice-content";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
+import { DEFAULT_PRACTICE_LANGUAGE_ID } from "@/lib/practice-routing";
 import {
   getArabicVoiceOptions,
   getChineseVoiceOptions,
@@ -34,7 +35,7 @@ import {
   speakText,
 } from "@/lib/speech-synthesis";
 import { Stroke, StrokePoint } from "@/types/writing";
-import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
+import { PracticeLanguageNav } from "@/components/practice/practice-language-nav";
 import { PracticeCanvas } from "@/components/practice/practice-canvas";
 import { TemplateGrid } from "@/components/practice/template-grid";
 import { JapaneseExampleSheet } from "@/components/practice/japanese-example-sheet";
@@ -57,16 +58,15 @@ function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElemen
   };
 }
 
-const DEFAULT_TEMPLATE = languagePacks[0].templates[0];
-
 type PrototypePracticeSheetProps = {
   dictionary: AppDictionary;
+  selectedLanguageId?: string;
 };
 
-export function PrototypePracticeSheet({ dictionary }: PrototypePracticeSheetProps) {
+export function PrototypePracticeSheet({ dictionary, selectedLanguageId = DEFAULT_PRACTICE_LANGUAGE_ID }: PrototypePracticeSheetProps) {
   const { setAction } = useExampleWordsAction();
-  const [selectedLanguageId, setSelectedLanguageId] = useState(languagePacks[0].id);
-  const [selectedTemplateId, setSelectedTemplateId] = useState(DEFAULT_TEMPLATE.id);
+  const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
+  const [selectedTemplateId, setSelectedTemplateId] = useState(() => selectedLanguage.templates[0].id);
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [score, setScore] = useState<number | null>(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
@@ -80,7 +80,6 @@ export function PrototypePracticeSheet({ dictionary }: PrototypePracticeSheetPro
     () => false
   );
 
-  const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
   const isJapanesePack = selectedLanguage.id === "ja";
@@ -207,21 +206,9 @@ export function PrototypePracticeSheet({ dictionary }: PrototypePracticeSheetPro
     return () => setAction(null);
   }, [dictionary.sections.exampleWordsTitle, selectedLanguage.id, setAction, supportsExampleWords]);
 
-  function handleLanguageSelect(languageId: string) {
-    const nextLanguage = languagePacks.find((pack) => pack.id === languageId) ?? languagePacks[0];
-
-    startTransition(() => {
-      setSelectedLanguageId(nextLanguage.id);
-      setSelectedTemplateId(nextLanguage.templates[0].id);
-      resetPracticeState({ closeExampleSheet: true });
-    });
-  }
-
   function handleTemplateSelect(templateId: string) {
-    startTransition(() => {
-      setSelectedTemplateId(templateId);
-      resetPracticeState();
-    });
+    setSelectedTemplateId(templateId);
+    resetPracticeState();
   }
 
   function beginStroke(event: React.PointerEvent<SVGSVGElement>) {
@@ -346,27 +333,10 @@ export function PrototypePracticeSheet({ dictionary }: PrototypePracticeSheetPro
 
   return (
     <PracticeWorkspace
-      tabsBand={
-        <LanguagePackTabs
-          ariaLabel={dictionary.sections.languagePacksTitle}
-          selectedId={selectedLanguage.id}
-          onSelect={handleLanguageSelect}
-          items={languagePacks.map((pack) => {
-            const packLabel = getLocalizedText(pack.label);
-
-            return {
-              id: pack.id,
-              nativeLabel: pack.nativeLabel,
-              secondaryLabel: pack.nativeLabel === packLabel ? undefined : packLabel,
-            };
-          })}
-        />
-      }
+      key={selectedLanguage.id}
+      topBand={<PracticeLanguageNav ariaLabel={dictionary.sections.languagePacksTitle} selectedLanguageId={selectedLanguage.id} />}
       canvasStage={
         <section
-          id={`language-pack-panel-${selectedLanguage.id}`}
-          role="tabpanel"
-          aria-labelledby={`language-pack-tab-${selectedLanguage.id}`}
           data-testid="practice-canvas-stage"
           className="grid gap-5"
         >

@@ -1,12 +1,17 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { ExampleWordsActionProvider } from "@/components/layout/example-words-action-context";
 import { PrototypePracticeSheet } from "@/components/practice/prototype-practice-sheet";
 import { languagePacks } from "@/data/practice-content";
 import { getDictionary } from "@/i18n/dictionaries";
 
-function escapeRegExp(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function renderSheet(dictionary = getDictionary(), selectedLanguageId?: string) {
+  return render(
+    <ExampleWordsActionProvider>
+      <PrototypePracticeSheet dictionary={dictionary} selectedLanguageId={selectedLanguageId} />
+    </ExampleWordsActionProvider>
+  );
 }
 
 function drawStroke(surface: HTMLElement) {
@@ -55,42 +60,28 @@ function drawStroke(surface: HTMLElement) {
 }
 
 describe("PrototypePracticeSheet", () => {
-  it("renders language packs as tabs for the canvas workflow", async () => {
+  it("renders language routes as links for the canvas workflow", () => {
     const dictionary = getDictionary();
-    const user = userEvent.setup();
 
-    render(<PrototypePracticeSheet dictionary={dictionary} />);
+    renderSheet(dictionary);
 
     const workspace = screen.getByTestId("practice-workspace");
-    const languagePackBand = within(workspace).getByTestId("language-pack-tabs-band");
-    const languagePackTabs = within(languagePackBand).getByRole("tablist", {
+    const languagePackBand = within(workspace).getByTestId("practice-language-nav-band");
+    const languagePackNav = within(languagePackBand).getByRole("navigation", {
       name: dictionary.sections.languagePacksTitle,
     });
-    const tabs = within(languagePackTabs).getAllByRole("tab");
+    const links = within(languagePackNav).getAllByRole("link");
 
-    expect(tabs).toHaveLength(languagePacks.length);
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
-    expect(
-      within(languagePackBand).queryByRole("button", {
-        name: new RegExp(`^${escapeRegExp(languagePacks[0].nativeLabel)}`),
-      })
-    ).not.toBeInTheDocument();
-    expect(
-      within(languagePackBand).queryByRole("button", {
-        name: new RegExp(`^${escapeRegExp(languagePacks[1].nativeLabel)}`),
-      })
-    ).not.toBeInTheDocument();
-
-    await user.click(tabs[1]);
-
-    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
-    expect(tabs[0]).toHaveAttribute("aria-selected", "false");
+    expect(links).toHaveLength(languagePacks.length);
+    expect(links[0]).toHaveAttribute("aria-current", "page");
+    expect(links[0]).toHaveAttribute("href", "/practice/ko");
+    expect(links[1]).toHaveAttribute("href", "/practice/en");
   });
 
   it("renders the template library as a full grid below the practice canvas", () => {
     const dictionary = getDictionary();
 
-    render(<PrototypePracticeSheet dictionary={dictionary} />);
+    renderSheet(dictionary);
 
     const workspace = screen.getByTestId("practice-workspace");
     const canvasStage = within(workspace).getByTestId("practice-canvas-stage");
@@ -105,7 +96,7 @@ describe("PrototypePracticeSheet", () => {
     const dictionary = getDictionary();
     const user = userEvent.setup();
 
-    render(<PrototypePracticeSheet dictionary={dictionary} />);
+    renderSheet(dictionary);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const previousButton = within(canvasStage).getByTestId("practice-template-previous");
@@ -131,7 +122,7 @@ describe("PrototypePracticeSheet", () => {
     const dictionary = getDictionary();
     const user = userEvent.setup();
 
-    render(<PrototypePracticeSheet dictionary={dictionary} />);
+    renderSheet(dictionary);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const surface = within(canvasStage).getByTestId("practice-canvas-surface");
@@ -156,7 +147,7 @@ describe("PrototypePracticeSheet", () => {
     const user = userEvent.setup();
     const dictionary = getDictionary();
 
-    render(<PrototypePracticeSheet dictionary={dictionary} />);
+    renderSheet(dictionary);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const previewControl = within(canvasStage).getByRole("button", {
@@ -174,7 +165,7 @@ describe("PrototypePracticeSheet", () => {
     const user = userEvent.setup();
     const dictionary = getDictionary();
 
-    render(<PrototypePracticeSheet dictionary={dictionary} />);
+    renderSheet(dictionary);
 
     const canvasStage = screen.getByTestId("practice-canvas-stage");
     const previewControl = within(canvasStage).getByRole("button", {
