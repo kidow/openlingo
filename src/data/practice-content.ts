@@ -35,6 +35,7 @@ import { koWeTemplate } from "@/data/templates/ko/we";
 import { koYuTemplate } from "@/data/templates/ko/yu";
 import { koUiTemplate } from "@/data/templates/ko/ui";
 import { enAlphabetTemplates } from "@/data/templates/en/alphabet";
+import { applyEnglishGlyphAssets } from "@/data/templates/en/glyph-assets";
 import { jaTemplates } from "@/data/templates/ja";
 import { ruTemplates } from "@/data/templates/ru";
 import { arTemplates } from "@/data/templates/ar";
@@ -44,6 +45,7 @@ import { frTemplateGroups, frTemplates } from "@/data/templates/fr";
 import { ptTemplateGroups, ptTemplates } from "@/data/templates/pt";
 import { itTemplateGroups, itTemplates } from "@/data/templates/it";
 import { hiraganaTemplates, katakanaTemplates } from "@/data/templates/ja";
+import { applyKoreanGlyphAssets } from "@/data/templates/ko/glyph-assets";
 import { zhHantTemplates } from "@/data/templates/zh/zh-hant";
 import { BASIC_STROKES } from "@/data/templates/zh/shared/strokes";
 import { buildChineseHskPracticeTemplates, buildChineseHskTemplateGroups } from "@/data/templates/zh/hsk-levels";
@@ -106,6 +108,82 @@ function createSplitGroups(
     createGroupFromTemplates(second.id, second.label, templates.slice(firstCount)),
   ];
 }
+
+const koTemplates = applyKoreanGlyphAssets([
+  koGiyeokTemplate,
+  koNieunTemplate,
+  koDigeutTemplate,
+  koRieulTemplate,
+  koMieumTemplate,
+  koBieupTemplate,
+  koSiotTemplate,
+  koIeungTemplate,
+  koJieutTemplate,
+  koChieutTemplate,
+  koKieukTemplate,
+  koTieutTemplate,
+  koPieupTemplate,
+  koHieutTemplate,
+  {
+    id: "ko-a",
+    languageId: "ko",
+    mode: "character",
+    label: {
+      ko: "아",
+      en: "A",
+    },
+    nativeLabel: "ㅏ",
+    cue: {
+      ko: "세로획을 먼저 쓴 다음 오른쪽 짧은 가로획을 붙여 마무리하세요.",
+      en: "Draw the vertical stroke first, then add the short right bar.",
+    },
+    description: {
+      ko: "획 순서 미리보기를 검증하기 위한 기본 모음 샘플입니다.",
+      en: "Core vowel sample for stroke-order preview validation.",
+    },
+    direction: "ltr",
+    guidePathD: "M42 22 L42 78 M42 50 H68",
+    strokeGuides: [
+      {
+        id: "ko-a-1",
+        pathD: "M42 22 L42 78",
+        order: 1,
+      },
+      {
+        id: "ko-a-2",
+        pathD: "M42 50 H68",
+        order: 2,
+      },
+    ],
+    viewBox: [0, 0, 100, 100],
+    gridLabel: {
+      ko: "한글 연습 칸",
+      en: "Hangul box",
+    },
+  },
+  koAeTemplate,
+  koEoTemplate,
+  koETemplate,
+  koOTemplate,
+  koOeTemplate,
+  koUTemplate,
+  koWiTemplate,
+  koEuTemplate,
+  koITemplate,
+  koYaTemplate,
+  koYaeTemplate,
+  koYeoTemplate,
+  koYeTemplate,
+  koWaTemplate,
+  koWaeTemplate,
+  koYoTemplate,
+  koWoTemplate,
+  koWeTemplate,
+  koYuTemplate,
+  koUiTemplate,
+]);
+
+const enTemplates = applyEnglishGlyphAssets(enAlphabetTemplates);
 
 const koTemplateGroups = [
   createGroupFromIds("consonants", { ko: "자음", en: "Consonants" }, [
@@ -215,79 +293,7 @@ export const languagePacks: LanguagePack[] = [
       en: "Start from foundational jamo while keeping the content model ready for words and sentences.",
     },
     templateGroups: koTemplateGroups,
-    templates: [
-      koGiyeokTemplate,
-      koNieunTemplate,
-      koDigeutTemplate,
-      koRieulTemplate,
-      koMieumTemplate,
-      koBieupTemplate,
-      koSiotTemplate,
-      koIeungTemplate,
-      koJieutTemplate,
-      koChieutTemplate,
-      koKieukTemplate,
-      koTieutTemplate,
-      koPieupTemplate,
-      koHieutTemplate,
-      {
-        id: "ko-a",
-        languageId: "ko",
-        mode: "character",
-        label: {
-          ko: "아",
-          en: "A",
-        },
-        nativeLabel: "ㅏ",
-        cue: {
-          ko: "세로획을 먼저 쓴 다음 오른쪽 짧은 가로획을 붙여 마무리하세요.",
-          en: "Draw the vertical stroke first, then add the short right bar.",
-        },
-        description: {
-          ko: "획 순서 미리보기를 검증하기 위한 기본 모음 샘플입니다.",
-          en: "Core vowel sample for stroke-order preview validation.",
-        },
-        direction: "ltr",
-        guidePathD: "M42 22 L42 78 M42 50 H68",
-        strokeGuides: [
-          {
-            id: "ko-a-1",
-            pathD: "M42 22 L42 78",
-            order: 1,
-          },
-          {
-            id: "ko-a-2",
-            pathD: "M42 50 H68",
-            order: 2,
-          },
-        ],
-        viewBox: [0, 0, 100, 100],
-        gridLabel: {
-          ko: "한글 연습 칸",
-          en: "Hangul box",
-        },
-      },
-      koAeTemplate,
-      koEoTemplate,
-      koETemplate,
-      koOTemplate,
-      koOeTemplate,
-      koUTemplate,
-      koWiTemplate,
-      koEuTemplate,
-      koITemplate,
-      koYaTemplate,
-      koYaeTemplate,
-      koYeoTemplate,
-      koYeTemplate,
-      koWaTemplate,
-      koWaeTemplate,
-      koYoTemplate,
-      koWoTemplate,
-      koWeTemplate,
-      koYuTemplate,
-      koUiTemplate,
-    ],
+    templates: koTemplates,
   },
   {
     id: "en",
@@ -302,11 +308,11 @@ export const languagePacks: LanguagePack[] = [
       ko: "인터페이스와 저장 구조가 언어 비종속적으로 동작하는지 확인하기 위한 샘플 팩입니다.",
       en: "Included to validate that the interface and storage model are language-agnostic.",
     },
-    templateGroups: createCaseGroups(enAlphabetTemplates, {
+    templateGroups: createCaseGroups(enTemplates, {
       first: { ko: "대문자", en: "Uppercase" },
       second: { ko: "소문자", en: "Lowercase" },
     }),
-    templates: enAlphabetTemplates,
+    templates: enTemplates,
   },
   {
     id: "ja",
