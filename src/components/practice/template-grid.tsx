@@ -71,10 +71,14 @@ export function TemplateGrid({
   onSelectTemplate,
 }: TemplateGridProps) {
   const templatesById = new Map(selectedLanguage.templates.map((template) => [template.id, template]));
-  const isChinesePack = selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant";
+  const isChineseSimplifiedPack = selectedLanguage.id === "zh-hans";
+  const isChineseTraditionalPack = selectedLanguage.id === "zh-hant";
+  const isChinesePack = isChineseSimplifiedPack || isChineseTraditionalPack;
   const usePrintedCardGlyphs = selectedLanguage.id === "ru";
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategoryId, setSelectedCategoryId] = useState("all");
+  const [selectedCategoryId, setSelectedCategoryId] = useState(() =>
+    selectedLanguage.id === "zh-hans" ? selectedLanguage.templateGroups[0]?.id ?? "all" : "all"
+  );
   const [selectedStrokeBucketId, setSelectedStrokeBucketId] = useState("all");
 
   const templateGroups = selectedLanguage.templateGroups.length
@@ -88,7 +92,7 @@ export function TemplateGrid({
           },
           templateIds: selectedLanguage.templates.map((template) => template.id),
         },
-      ];
+    ];
 
   const chineseCategories = templateGroups.map((group) => ({
     id: group.id,
@@ -98,47 +102,89 @@ export function TemplateGrid({
 
   const chineseStrokeBuckets = getChineseStrokeBuckets(locale);
   const normalizedQuery = searchQuery.trim().toLowerCase();
-  const chineseCategoryTemplateIds =
-    selectedCategoryId === "all"
-      ? selectedLanguage.templates
-          .filter((item) => !isChineseBasicStrokeTemplate(item.id))
-          .map((item) => item.id)
-      : selectedLanguage.templateGroups.find((group) => group.id === selectedCategoryId)?.templateIds ?? [];
   const chineseStrokeBucket =
     chineseStrokeBuckets.find((bucket) => bucket.id === selectedStrokeBucketId) ?? chineseStrokeBuckets[0];
-  const showChineseStrokeBuckets = selectedCategoryId !== "strokes";
-  const filteredChineseTemplates = isChinesePack
-    ? selectedLanguage.templates.filter((template) => {
-        if (!chineseCategoryTemplateIds.includes(template.id)) {
-          return false;
-        }
 
-        if (selectedStrokeBucketId !== "all" && isChineseBasicStrokeTemplate(template.id)) {
-          return false;
-        }
+  function getChineseCategoryTemplateIds() {
+    if (selectedCategoryId === "all") {
+      return selectedLanguage.templates.map((item) => item.id);
+    }
 
-        if (showChineseStrokeBuckets) {
-          const strokeCount = getChineseTemplateStrokeCount(template);
-          if (!chineseStrokeBucket.matches(strokeCount)) {
+    return selectedLanguage.templateGroups.find((group) => group.id === selectedCategoryId)?.templateIds ?? [];
+  }
+
+  const filteredChineseTemplates = isChineseSimplifiedPack
+    ? selectedLanguage.templates.filter((template) => getChineseCategoryTemplateIds().includes(template.id))
+    : isChineseTraditionalPack
+      ? selectedLanguage.templates.filter((template) => {
+          const chineseCategoryTemplateIds =
+            selectedCategoryId === "all"
+              ? selectedLanguage.templates
+                  .filter((item) => !isChineseBasicStrokeTemplate(item.id))
+                  .map((item) => item.id)
+              : selectedLanguage.templateGroups.find((group) => group.id === selectedCategoryId)?.templateIds ?? [];
+          const showChineseStrokeBuckets = selectedCategoryId !== "strokes";
+
+          if (!chineseCategoryTemplateIds.includes(template.id)) {
             return false;
           }
-        }
 
-        if (!normalizedQuery) {
-          return true;
-        }
+          if (selectedStrokeBucketId !== "all" && isChineseBasicStrokeTemplate(template.id)) {
+            return false;
+          }
 
-        const searchableText = [
-          getLocalizedText(template.label, locale),
-          template.nativeLabel,
-          getLocalizedText(template.description, locale),
-        ]
-          .join(" ")
-          .toLowerCase();
+          if (showChineseStrokeBuckets) {
+            const strokeCount = getChineseTemplateStrokeCount(template);
+            if (!chineseStrokeBucket.matches(strokeCount)) {
+              return false;
+            }
+          }
 
-        return searchableText.includes(normalizedQuery);
-      })
-    : selectedLanguage.templates;
+          if (!normalizedQuery) {
+            return true;
+          }
+
+          const searchableText = [
+            getLocalizedText(template.label, locale),
+            template.nativeLabel,
+            getLocalizedText(template.description, locale),
+          ]
+            .join(" ")
+            .toLowerCase();
+
+          return searchableText.includes(normalizedQuery);
+        })
+      : selectedLanguage.templates;
+
+  function renderTemplateCard(template: WritingTemplate) {
+    const active = template.id === selectedTemplateId;
+
+    return (
+      <button
+        key={`worksheet-${template.id}`}
+        type="button"
+        onClick={() => onSelectTemplate(template.id)}
+        className={cn(
+          "inline-flex w-fit flex-none flex-col border px-3 py-3 text-left transition-colors sm:px-4",
+          template.mode === "word" ? "items-center text-center" : "items-start",
+          active
+            ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
+            : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
+        )}
+      >
+        <TemplateGlyphMark
+          template={template}
+          label={`${getLocalizedText(template.label, locale)} glyph`}
+          testId={`worksheet-template-card-glyph-${template.id}`}
+          className="h-10 w-10"
+          renderMode={usePrintedCardGlyphs ? "printed" : "glyph"}
+        />
+        <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
+          {getLocalizedText(template.label, locale)}
+        </div>
+      </button>
+    );
+  }
 
   return (
     <section
@@ -158,7 +204,29 @@ export function TemplateGrid({
         </div>
       </div>
 
-      {isChinesePack ? (
+      {isChineseSimplifiedPack ? (
+        <div className="mt-4 grid gap-4">
+          <div className="flex flex-wrap gap-2">
+            {chineseCategories.map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => setSelectedCategoryId(category.id)}
+                className={cn(
+                  "border px-3 py-1.5 text-xs uppercase tracking-[0.16em] transition-colors",
+                  selectedCategoryId === category.id
+                    ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
+                    : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
+                )}
+              >
+                {category.label} · {category.count}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-start gap-3">{filteredChineseTemplates.map(renderTemplateCard)}</div>
+        </div>
+      ) : isChineseTraditionalPack ? (
         <div className="mt-4 grid gap-4">
           <label className="grid gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
@@ -228,37 +296,7 @@ export function TemplateGrid({
             ) : null}
           </div>
 
-          <div className="flex flex-wrap items-start gap-3">
-            {filteredChineseTemplates.map((template) => {
-              const active = template.id === selectedTemplateId;
-
-              return (
-                <button
-                  key={`worksheet-${template.id}`}
-                  type="button"
-                  onClick={() => onSelectTemplate(template.id)}
-                  className={cn(
-                    "inline-flex w-fit flex-none flex-col border px-3 py-3 text-left transition-colors sm:px-4",
-                    template.mode === "word" ? "items-center text-center" : "items-start",
-                    active
-                      ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
-                      : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
-                  )}
-                >
-                  <TemplateGlyphMark
-                    template={template}
-                    label={`${getLocalizedText(template.label, locale)} glyph`}
-                    testId={`worksheet-template-card-glyph-${template.id}`}
-                    className="h-10 w-10"
-                    renderMode={usePrintedCardGlyphs ? "printed" : "glyph"}
-                  />
-                  <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                    {getLocalizedText(template.label, locale)}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+          <div className="flex flex-wrap items-start gap-3">{filteredChineseTemplates.map(renderTemplateCard)}</div>
         </div>
       ) : (
         <div className="mt-4 grid gap-5">
@@ -287,37 +325,7 @@ export function TemplateGrid({
                   <Badge className="rounded-none">{groupedTemplates.length}</Badge>
                 </div>
 
-                <div className="flex flex-wrap items-start gap-3">
-                  {groupedTemplates.map((template) => {
-                    const active = template.id === selectedTemplateId;
-
-                return (
-                      <button
-                        key={`worksheet-${template.id}`}
-                        type="button"
-                        onClick={() => onSelectTemplate(template.id)}
-                        className={cn(
-                          "inline-flex w-fit flex-none flex-col border px-3 py-3 text-left transition-colors sm:px-4",
-                          template.mode === "word" ? "items-center text-center" : "items-start",
-                          active
-                            ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
-                            : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
-                        )}
-                      >
-                        <TemplateGlyphMark
-                          template={template}
-                          label={`${getLocalizedText(template.label, locale)} glyph`}
-                          testId={`worksheet-template-card-glyph-${template.id}`}
-                          className="h-10 w-10"
-                          renderMode={usePrintedCardGlyphs ? "printed" : "glyph"}
-                        />
-                        <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-                          {getLocalizedText(template.label, locale)}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+                <div className="flex flex-wrap items-start gap-3">{groupedTemplates.map(renderTemplateCard)}</div>
               </section>
             );
           })}

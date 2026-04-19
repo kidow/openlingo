@@ -7,10 +7,13 @@ import { AppDictionary } from "@/i18n/dictionaries";
 import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
 import {
+  getChineseVoiceOptions,
   getDefaultJapaneseVoice,
+  getDefaultChineseVoice,
   getJapaneseVoiceOptions,
   isSpeechSynthesisSupported,
   loadSpeechSynthesisVoices,
+  speakText,
   speakJapaneseText,
 } from "@/lib/speech-synthesis";
 import { Stroke, StrokePoint } from "@/types/writing";
@@ -28,6 +31,7 @@ import { ItalianExampleSheet } from "@/components/practice/italian-example-sheet
 import { ChineseExampleSheet } from "@/components/practice/chinese-example-sheet";
 import { PracticeWorkspace } from "@/components/practice/practice-workspace";
 import { useExampleWordsAction } from "@/components/layout/example-words-action-context";
+import { chineseExampleWordsByTemplateId } from "@/data/templates/zh/examples";
 
 function createStrokePoint(event: PointerEvent | React.PointerEvent<SVGSVGElement>, bounds: DOMRect): StrokePoint {
   return {
@@ -53,6 +57,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [isExampleSheetOpen, setIsExampleSheetOpen] = useState(false);
   const [japaneseVoices, setJapaneseVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [chineseVoices, setChineseVoices] = useState<SpeechSynthesisVoice[]>([]);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
 
@@ -60,10 +65,17 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
   const isJapanesePack = selectedLanguage.id === "ja";
+  const isChineseSimplifiedPack = selectedLanguage.id === "zh-hans";
   const isJapaneseSpeechSupported = isJapanesePack && isSpeechSynthesisSupported();
+  const isChineseSpeechSupported = isChineseSimplifiedPack && isSpeechSynthesisSupported();
   const japaneseVoiceOptions = useMemo(() => getJapaneseVoiceOptions(japaneseVoices), [japaneseVoices]);
   const defaultJapaneseVoice = useMemo(() => getDefaultJapaneseVoice(japaneseVoices), [japaneseVoices]);
   const activeJapaneseVoice = defaultJapaneseVoice ?? japaneseVoiceOptions[0] ?? null;
+  const chineseVoiceOptions = useMemo(() => getChineseVoiceOptions(chineseVoices, "simplified"), [chineseVoices]);
+  const defaultChineseVoice = useMemo(() => getDefaultChineseVoice(chineseVoices, "simplified"), [chineseVoices]);
+  const activeChineseVoice = defaultChineseVoice ?? chineseVoiceOptions[0] ?? null;
+  const selectedChinesePronunciationWord =
+    chineseExampleWordsByTemplateId[selectedTemplate.id]?.[0]?.word ?? selectedTemplate.nativeLabel;
   const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hans", "zh-hant"].includes(
     selectedLanguage.id
   );
@@ -96,6 +108,24 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       isActive = false;
     };
   }, [isJapaneseSpeechSupported]);
+
+  useEffect(() => {
+    if (!isChineseSpeechSupported) {
+      return;
+    }
+
+    let isActive = true;
+
+    void loadSpeechSynthesisVoices().then((loadedVoices) => {
+      if (isActive) {
+        setChineseVoices(loadedVoices);
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [isChineseSpeechSupported]);
 
   const selectedTemplateIndex = selectedLanguage.templates.findIndex((template) => template.id === selectedTemplate.id);
   const canGoPrevious = selectedTemplateIndex > 0;
@@ -226,6 +256,10 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     speakJapaneseText(selectedTemplate.nativeLabel, activeJapaneseVoice);
   }
 
+  function handlePlayChinesePronunciation() {
+    speakText(selectedChinesePronunciationWord, "zh-CN", activeChineseVoice);
+  }
+
   return (
     <PracticeWorkspace
       tabsBand={
@@ -260,13 +294,19 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             canGoPrevious={canGoPrevious}
             canGoNext={canGoNext}
             isPreviewVisible={isPreviewVisible}
-            pronunciationButtonLabel={`${dictionary.buttons.playPronunciation}: ${selectedTemplate.nativeLabel}`}
-            pronunciationButtonDisabled={!isJapaneseSpeechSupported}
+            pronunciationButtonLabel={
+              isChineseSimplifiedPack
+                ? `${dictionary.buttons.playPronunciation}: ${selectedChinesePronunciationWord}`
+                : `${dictionary.buttons.playPronunciation}: ${selectedTemplate.nativeLabel}`
+            }
+            pronunciationButtonDisabled={!(isJapaneseSpeechSupported || isChineseSpeechSupported)}
             onPreviousTemplate={handlePreviousTemplate}
             onNextTemplate={handleNextTemplate}
             onClearCanvas={clearCanvas}
             onTogglePreview={() => setIsPreviewVisible((current) => !current)}
-            onPlayPronunciation={isJapanesePack ? handlePlayPronunciation : undefined}
+            onPlayPronunciation={
+              isJapanesePack ? handlePlayPronunciation : isChineseSimplifiedPack ? handlePlayChinesePronunciation : undefined
+            }
             onBeginStroke={beginStroke}
             onMoveStroke={moveStroke}
             onEndStroke={endStroke}

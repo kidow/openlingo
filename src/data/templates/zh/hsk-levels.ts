@@ -14,12 +14,12 @@ export const CHINESE_HSK_LEVELS: ChineseHskLevelDefinition[] = [
   {
     id: "hsk-1",
     label: {
-      ko: "HSK 1급",
-      en: "HSK Level 1",
+      ko: "HSK 3.0 1급",
+      en: "HSK 3.0 Level 1",
     },
     description: {
-      ko: "HSK 1급 단어 카드와 예시 연결을 묶습니다.",
-      en: "Groups the HSK Level 1 word cards and example-word links.",
+      ko: "HSK 3.0 1급 단어 카드와 예시 연결을 묶습니다.",
+      en: "Groups the HSK 3.0 Level 1 word cards and example-word links.",
     },
     words: HSK_1_WORDS,
   },
@@ -105,8 +105,8 @@ export function buildChineseHskPracticeTemplates(
         en: "This is a single-character card extracted from the HSK word list. Compound examples appear below.",
       },
       description: {
-        ko: `${item.category} · ${item.meaning}`,
-        en: `${item.category} · ${item.meaning}`,
+        ko: `${level.label.ko} · ${item.meaning}`,
+        en: `${level.label.en} · ${item.meaning}`,
       },
       direction: "ltr",
       guidePathD: "M0 0",
