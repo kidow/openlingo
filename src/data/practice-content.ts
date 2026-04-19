@@ -44,6 +44,7 @@ import { frTemplateGroups, frTemplates } from "@/data/templates/fr";
 import { ptTemplateGroups, ptTemplates } from "@/data/templates/pt";
 import { itTemplateGroups, itTemplates } from "@/data/templates/it";
 import { hiraganaTemplates, katakanaTemplates } from "@/data/templates/ja";
+import { zhHansTemplates } from "@/data/templates/zh/zh-hans";
 import { zhHantTemplates } from "@/data/templates/zh/zh-hant";
 import { BASIC_STROKES } from "@/data/templates/zh/shared/strokes";
 import { buildChineseHskPracticeTemplates, buildChineseHskTemplateGroups } from "@/data/templates/zh/hsk-levels";
@@ -156,6 +157,22 @@ const jaTemplateGroups = [
 
 const zhHansHskTemplates = buildChineseHskPracticeTemplates("zh-hans");
 const zhHansHskTemplateGroups = buildChineseHskTemplateGroups("zh-hans");
+const zhHansHskNativeLabels = new Set(zhHansHskTemplates.map((template) => template.nativeLabel));
+const zhHansStrokeTemplates = zhHansTemplates.slice(0, BASIC_STROKES.length);
+const zhHansBasicCharacterTemplates = zhHansTemplates
+  .slice(BASIC_STROKES.length)
+  .filter((template) => !zhHansHskNativeLabels.has(template.nativeLabel));
+
+const zhHansTemplateGroups = [
+  createGroupFromIds("strokes", { ko: "기본 필획", en: "Basic strokes" }, getTemplateIds(zhHansStrokeTemplates)),
+  ...zhHansHskTemplateGroups,
+  createGroupFromIds(
+    "basic-characters",
+    { ko: "기본문자", en: "Basic characters" },
+    getTemplateIds(zhHansBasicCharacterTemplates),
+    { ko: "임시로 유지하는 기본 한자입니다.", en: "Temporary base characters." }
+  ),
+];
 
 const zhHantTemplateGroups = createSplitGroups(
   zhHantTemplates,
@@ -445,11 +462,11 @@ export const languagePacks: LanguagePack[] = [
     direction: "ltr",
     stage: "Prototype",
     summary: {
-      ko: "HSK 3.0 1급 카드만으로 중국어 간체 연습 카드를 구성합니다.",
-      en: "HSK 3.0 Level 1 cards compose the simplified Chinese practice set.",
+      ko: "기본 필획, HSK 1급 한자, 임시 기본문자를 나눠 중국어 연습 카드를 구성합니다.",
+      en: "Basic strokes, HSK Level 1 characters, and temporary base characters compose the simplified Chinese practice cards.",
     },
-    templateGroups: zhHansHskTemplateGroups,
-    templates: zhHansHskTemplates,
+    templateGroups: zhHansTemplateGroups,
+    templates: [...zhHansStrokeTemplates, ...zhHansHskTemplates, ...zhHansBasicCharacterTemplates],
   },
   {
     id: "zh-hant",

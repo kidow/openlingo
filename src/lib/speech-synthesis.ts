@@ -423,6 +423,34 @@ export function getDefaultGermanVoice(voices: SpeechSynthesisVoice[]) {
   });
 }
 
+export const DEFAULT_ENGLISH_VOICE_NAME = "Google US English";
+export const ENGLISH_VOICE_PROFILE = [
+  DEFAULT_ENGLISH_VOICE_NAME,
+  "Google UK English Female",
+  "Google UK English Male",
+  "Samantha",
+  "Alex",
+  "Microsoft Aria Online (Natural) - English (United States)",
+  "Microsoft Guy Online (Natural) - English (United States)",
+  "Microsoft Jenny Online (Natural) - English (United States)",
+  "Microsoft David Desktop - English (United States)",
+  "Microsoft Zira Desktop - English (United States)",
+];
+
+export function getEnglishVoiceOptions(voices: SpeechSynthesisVoice[]) {
+  return getVoiceOptionsForProfile(voices, {
+    languagePrefix: "en",
+    voiceNames: ENGLISH_VOICE_PROFILE,
+  });
+}
+
+export function getDefaultEnglishVoice(voices: SpeechSynthesisVoice[]) {
+  return getDefaultVoiceForProfile(voices, {
+    languagePrefix: "en",
+    voiceNames: ENGLISH_VOICE_PROFILE,
+  });
+}
+
 export const DEFAULT_SPANISH_VOICE_NAME = "Google español";
 export const SPANISH_VOICE_PROFILE = [
   DEFAULT_SPANISH_VOICE_NAME,
