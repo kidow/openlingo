@@ -1,37 +1,38 @@
 import Link from "next/link";
 
-import { getNoteEntries } from "@/lib/notes-routing";
+import { getLocalizedText } from "@/i18n/config";
 import { cn } from "@/lib/utils";
+import { getNoteEntries, getNoteHref } from "@/lib/notes-routing";
 
 type NoteLanguageNavProps = {
-  selectedLanguageId: string;
+  currentLang: string;
 };
 
-export function NoteLanguageNav({ selectedLanguageId }: NoteLanguageNavProps) {
+export function NoteLanguageNav({ currentLang }: NoteLanguageNavProps) {
   const entries = getNoteEntries();
 
   return (
-    <nav
-      aria-label="언어별 연습장"
-      className="flex gap-2 overflow-x-auto rounded-[28px] border border-[color:var(--border-soft)] bg-[color:var(--paper)] p-2 shadow-[0_12px_36px_rgba(88,63,30,0.06)]"
-    >
+    <nav aria-label="Language notes navigation" className="flex flex-wrap gap-2">
       {entries.map((entry) => {
-        const active = entry.lang === selectedLanguageId;
+        const active = entry.lang === currentLang;
 
         return (
           <Link
             key={entry.lang}
-            href={entry.href}
+            href={getNoteHref(entry.lang)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "inline-flex min-w-fit items-center gap-3 rounded-[20px] px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)] focus-visible:ring-offset-2",
+              "inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-colors",
               active
-                ? "bg-[color:var(--accent)] text-[color:var(--accent-foreground)]"
-                : "bg-[color:var(--paper-strong)] text-[color:var(--muted-foreground)] hover:bg-[color:var(--paper-deep)] hover:text-[color:var(--foreground)]"
+                ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)] text-[color:var(--foreground)]"
+                : "border-[color:var(--border-soft)] bg-white/55 text-[color:var(--muted-foreground)] hover:bg-[color:var(--paper-strong)] hover:text-[color:var(--foreground)]"
             )}
           >
-            <span className="font-[family-name:var(--font-display)] text-base leading-none">{entry.nativeLabel}</span>
-            <span className="text-[11px] uppercase tracking-[0.18em]">{entry.label}</span>
+            <span className="font-medium">{getLocalizedText(entry.label)}</span>
+            <span className="rounded-full border border-[color:var(--border-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.16em]">
+              {entry.lang}
+            </span>
+            <span className="text-xs opacity-80">{entry.nativeLabel}</span>
           </Link>
         );
       })}

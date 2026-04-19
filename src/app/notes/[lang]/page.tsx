@@ -1,23 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getNoteEntries, getNoteHref } from "@/lib/notes-routing";
-import { loadNote } from "@/lib/notes-content";
 import { NoteShell } from "@/components/notes/note-shell";
+import { NoteMdxRenderer } from "@/components/notes/note-mdx-renderer";
+import { getNoteHref } from "@/lib/notes-routing";
+import { loadNote, resolveNoteMetadata } from "@/lib/notes-content";
 
-type NotePageProps = {
-  params: Promise<{
-    lang: string;
-  }>;
-};
-
-export function generateStaticParams() {
-  return getNoteEntries().map((entry) => ({
-    lang: entry.lang,
-  }));
-}
-
-export async function generateMetadata({ params }: NotePageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: Readonly<{
+  params: Promise<{ lang: string }>;
+}>): Promise<Metadata> {
   const { lang } = await params;
   const note = await loadNote(lang);
 
@@ -25,29 +18,35 @@ export async function generateMetadata({ params }: NotePageProps): Promise<Metad
     return {};
   }
 
-  const title = note.frontmatter.seoTitle ?? note.frontmatter.title;
-  const description = note.frontmatter.seoDescription ?? note.frontmatter.description;
+  const metadata = resolveNoteMetadata(note.frontmatter, lang);
+  const canonicalHref = getNoteHref(lang);
 
   return {
-    title,
-    description,
+    title: metadata.title,
+    description: metadata.description,
     alternates: {
-      canonical: getNoteHref(lang),
+      canonical: canonicalHref,
     },
-    openGraph: note.frontmatter.ogImage
-      ? {
-          title,
-          description,
-          images: [note.frontmatter.ogImage],
-        }
-      : {
-          title,
-          description,
-        },
+    openGraph: {
+      title: metadata.title,
+      description: metadata.description,
+      type: "article",
+      url: canonicalHref,
+      images: metadata.ogImage ? [metadata.ogImage] : undefined,
+    },
+    twitter: {
+      title: metadata.title,
+      description: metadata.description,
+      images: metadata.ogImage ? [metadata.ogImage] : undefined,
+    },
   };
 }
 
-export default async function NotePage({ params }: NotePageProps) {
+export default async function NotesLanguagePage({
+  params,
+}: Readonly<{
+  params: Promise<{ lang: string }>;
+}>) {
   const { lang } = await params;
   const note = await loadNote(lang);
 
@@ -56,11 +55,8 @@ export default async function NotePage({ params }: NotePageProps) {
   }
 
   return (
-    <NoteShell
-      entry={note.entry}
-      frontmatter={note.frontmatter}
-      tocItems={note.tocItems}
-      content={note.content}
-    />
+    <NoteShell entry={note.entry} frontmatter={note.frontmatter} tocItems={note.tocItems}>
+      <NoteMdxRenderer source={note.mdxSource} />
+    </NoteShell>
   );
 }

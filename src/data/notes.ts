@@ -1,31 +1,24 @@
-import { getLocalizedText } from "@/i18n/config";
+import "server-only";
+
 import { languagePacks } from "@/data/practice-content";
-import type { WritingDirection } from "@/types/writing";
+import { getLocalizedText } from "@/i18n/config";
+import type { NoteEntry } from "@/types/notes";
 
-export type NoteEntry = {
-  lang: string;
-  label: string;
-  nativeLabel: string;
-  direction: WritingDirection;
-  href: string;
-};
+export const DEFAULT_NOTE_LANGUAGE_ID = "ko";
 
-export const noteEntries: NoteEntry[] = languagePacks
-  .filter((pack) => pack.id !== "ko")
-  .map((pack) => ({
-    lang: pack.id,
-    label: getLocalizedText(pack.label),
-    nativeLabel: pack.nativeLabel,
-    direction: pack.direction,
-    href: `/notes/${pack.id}`,
-  }));
+export const noteEntries: NoteEntry[] = languagePacks.map((pack) => ({
+  lang: pack.id,
+  label: pack.label,
+  nativeLabel: pack.nativeLabel,
+  direction: pack.direction,
+  summary: pack.summary,
+  filePath: `src/content/notes/${pack.id}.mdx`,
+}));
 
-export function getNoteEntries() {
-  return noteEntries;
+export function getDefaultNoteEntry() {
+  return noteEntries.find((entry) => entry.lang === DEFAULT_NOTE_LANGUAGE_ID) ?? noteEntries[0] ?? null;
 }
 
-export function getNoteEntry(lang: string) {
-  return noteEntries.find((entry) => entry.lang === lang) ?? null;
+export function getDefaultNoteLabel() {
+  return getLocalizedText(getDefaultNoteEntry()?.label ?? languagePacks[0].label);
 }
-
-export const DEFAULT_NOTE_LANG = noteEntries[0]?.lang ?? "en";

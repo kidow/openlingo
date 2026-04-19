@@ -1,128 +1,65 @@
-import * as React from "react";
+"use client";
 
+import { createContext, type HTMLAttributes, useContext, useMemo, type ReactNode } from "react";
+
+import { NoteFlashcard } from "@/components/notes/note-flashcard";
+import { NoteVoiceButton } from "@/components/notes/note-voice-button";
+import { createNoteSlugger, type NoteSlugger } from "@/lib/note-slugs";
 import { cn } from "@/lib/utils";
-import { slugifyText } from "@/lib/notes-headings";
 
-type HeadingProps = React.HTMLAttributes<HTMLHeadingElement> & {
-  children?: React.ReactNode;
+type HeadingProps = HTMLAttributes<HTMLHeadingElement> & {
+  children?: ReactNode;
 };
 
-function getTextFromChildren(children: React.ReactNode): string {
-  if (typeof children === "string" || typeof children === "number") {
-    return String(children);
-  }
+const NoteHeadingContext = createContext<NoteSlugger | null>(null);
 
-  if (Array.isArray(children)) {
-    return children.map(getTextFromChildren).join("");
-  }
-
-  if (React.isValidElement<{ children?: React.ReactNode }>(children)) {
-    return getTextFromChildren(children.props.children);
-  }
-
-  return "";
+function useNoteHeadingSlugger() {
+  return useContext(NoteHeadingContext);
 }
 
-function createHeading(level: 2 | 3 | 4) {
-  const Tag = `h${level}` as const;
-  const baseClassName =
-    level === 2
-      ? "mt-10 scroll-mt-28 border-t border-[color:var(--border-soft)] pt-8 font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight text-[color:var(--foreground)] first:mt-0 first:border-t-0 first:pt-0"
-      : level === 3
-        ? "mt-8 scroll-mt-28 font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[color:var(--foreground)]"
-        : "mt-6 scroll-mt-28 font-semibold text-[color:var(--foreground)]";
+export function NoteHeadingProvider({ children }: { children: ReactNode }) {
+  const slugger = useMemo(() => createNoteSlugger(), []);
 
-  return function Heading({ children, className, ...props }: HeadingProps) {
-    const id = slugifyText(getTextFromChildren(children));
+  return <NoteHeadingContext.Provider value={slugger}>{children}</NoteHeadingContext.Provider>;
+}
+
+function createHeadingComponent(level: 2 | 3 | 4 | 5 | 6) {
+  const baseClasses = {
+    2: "mt-12 text-[1.6rem] leading-tight sm:text-[1.9rem]",
+    3: "mt-9 text-[1.25rem] leading-tight sm:text-[1.4rem]",
+    4: "mt-7 text-[1.05rem] leading-tight sm:text-[1.1rem]",
+    5: "mt-6 text-[0.95rem] leading-tight",
+    6: "mt-5 text-[0.92rem] leading-tight uppercase tracking-[0.12em]",
+  }[level];
+
+  const Tag = `h${level}` as const;
+
+  return function NoteHeading({ children, className, ...props }: HeadingProps) {
+    const slugger = useNoteHeadingSlugger();
+    const id = slugger?.next(children ?? "") ?? createNoteSlugger().next(children ?? "");
 
     return (
-      <Tag id={id} className={cn(baseClassName, className)} {...props}>
+      <Tag
+        id={id}
+        {...props}
+        className={cn(
+          "scroll-mt-28 font-[family-name:var(--font-display)] font-semibold text-[color:var(--foreground)]",
+          baseClasses,
+          className
+        )}
+      >
         {children}
       </Tag>
     );
   };
 }
 
-export const mdxComponents = {
-  h2: createHeading(2),
-  h3: createHeading(3),
-  h4: createHeading(4),
-  p: function Paragraph({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-    return <p className={cn("text-[15px] leading-8 text-[color:var(--foreground)]", className)} {...props} />;
-  },
-  ul: function UnorderedList({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
-    return <ul className={cn("list-disc space-y-2 pl-6 text-[15px] leading-8", className)} {...props} />;
-  },
-  ol: function OrderedList({ className, ...props }: React.HTMLAttributes<HTMLOListElement>) {
-    return <ol className={cn("list-decimal space-y-2 pl-6 text-[15px] leading-8", className)} {...props} />;
-  },
-  li: function ListItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
-    return <li className={cn("pl-1", className)} {...props} />;
-  },
-  a: function Anchor({
-    className,
-    ...props
-  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-    return (
-      <a
-        className={cn(
-          "font-medium text-[color:var(--foreground)] underline decoration-[color:var(--accent)] decoration-2 underline-offset-4 transition-colors hover:text-[color:var(--accent-strong)]",
-          className
-        )}
-        {...props}
-      />
-    );
-  },
-  blockquote: function Blockquote({
-    className,
-    ...props
-  }: React.BlockquoteHTMLAttributes<HTMLElement>) {
-    return (
-      <blockquote
-        className={cn(
-          "border-s-4 border-[color:var(--accent)] bg-[color:var(--paper-strong)] px-5 py-4 text-[15px] leading-8 text-[color:var(--muted-foreground)]",
-          className
-        )}
-        {...props}
-      />
-    );
-  },
-  table: function Table({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) {
-    return (
-      <div className="my-6 overflow-x-auto">
-        <table className={cn("w-full border-collapse text-left text-sm", className)} {...props} />
-      </div>
-    );
-  },
-  th: function TableHeader({ className, ...props }: React.ThHTMLAttributes<HTMLTableCellElement>) {
-    return <th className={cn("border-b border-[color:var(--border-soft)] px-3 py-2 text-left", className)} {...props} />;
-  },
-  td: function TableCell({ className, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) {
-    return <td className={cn("border-b border-[color:var(--border-soft)] px-3 py-2 align-top", className)} {...props} />;
-  },
-  code: function InlineCode({ className, ...props }: React.HTMLAttributes<HTMLElement>) {
-    return (
-      <code
-        className={cn(
-          "rounded-md bg-[color:var(--paper-deep)] px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.9em] text-[color:var(--foreground)]",
-          className
-        )}
-        {...props}
-      />
-    );
-  },
-  pre: function Preformatted({ className, ...props }: React.HTMLAttributes<HTMLPreElement>) {
-    return (
-      <pre
-        className={cn(
-          "overflow-x-auto rounded-[24px] border border-[color:var(--border-soft)] bg-[color:var(--paper-deep)] p-5 text-sm leading-7",
-          className
-        )}
-        {...props}
-      />
-    );
-  },
-  hr: function Divider({ className, ...props }: React.HTMLAttributes<HTMLHRElement>) {
-    return <hr className={cn("my-10 border-[color:var(--border-soft)]", className)} {...props} />;
-  },
+export const noteMdxComponents = {
+  h2: createHeadingComponent(2),
+  h3: createHeadingComponent(3),
+  h4: createHeadingComponent(4),
+  h5: createHeadingComponent(5),
+  h6: createHeadingComponent(6),
+  NoteVoiceButton,
+  NoteFlashcard,
 };

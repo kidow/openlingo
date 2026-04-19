@@ -1,86 +1,75 @@
-import type { ReactNode } from "react";
+import { ReactNode } from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { NoteLanguageNav } from "@/components/notes/note-language-nav";
+import { Card, CardContent } from "@/components/ui/card";
+import { getLocalizedText } from "@/i18n/config";
 import { cn } from "@/lib/utils";
-import type { NoteFrontmatter, TocItem } from "@/types/notes";
-import type { NoteEntry } from "@/data/notes";
+import { NoteHeadingProvider } from "@/components/notes/mdx-components";
+import { NoteLanguageNav } from "@/components/notes/note-language-nav";
+import type { NoteEntry, NoteFrontmatter, TocItem } from "@/types/notes";
 
 type NoteShellProps = {
   entry: NoteEntry;
   frontmatter: NoteFrontmatter;
   tocItems: TocItem[];
-  content: ReactNode;
+  children: ReactNode;
 };
 
 function formatUpdatedAt(value: string) {
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(date);
+  return value;
 }
 
-export function NoteShell({ entry, frontmatter, tocItems, content }: NoteShellProps) {
+export function NoteShell({ entry, frontmatter, tocItems, children }: NoteShellProps) {
   const isRtl = entry.direction === "rtl";
-  const updatedAt = formatUpdatedAt(frontmatter.updatedAt);
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(235,223,201,0.85),transparent_30%),linear-gradient(180deg,var(--background),var(--paper))] px-4 py-6 md:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4">
-        <NoteLanguageNav selectedLanguageId={entry.lang} />
+    <main className="mx-auto w-full max-w-[1440px] px-4 pb-12 pt-5 md:px-6 lg:px-8">
+      <div className="grid gap-5">
+        <NoteLanguageNav currentLang={entry.lang} />
 
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-          <article
-            lang={entry.lang}
-            dir={entry.direction}
-            className={cn("min-w-0", isRtl && "lg:order-2")}
-          >
-            <Card className="overflow-hidden">
-              <CardHeader className="space-y-4 border-b border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(255,251,244,1),rgba(248,242,230,1))]">
-                <div className={cn("flex flex-wrap gap-2", isRtl && "justify-end")}>
-                  <Badge>{entry.nativeLabel}</Badge>
-                  <Badge>{entry.label}</Badge>
-                  <Badge>{updatedAt}</Badge>
-                </div>
-                <CardTitle className={cn("text-3xl leading-tight md:text-4xl", isRtl && "text-right")}>
-                  {frontmatter.title}
-                </CardTitle>
-                <CardDescription className={cn("max-w-3xl text-base leading-7", isRtl && "text-right")}>
-                  {frontmatter.description}
-                </CardDescription>
-              </CardHeader>
+        <Card className="overflow-hidden rounded-[30px] border-[color:var(--border-soft)] bg-[linear-gradient(180deg,rgba(252,249,241,0.96),rgba(246,240,231,0.92))] shadow-[0_18px_48px_rgba(69,48,20,0.08)]">
+          <CardContent className={cn("grid gap-5 p-5 md:p-7 lg:p-8", isRtl && "text-right")}>
+            <div className={cn("flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]", isRtl && "justify-end")}>
+              <span>{getLocalizedText(entry.label)}</span>
+              <span className="rounded-full border border-[color:var(--border-soft)] bg-white/60 px-2.5 py-1 text-[10px]">
+                {entry.lang}
+              </span>
+              <span className="rounded-full border border-[color:var(--border-soft)] bg-white/60 px-2.5 py-1 text-[10px]">
+                {formatUpdatedAt(frontmatter.updatedAt)}
+              </span>
+            </div>
 
-              <CardContent className={cn("space-y-8 pt-8", isRtl && "text-right")}>
-                <div className="space-y-8">{content}</div>
-              </CardContent>
-            </Card>
+            <div className="grid gap-3">
+              <h1 className="font-[family-name:var(--font-display)] text-4xl leading-tight text-[color:var(--foreground)] md:text-5xl">
+                {frontmatter.title}
+              </h1>
+              <p className="max-w-4xl text-base leading-7 text-[color:var(--muted-foreground)] md:text-lg">
+                {frontmatter.description}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+          <article dir={entry.direction} className={cn("grid gap-8", isRtl && "text-right")}>
+            <NoteHeadingProvider>{children}</NoteHeadingProvider>
           </article>
 
-          <aside className={cn("space-y-4", isRtl && "lg:order-1")}>
-            <Card className="sticky top-4 overflow-hidden">
-              <CardHeader className="border-b border-[color:var(--border-soft)] bg-[color:var(--paper-strong)]">
-                <CardTitle className="text-lg">목차</CardTitle>
-                <CardDescription>시험 스펙 순서에 맞춰 섹션을 바로 이동할 수 있습니다.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2 pt-4">
+          <aside className="lg:sticky lg:top-6">
+            <Card className="rounded-[24px] border-[color:var(--border-soft)] bg-[color:rgba(252,249,241,0.72)] shadow-none">
+              <CardContent className="grid gap-4 p-4 md:p-5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
+                  Table of contents
+                </div>
+
                 {tocItems.length > 0 ? (
-                  <nav aria-label="문서 목차" className="space-y-1">
+                  <nav aria-label="Table of contents" className="grid gap-2">
                     {tocItems.map((item) => (
                       <a
                         key={item.id}
                         href={`#${item.id}`}
                         className={cn(
-                          "block rounded-xl px-3 py-2 text-sm leading-6 text-[color:var(--muted-foreground)] transition-colors hover:bg-[color:var(--paper-strong)] hover:text-[color:var(--foreground)]",
-                          item.level === 3 && "ps-6",
-                          item.level === 4 && "ps-9"
+                          "rounded-lg border border-transparent px-2 py-1 text-sm text-[color:var(--foreground)] transition-colors hover:border-[color:var(--border-soft)] hover:bg-white/60",
+                          item.level >= 4 && "pl-4 text-[0.92rem] text-[color:var(--muted-foreground)]"
                         )}
                       >
                         {item.label}
@@ -88,12 +77,14 @@ export function NoteShell({ entry, frontmatter, tocItems, content }: NoteShellPr
                     ))}
                   </nav>
                 ) : (
-                  <p className="text-sm leading-7 text-[color:var(--muted-foreground)]">헤딩이 있는 경우 자동으로 표시됩니다.</p>
+                  <div className="text-sm leading-6 text-[color:var(--muted-foreground)]">
+                    No section headings yet.
+                  </div>
                 )}
               </CardContent>
             </Card>
           </aside>
-        </section>
+        </div>
       </div>
     </main>
   );

@@ -1,94 +1,130 @@
 import "server-only";
 
-import fs from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { cache } from "react";
-import { compileMDX } from "next-mdx-remote/rsc";
-import type { ReactNode } from "react";
+import { serialize } from "next-mdx-remote/serialize";
 
-import { getNoteEntry } from "@/data/notes";
-import { mdxComponents } from "@/components/notes/mdx-components";
-import type { NoteFrontmatter, TocItem } from "@/types/notes";
+import { getNoteEntry } from "@/lib/notes-routing";
+import { createNoteSlugger } from "@/lib/note-slugs";
+import type { LoadedNote, NoteFrontmatter, TocItem } from "@/types/notes";
 
-type LoadedNote = {
-  entry: NonNullable<ReturnType<typeof getNoteEntry>>;
-  frontmatter: NoteFrontmatter;
-  content: ReactNode;
-  tocItems: TocItem[];
-};
-
-function getNoteFilePath(lang: string) {
-  return path.join(process.cwd(), "src/content/notes", `${lang}.mdx`);
-}
-
-export const loadNote = cache(async (lang: string): Promise<LoadedNote | null> => {
+function getNoteSourcePath(lang: string) {
   const entry = getNoteEntry(lang);
 
   if (!entry) {
     return null;
   }
 
-  const source = await fs.readFile(getNoteFilePath(lang), "utf8");
-  const tocItems = extractTocItems(source);
-  const { content, frontmatter } = await compileMDX<NoteFrontmatter>({
-    source,
-    components: mdxComponents,
-    options: {
-      parseFrontmatter: true,
-    },
-  });
+  return path.join(process.cwd(), "src/content/notes", `${entry.lang}.mdx`);
+}
 
-  return {
-    entry,
-    frontmatter,
-    content,
-    tocItems,
-  };
-});
+function stripFrontmatter(source: string) {
+  if (!source.startsWith("---")) {
+    return source;
+  }
 
-function extractTocItems(source: string) {
-  const tocItems: TocItem[] = [];
-  const slugCounts = new Map<string, number>();
-  let inCodeBlock = false;
+  const closingIndex = source.indexOf("\n---");
 
-  for (const rawLine of source.split("\n")) {
-    const line = rawLine.trimEnd();
+  if (closingIndex === -1) {
+    return source;
+  }
 
-    if (/^```/.test(line) || /^~~~/.test(line)) {
-      inCodeBlock = !inCodeBlock;
+  const bodyStart = source.indexOf("\n", closingIndex + 1);
+
+  return bodyStart === -1 ? "" : source.slice(bodyStart + 1);
+}
+
+function normalizeHeadingLabel(label: string) {
+  return label
+    .replace(/\[(.*?)\]\((.*?)\)/g, "$1")
+    .replace(/[*_`~]/g, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractTocItems(source: string): TocItem[] {
+  const body = stripFrontmatter(source);
+  const slugger = createNoteSlugger();
+  const items: TocItem[] = [];
+  const lines = body.split("\n");
+  let inCodeFence = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("```") || trimmed.startsWith("~~~")) {
+      inCodeFence = !inCodeFence;
       continue;
     }
 
-    if (inCodeBlock) {
+    if (inCodeFence) {
       continue;
     }
 
-    const match = /^(#{2,4})\s+(.+)$/.exec(line);
+    const match = trimmed.match(/^(#{2,6})\s+(.+?)\s*$/);
 
     if (!match) {
       continue;
     }
 
     const level = match[1].length;
-    const label = match[2].replace(/\[(.*?)\]\((.*?)\)/g, "$1");
-    const baseId = slugifyText(label);
-    const count = slugCounts.get(baseId) ?? 0;
-    const id = count === 0 ? baseId : `${baseId}-${count + 1}`;
+    const label = normalizeHeadingLabel(match[2]);
+    const id = slugger.next(label);
 
-    slugCounts.set(baseId, count + 1);
-    tocItems.push({ id, label, level });
+    items.push({
+      id,
+      label,
+      level,
+    });
   }
 
-  return tocItems;
+  return items;
 }
 
-function slugifyText(text: string) {
-  return text
-    .normalize("NFKC")
-    .toLowerCase()
-    .trim()
-    .replace(/[^\p{Letter}\p{Number}]+/gu, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "") || "section";
+export async function loadNote(lang: string): Promise<LoadedNote | null> {
+  const sourcePath = getNoteSourcePath(lang);
+
+  if (!sourcePath) {
+    return null;
+  }
+
+  let source = "";
+
+  try {
+    source = await readFile(sourcePath, "utf8");
+  } catch {
+    return null;
+  }
+
+  const mdxSource = await serialize<NoteFrontmatter>(source, {
+    parseFrontmatter: true,
+  });
+  const parsedFrontmatter = mdxSource.frontmatter as Partial<NoteFrontmatter>;
+  const frontmatter: NoteFrontmatter = {
+    title: parsedFrontmatter.title ?? "",
+    description: parsedFrontmatter.description ?? "",
+    lang: parsedFrontmatter.lang ?? lang,
+    updatedAt: parsedFrontmatter.updatedAt ?? "",
+    seoTitle: parsedFrontmatter.seoTitle,
+    seoDescription: parsedFrontmatter.seoDescription,
+    ogImage: parsedFrontmatter.ogImage,
+  };
+
+  return {
+    entry: getNoteEntry(lang)!,
+    frontmatter,
+    mdxSource,
+    tocItems: extractTocItems(source),
+  };
+}
+
+export function resolveNoteMetadata(frontmatter: NoteFrontmatter, lang: string) {
+  return {
+    title: frontmatter.seoTitle ?? frontmatter.title,
+    description: frontmatter.seoDescription ?? frontmatter.description,
+    lang: frontmatter.lang ?? lang,
+    ogImage: frontmatter.ogImage ?? null,
+  };
 }
