@@ -1,11 +1,18 @@
 "use client";
 
-import { startTransition, useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 
 import { languagePacks } from "@/data/practice-content";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { AppLocale, getLocalizedText } from "@/i18n/config";
 import { calculatePrototypeSimilarity } from "@/lib/similarity";
+import {
+  getDefaultJapaneseVoice,
+  getJapaneseVoiceOptions,
+  isSpeechSynthesisSupported,
+  loadSpeechSynthesisVoices,
+  speakJapaneseText,
+} from "@/lib/speech-synthesis";
 import { Stroke, StrokePoint } from "@/types/writing";
 import { LanguagePackTabs } from "@/components/practice/language-pack-tabs";
 import { PracticeCanvas } from "@/components/practice/practice-canvas";
@@ -45,12 +52,18 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const [score, setScore] = useState<number | null>(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [isExampleSheetOpen, setIsExampleSheetOpen] = useState(false);
+  const [japaneseVoices, setJapaneseVoices] = useState<SpeechSynthesisVoice[]>([]);
   const activeStrokeIdRef = useRef<string | null>(null);
   const activePointerIdRef = useRef<number | null>(null);
 
   const selectedLanguage = languagePacks.find((pack) => pack.id === selectedLanguageId) ?? languagePacks[0];
   const selectedTemplate =
     selectedLanguage.templates.find((template) => template.id === selectedTemplateId) ?? selectedLanguage.templates[0];
+  const isJapanesePack = selectedLanguage.id === "ja";
+  const isJapaneseSpeechSupported = isJapanesePack && isSpeechSynthesisSupported();
+  const japaneseVoiceOptions = useMemo(() => getJapaneseVoiceOptions(japaneseVoices), [japaneseVoices]);
+  const defaultJapaneseVoice = useMemo(() => getDefaultJapaneseVoice(japaneseVoices), [japaneseVoices]);
+  const activeJapaneseVoice = defaultJapaneseVoice ?? japaneseVoiceOptions[0] ?? null;
   const supportsExampleWords = ["ja", "ru", "ar", "de", "es", "fr", "pt", "it", "zh-hans", "zh-hant"].includes(
     selectedLanguage.id
   );
@@ -65,6 +78,24 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
       setIsExampleSheetOpen(false);
     }
   }
+
+  useEffect(() => {
+    if (!isJapaneseSpeechSupported) {
+      return;
+    }
+
+    let isActive = true;
+
+    void loadSpeechSynthesisVoices().then((loadedVoices) => {
+      if (isActive) {
+        setJapaneseVoices(loadedVoices);
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [isJapaneseSpeechSupported]);
 
   const selectedTemplateIndex = selectedLanguage.templates.findIndex((template) => template.id === selectedTemplate.id);
   const canGoPrevious = selectedTemplateIndex > 0;
@@ -191,6 +222,10 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
     handleTemplateSelect(selectedLanguage.templates[selectedTemplateIndex + 1].id);
   }
 
+  function handlePlayPronunciation() {
+    speakJapaneseText(selectedTemplate.nativeLabel, activeJapaneseVoice);
+  }
+
   return (
     <PracticeWorkspace
       tabsBand={
@@ -225,10 +260,13 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
             canGoPrevious={canGoPrevious}
             canGoNext={canGoNext}
             isPreviewVisible={isPreviewVisible}
+            pronunciationButtonLabel={`${dictionary.buttons.playPronunciation}: ${selectedTemplate.nativeLabel}`}
+            pronunciationButtonDisabled={!isJapaneseSpeechSupported}
             onPreviousTemplate={handlePreviousTemplate}
             onNextTemplate={handleNextTemplate}
             onClearCanvas={clearCanvas}
             onTogglePreview={() => setIsPreviewVisible((current) => !current)}
+            onPlayPronunciation={isJapanesePack ? handlePlayPronunciation : undefined}
             onBeginStroke={beginStroke}
             onMoveStroke={moveStroke}
             onEndStroke={endStroke}
