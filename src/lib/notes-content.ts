@@ -112,6 +112,7 @@ export async function loadNote(lang: string): Promise<LoadedNote | null> {
     title: frontmatter.title ?? "",
     description: frontmatter.description ?? "",
     lang: frontmatter.lang ?? lang,
+    createdAt: frontmatter.createdAt ?? "",
     updatedAt: frontmatter.updatedAt ?? "",
     seoTitle: frontmatter.seoTitle,
     seoDescription: frontmatter.seoDescription,

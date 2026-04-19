@@ -7,6 +7,7 @@ export type NoteFrontmatter = {
   title: string;
   description: string;
   lang: string;
+  createdAt: string;
   updatedAt: string;
   seoTitle?: string;
   seoDescription?: string;
