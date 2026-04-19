@@ -69,6 +69,8 @@ export type WritingTemplate = {
   direction: WritingDirection;
   guidePathD: string;
   strokeGuides?: StrokeGuide[];
+  strokeCount?: number;
+  strokeCountText?: string;
   glyph?: TemplateGlyph;
   glyphAsset?: GlyphAsset;
   viewBox: [number, number, number, number];

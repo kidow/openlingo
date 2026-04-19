@@ -71,7 +71,7 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   const canGoNext = selectedTemplateIndex < selectedLanguage.templates.length - 1;
 
   useEffect(() => {
-    if (strokes.length === 0) {
+    if (selectedTemplate.mode !== "character" || strokes.length === 0) {
       return;
     }
 
@@ -108,12 +108,9 @@ export function PrototypePracticeSheet({ locale, dictionary }: PrototypePractice
   }
 
   function handleTemplateSelect(templateId: string) {
-    const shouldCloseExampleSheet =
-      (selectedLanguage.id === "zh-hans" || selectedLanguage.id === "zh-hant") && templateId.includes("-stroke-");
-
     startTransition(() => {
       setSelectedTemplateId(templateId);
-      resetPracticeState({ closeExampleSheet: shouldCloseExampleSheet });
+      resetPracticeState();
     });
   }
 

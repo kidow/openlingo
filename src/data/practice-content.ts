@@ -47,6 +47,7 @@ import { hiraganaTemplates, katakanaTemplates } from "@/data/templates/ja";
 import { zhHansTemplates } from "@/data/templates/zh/zh-hans";
 import { zhHantTemplates } from "@/data/templates/zh/zh-hant";
 import { BASIC_STROKES } from "@/data/templates/zh/shared/strokes";
+import { buildChineseHskPracticeTemplates, buildChineseHskTemplateGroups } from "@/data/templates/zh/hsk-levels";
 
 type TemplateGroupInput = {
   id: string;
@@ -154,12 +155,24 @@ const jaTemplateGroups = [
   createGroupFromTemplates("katakana", { ko: "가타카나", en: "Katakana" }, katakanaTemplates),
 ];
 
-const zhHansTemplateGroups = createSplitGroups(
-  zhHansTemplates,
-  BASIC_STROKES.length,
-  { id: "strokes", label: { ko: "기본 필획", en: "Basic strokes" } },
-  { id: "characters", label: { ko: "기본문자", en: "Basic characters" } }
-);
+const zhHansHskTemplates = buildChineseHskPracticeTemplates("zh-hans");
+const zhHansHskTemplateGroups = buildChineseHskTemplateGroups("zh-hans");
+const zhHansHskTemplateIds = new Set(zhHansHskTemplates.map((template) => template.id));
+const zhHansStrokeTemplates = zhHansTemplates.slice(0, BASIC_STROKES.length);
+const zhHansBasicCharacterTemplates = zhHansTemplates
+  .slice(BASIC_STROKES.length)
+  .filter((template) => !zhHansHskTemplateIds.has(template.id));
+
+const zhHansTemplateGroups = [
+  createGroupFromIds("strokes", { ko: "기본 필획", en: "Basic strokes" }, getTemplateIds(zhHansStrokeTemplates)),
+  ...zhHansHskTemplateGroups,
+  createGroupFromIds(
+    "basic-characters",
+    { ko: "기본문자", en: "Basic characters" },
+    getTemplateIds(zhHansBasicCharacterTemplates),
+    { ko: "임시로 유지하는 기본 한자입니다.", en: "Temporary base characters." }
+  ),
+];
 
 const zhHantTemplateGroups = createSplitGroups(
   zhHantTemplates,
@@ -449,11 +462,11 @@ export const languagePacks: LanguagePack[] = [
     direction: "ltr",
     stage: "Prototype",
     summary: {
-      ko: "기본 필획 8종과 기초 한자 30자로 한자 획순 렌더링을 검증합니다.",
-      en: "Eight basic strokes and 30 foundational characters validate Hanzi stroke-order rendering.",
+      ko: "기본 필획, HSK 1급 한자, 임시 기본문자를 나눠 중국어 연습 카드를 구성합니다.",
+      en: "Basic strokes, HSK Level 1 characters, and temporary base characters compose the simplified Chinese practice cards.",
     },
     templateGroups: zhHansTemplateGroups,
-    templates: zhHansTemplates,
+    templates: [...zhHansStrokeTemplates, ...zhHansHskTemplates, ...zhHansBasicCharacterTemplates],
   },
   {
     id: "zh-hant",

@@ -46,6 +46,74 @@ export function PracticeCanvas({
   onMoveStroke,
   onEndStroke,
 }: PracticeCanvasProps) {
+  const isWordTemplate = selectedTemplate.mode === "word";
+  const wordStrokeCountLabel = selectedTemplate.strokeCountText
+    ? `${selectedTemplate.strokeCountText}획`
+    : `${selectedTemplate.strokeCount ?? 0}획`;
+
+  if (isWordTemplate) {
+    return (
+      <Card className="overflow-hidden rounded-none border-x-0 border-t-0 border-b-[color:var(--border-strong)] shadow-none bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.99))]">
+        <CardContent className="p-0">
+          <div className="relative overflow-hidden bg-[color:var(--paper)] p-4 pb-24 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] md:p-6 md:pb-28">
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,transparent_31px,rgba(134,111,81,0.12)_32px),linear-gradient(90deg,transparent_31px,rgba(134,111,81,0.12)_32px)] bg-[size:32px_32px] opacity-70" />
+            <div className="pointer-events-none absolute inset-x-0 top-[18%] border-t border-dashed border-[color:var(--border-soft)]" />
+            <div className="pointer-events-none absolute inset-x-0 top-[50%] border-t border-[color:rgba(153,98,46,0.18)]" />
+            <div className="pointer-events-none absolute inset-x-0 top-[82%] border-t border-dashed border-[color:var(--border-soft)]" />
+
+            <div className="relative z-10 flex min-h-[min(64vh,38rem)] items-center justify-center">
+              <div className="grid gap-4 rounded-[28px] border border-[color:var(--border-strong)] bg-[color:rgba(252,249,241,0.92)] px-6 py-7 text-center shadow-[0_18px_40px_rgba(69,48,20,0.12)] backdrop-blur-sm md:px-8 md:py-9">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">
+                  HSK CHARACTER CARD
+                </div>
+                <div className="font-[family-name:var(--font-display)] text-5xl leading-none text-[color:var(--foreground)] md:text-6xl">
+                  {selectedTemplate.nativeLabel}
+                </div>
+                <div className="text-sm font-medium text-[color:var(--foreground)]">{selectedTemplate.label.ko}</div>
+                <div className="text-sm leading-6 text-[color:var(--muted-foreground)]">{selectedTemplate.description.ko}</div>
+                <div className="inline-flex items-center justify-center gap-2">
+                  <span className="rounded-full border border-[color:var(--border-soft)] px-3 py-1 text-xs font-medium text-[color:var(--foreground)]">
+                    {wordStrokeCountLabel}
+                  </span>
+                </div>
+                <div className="text-xs text-[color:var(--muted-foreground)]">획순 연습은 나중에 추가됩니다.</div>
+              </div>
+            </div>
+
+            <div className="absolute inset-x-0 bottom-4 z-20 flex justify-center md:bottom-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--border-strong)] bg-[color:rgba(252,249,241,0.96)] p-2 shadow-[0_14px_30px_rgba(88,63,30,0.14)] backdrop-blur-sm">
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  data-testid="practice-template-previous"
+                  aria-label="Previous template"
+                  onClick={onPreviousTemplate}
+                  disabled={!canGoPrevious}
+                  className="rounded-full"
+                >
+                  <ChevronLeft className="size-4" />
+                </Button>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  data-testid="practice-template-next"
+                  aria-label="Next template"
+                  onClick={onNextTemplate}
+                  disabled={!canGoNext}
+                  className="rounded-full"
+                >
+                  <ChevronRight className="size-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="overflow-hidden rounded-none border-x-0 border-t-0 border-b-[color:var(--border-strong)] shadow-none bg-[linear-gradient(180deg,rgba(252,249,241,0.98),rgba(248,244,236,0.99))]">
       <CardContent className="p-0">

@@ -98,6 +98,7 @@ export function TemplateGlyphMark({
   renderMode = "glyph",
 }: TemplateGlyphMarkProps) {
   const shouldRenderPrinted = renderMode === "printed";
+  const isMultiCharacterWord = template.mode === "word" && template.nativeLabel.length > 1;
 
   if ((!template.glyph && !template.glyphAsset) || shouldRenderPrinted) {
       return (
@@ -106,7 +107,8 @@ export function TemplateGlyphMark({
           aria-label={label}
           className={cn(
             "font-[family-name:var(--font-cyrillic-print)] text-2xl leading-none text-[color:var(--foreground)]",
-            className
+            className,
+            isMultiCharacterWord && "w-auto min-w-[5.5rem] max-w-[8rem] px-1 text-center text-[1.35rem] leading-tight whitespace-normal break-keep"
           )}
         >
           {template.nativeLabel}

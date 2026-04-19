@@ -1,4 +1,7 @@
 import { ExampleWord } from "../example-words";
+import { HSK_1_WORDS } from "./hsk-words";
+import { buildChineseHskExampleWordsByTemplateId, buildChineseHskPracticeTemplates } from "./hsk-levels";
+import { zhHansTemplates } from "./zh-hans";
 
 type ChineseExampleSet = ExampleWord[];
 type ChineseExampleSuffixMap = Record<string, ChineseExampleSet>;
@@ -175,6 +178,7 @@ const traditionalWordOverridesBySuffix: Record<string, string[]> = {
 const traditionalExamplesBySuffix = createVariantExamples(simplifiedExamplesBySuffix, traditionalWordOverridesBySuffix);
 
 export const chineseExampleWordsByTemplateId: Record<string, ExampleWord[]> = {
-  ...createExampleMap("zh-hans", simplifiedExamplesBySuffix),
   ...createExampleMap("zh-hant", traditionalExamplesBySuffix),
+  ...createExampleMap("zh-hans", simplifiedExamplesBySuffix),
+  ...buildChineseHskExampleWordsByTemplateId([...zhHansTemplates, ...buildChineseHskPracticeTemplates("zh-hans")], HSK_1_WORDS),
 };

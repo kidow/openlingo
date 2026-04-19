@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { TemplateGlyphMark } from "@/components/practice/template-glyph";
 import { languagePacks } from "@/data/practice-content";
+import { WritingTemplate } from "@/types/writing";
 
 type TemplateGridProps = {
   locale: AppLocale;
@@ -26,6 +27,10 @@ type ChineseStrokeBucket = {
 
 function isChineseBasicStrokeTemplate(templateId: string) {
   return templateId.includes("-stroke-");
+}
+
+function getChineseTemplateStrokeCount(template: WritingTemplate) {
+  return template.strokeCount ?? template.strokeGuides?.length ?? 0;
 }
 
 function getChineseStrokeBuckets(locale: AppLocale): ChineseStrokeBucket[] {
@@ -113,7 +118,7 @@ export function TemplateGrid({
         }
 
         if (showChineseStrokeBuckets) {
-          const strokeCount = template.strokeGuides?.length ?? 0;
+          const strokeCount = getChineseTemplateStrokeCount(template);
           if (!chineseStrokeBucket.matches(strokeCount)) {
             return false;
           }
@@ -233,7 +238,8 @@ export function TemplateGrid({
                   type="button"
                   onClick={() => onSelectTemplate(template.id)}
                   className={cn(
-                    "inline-flex w-fit flex-none flex-col items-start border px-3 py-3 text-left transition-colors sm:px-4",
+                    "inline-flex w-fit flex-none flex-col border px-3 py-3 text-left transition-colors sm:px-4",
+                    template.mode === "word" ? "items-center text-center" : "items-start",
                     active
                       ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                       : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
@@ -285,13 +291,14 @@ export function TemplateGrid({
                   {groupedTemplates.map((template) => {
                     const active = template.id === selectedTemplateId;
 
-                    return (
+                return (
                       <button
                         key={`worksheet-${template.id}`}
                         type="button"
                         onClick={() => onSelectTemplate(template.id)}
                         className={cn(
-                          "inline-flex w-fit flex-none flex-col items-start border px-3 py-3 text-left transition-colors sm:px-4",
+                          "inline-flex w-fit flex-none flex-col border px-3 py-3 text-left transition-colors sm:px-4",
+                          template.mode === "word" ? "items-center text-center" : "items-start",
                           active
                             ? "border-[color:var(--border-strong)] bg-[color:var(--paper-deep)]"
                             : "border-[color:var(--border-soft)] bg-white/40 hover:bg-[color:var(--paper-strong)]"
