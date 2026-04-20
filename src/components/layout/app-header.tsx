@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { Button } from "@/components/ui/button";
 import { useExampleWordsAction } from "@/components/layout/example-words-action-context";
+import { getDefaultPracticeLanguageHref } from "@/lib/practice-routing";
 import { cn } from "@/lib/utils";
 
 type AppHeaderProps = {
@@ -36,7 +37,7 @@ export function AppHeader({ dictionary, homeHref = "/practice/en", activeSection
         <div className="flex items-center gap-2">
           <nav aria-label="Practice and notes navigation" className="flex items-center gap-2">
             <Link
-              href="/practice"
+              href={getDefaultPracticeLanguageHref()}
               aria-current={activeSection === "practice" ? "page" : undefined}
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
@@ -48,7 +49,7 @@ export function AppHeader({ dictionary, homeHref = "/practice/en", activeSection
               Practice
             </Link>
             <Link
-              href="/notes"
+              href="/notes/en"
               aria-current={activeSection === "notes" ? "page" : undefined}
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
