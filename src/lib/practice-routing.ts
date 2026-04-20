@@ -1,6 +1,6 @@
 import { languagePacks } from "@/data/practice-content";
 
-export const DEFAULT_PRACTICE_LANGUAGE_ID = languagePacks[0]?.id ?? "ko";
+export const DEFAULT_PRACTICE_LANGUAGE_ID = "en";
 
 export function getPracticeLanguageHref(languageId: string) {
   return `/practice/${languageId}`;

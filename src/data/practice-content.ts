@@ -1,39 +1,5 @@
 import { LanguagePack, PracticeTemplateGroup, WritingTemplate } from "@/types/writing";
 import { LocalizedText } from "@/i18n/config";
-import { koGiyeokTemplate } from "@/data/templates/ko/giyeok";
-import { koNieunTemplate } from "@/data/templates/ko/nieun";
-import { koDigeutTemplate } from "@/data/templates/ko/digeut";
-import { koRieulTemplate } from "@/data/templates/ko/rieul";
-import { koMieumTemplate } from "@/data/templates/ko/mieum";
-import { koBieupTemplate } from "@/data/templates/ko/bieup";
-import { koSiotTemplate } from "@/data/templates/ko/siot";
-import { koIeungTemplate } from "@/data/templates/ko/ieung";
-import { koJieutTemplate } from "@/data/templates/ko/jieut";
-import { koChieutTemplate } from "@/data/templates/ko/chieut";
-import { koKieukTemplate } from "@/data/templates/ko/kieuk";
-import { koTieutTemplate } from "@/data/templates/ko/tieut";
-import { koPieupTemplate } from "@/data/templates/ko/pieup";
-import { koHieutTemplate } from "@/data/templates/ko/hieut";
-import { koAeTemplate } from "@/data/templates/ko/ae";
-import { koEoTemplate } from "@/data/templates/ko/eo";
-import { koETemplate } from "@/data/templates/ko/e";
-import { koOTemplate } from "@/data/templates/ko/o";
-import { koOeTemplate } from "@/data/templates/ko/oe";
-import { koUTemplate } from "@/data/templates/ko/u";
-import { koWiTemplate } from "@/data/templates/ko/wi";
-import { koEuTemplate } from "@/data/templates/ko/eu";
-import { koITemplate } from "@/data/templates/ko/i";
-import { koYaTemplate } from "@/data/templates/ko/ya";
-import { koYaeTemplate } from "@/data/templates/ko/yae";
-import { koYeoTemplate } from "@/data/templates/ko/yeo";
-import { koYeTemplate } from "@/data/templates/ko/ye";
-import { koWaTemplate } from "@/data/templates/ko/wa";
-import { koWaeTemplate } from "@/data/templates/ko/wae";
-import { koYoTemplate } from "@/data/templates/ko/yo";
-import { koWoTemplate } from "@/data/templates/ko/wo";
-import { koWeTemplate } from "@/data/templates/ko/we";
-import { koYuTemplate } from "@/data/templates/ko/yu";
-import { koUiTemplate } from "@/data/templates/ko/ui";
 import { enAlphabetTemplates } from "@/data/templates/en/alphabet";
 import { applyEnglishGlyphAssets } from "@/data/templates/en/glyph-assets";
 import { jaTemplates } from "@/data/templates/ja";
@@ -45,7 +11,6 @@ import { frTemplateGroups, frTemplates } from "@/data/templates/fr";
 import { ptTemplateGroups, ptTemplates } from "@/data/templates/pt";
 import { itTemplateGroups, itTemplates } from "@/data/templates/it";
 import { hiraganaTemplates, katakanaTemplates } from "@/data/templates/ja";
-import { applyKoreanGlyphAssets } from "@/data/templates/ko/glyph-assets";
 import { zhHantTemplates } from "@/data/templates/zh/zh-hant";
 import { BASIC_STROKES } from "@/data/templates/zh/shared/strokes";
 import { buildChineseHskPracticeTemplates, buildChineseHskTemplateGroups } from "@/data/templates/zh/hsk-levels";
@@ -109,123 +74,7 @@ function createSplitGroups(
   ];
 }
 
-const koTemplates = applyKoreanGlyphAssets([
-  koGiyeokTemplate,
-  koNieunTemplate,
-  koDigeutTemplate,
-  koRieulTemplate,
-  koMieumTemplate,
-  koBieupTemplate,
-  koSiotTemplate,
-  koIeungTemplate,
-  koJieutTemplate,
-  koChieutTemplate,
-  koKieukTemplate,
-  koTieutTemplate,
-  koPieupTemplate,
-  koHieutTemplate,
-  {
-    id: "ko-a",
-    languageId: "ko",
-    mode: "character",
-    label: {
-      ko: "아",
-      en: "A",
-    },
-    nativeLabel: "ㅏ",
-    cue: {
-      ko: "세로획을 먼저 쓴 다음 오른쪽 짧은 가로획을 붙여 마무리하세요.",
-      en: "Draw the vertical stroke first, then add the short right bar.",
-    },
-    description: {
-      ko: "획 순서 미리보기를 검증하기 위한 기본 모음 샘플입니다.",
-      en: "Core vowel sample for stroke-order preview validation.",
-    },
-    direction: "ltr",
-    guidePathD: "M42 22 L42 78 M42 50 H68",
-    strokeGuides: [
-      {
-        id: "ko-a-1",
-        pathD: "M42 22 L42 78",
-        order: 1,
-      },
-      {
-        id: "ko-a-2",
-        pathD: "M42 50 H68",
-        order: 2,
-      },
-    ],
-    viewBox: [0, 0, 100, 100],
-    gridLabel: {
-      ko: "한글 연습 칸",
-      en: "Hangul box",
-    },
-  },
-  koAeTemplate,
-  koEoTemplate,
-  koETemplate,
-  koOTemplate,
-  koOeTemplate,
-  koUTemplate,
-  koWiTemplate,
-  koEuTemplate,
-  koITemplate,
-  koYaTemplate,
-  koYaeTemplate,
-  koYeoTemplate,
-  koYeTemplate,
-  koWaTemplate,
-  koWaeTemplate,
-  koYoTemplate,
-  koWoTemplate,
-  koWeTemplate,
-  koYuTemplate,
-  koUiTemplate,
-]);
-
 const enTemplates = applyEnglishGlyphAssets(enAlphabetTemplates);
-
-const koTemplateGroups = [
-  createGroupFromIds("consonants", { ko: "자음", en: "Consonants" }, [
-    "ko-giyeok",
-    "ko-nieun",
-    "ko-digeut",
-    "ko-rieul",
-    "ko-mieum",
-    "ko-bieup",
-    "ko-siot",
-    "ko-ieung",
-    "ko-jieut",
-    "ko-chieut",
-    "ko-kieuk",
-    "ko-tieut",
-    "ko-pieup",
-    "ko-hieut",
-  ]),
-  createGroupFromIds("vowels", { ko: "모음", en: "Vowels" }, [
-    "ko-a",
-    "ko-ae",
-    "ko-eo",
-    "ko-e",
-    "ko-o",
-    "ko-oe",
-    "ko-u",
-    "ko-wi",
-    "ko-eu",
-    "ko-i",
-    "ko-ya",
-    "ko-yae",
-    "ko-yeo",
-    "ko-ye",
-    "ko-wa",
-    "ko-wae",
-    "ko-yo",
-    "ko-wo",
-    "ko-we",
-    "ko-yu",
-    "ko-ui",
-  ]),
-];
 
 const jaTemplateGroups = [
   createGroupFromTemplates("hiragana", { ko: "히라가나", en: "Hiragana" }, hiraganaTemplates),
@@ -279,22 +128,6 @@ const arTemplateGroups = [
 ];
 
 export const languagePacks: LanguagePack[] = [
-  {
-    id: "ko",
-    label: {
-      ko: "한국어",
-      en: "Korean",
-    },
-    nativeLabel: "한국어",
-    direction: "ltr",
-    stage: "MVP",
-    summary: {
-      ko: "단어와 문장으로 확장 가능한 구조를 유지하면서 기본 자모부터 시작합니다.",
-      en: "Start from foundational jamo while keeping the content model ready for words and sentences.",
-    },
-    templateGroups: koTemplateGroups,
-    templates: koTemplates,
-  },
   {
     id: "en",
     label: {

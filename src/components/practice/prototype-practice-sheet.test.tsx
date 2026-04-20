@@ -74,8 +74,8 @@ describe("PrototypePracticeSheet", () => {
 
     expect(links).toHaveLength(languagePacks.length);
     expect(links[0]).toHaveAttribute("aria-current", "page");
-    expect(links[0]).toHaveAttribute("href", "/practice/ko");
-    expect(links[1]).toHaveAttribute("href", "/practice/en");
+    expect(links[0]).toHaveAttribute("href", "/practice/en");
+    expect(links[1]).toHaveAttribute("href", "/practice/ja");
   });
 
   it("renders the template library as a full grid below the practice canvas", () => {

@@ -91,7 +91,6 @@ export function PrototypePracticeSheet({ dictionary, selectedLanguageId = DEFAUL
   const isFrenchPack = selectedLanguage.id === "fr";
   const isPortuguesePack = selectedLanguage.id === "pt";
   const isItalianPack = selectedLanguage.id === "it";
-  const isKoreanPack = selectedLanguage.id === "ko";
   const isEnglishPack = selectedLanguage.id === "en";
   const isChineseSimplifiedHskPack = selectedLanguage.id === "zh-hans" && selectedTemplate.mode === "word";
   const isCanvasPronunciationPack =
@@ -103,7 +102,6 @@ export function PrototypePracticeSheet({ dictionary, selectedLanguageId = DEFAUL
     isFrenchPack ||
     isPortuguesePack ||
     isItalianPack ||
-    isKoreanPack ||
     isEnglishPack ||
     isChineseSimplifiedHskPack;
   const isCanvasPronunciationSupported = isCanvasPronunciationPack && isSpeechSupported;
@@ -141,7 +139,6 @@ export function PrototypePracticeSheet({ dictionary, selectedLanguageId = DEFAUL
         return getDefaultEnglishVoice(voices) ?? getEnglishVoiceOptions(voices)[0] ?? null;
       case "zh-hans":
         return getDefaultChineseVoice(voices, "simplified") ?? getChineseVoiceOptions(voices, "simplified")[0] ?? null;
-      case "ko":
       default:
         return null;
     }
@@ -314,9 +311,6 @@ export function PrototypePracticeSheet({ dictionary, selectedLanguageId = DEFAUL
         return;
       case "it":
         speakText(selectedTemplate.nativeLabel, "it-IT", selectedPackVoice);
-        return;
-      case "ko":
-        speakText(selectedTemplate.nativeLabel, "ko-KR", selectedPackVoice);
         return;
       case "en":
         speakText(selectedTemplate.nativeLabel, "en-US", selectedPackVoice);

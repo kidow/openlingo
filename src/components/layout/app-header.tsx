@@ -14,7 +14,7 @@ type AppHeaderProps = {
   activeSection?: "practice" | "notes";
 };
 
-export function AppHeader({ dictionary, homeHref = "/practice/ko", activeSection }: AppHeaderProps) {
+export function AppHeader({ dictionary, homeHref = "/practice/en", activeSection }: AppHeaderProps) {
   const { action } = useExampleWordsAction();
 
   return (
