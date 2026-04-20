@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { StrokePreview } from "@/components/practice/stroke-preview";
 import { TemplateGlyphLayer } from "@/components/practice/template-glyph";
+import { getPracticeTemplateDisplayLabel } from "@/lib/practice-template-label";
 
 function strokesToPath(stroke: Stroke) {
   return stroke.points.map((point) => `${point.x},${point.y}`).join(" ");
@@ -53,6 +54,7 @@ export function PracticeCanvas({
   onEndStroke,
 }: PracticeCanvasProps) {
   const isWordTemplate = selectedTemplate.mode === "word";
+  const displayLabel = getPracticeTemplateDisplayLabel(selectedTemplate);
   const wordStrokeCountLabel = selectedTemplate.strokeCountText
     ? `${selectedTemplate.strokeCountText}획`
     : `${selectedTemplate.strokeCount ?? 0}획`;
@@ -75,7 +77,7 @@ export function PracticeCanvas({
                 <div className="font-[family-name:var(--font-display)] text-5xl leading-none text-[color:var(--foreground)] md:text-6xl">
                   {selectedTemplate.nativeLabel}
                 </div>
-                <div className="text-sm font-medium text-[color:var(--foreground)]">{selectedTemplate.label.ko}</div>
+                <div className="text-sm font-medium text-[color:var(--foreground)]">{displayLabel}</div>
                 <div className="text-sm leading-6 text-[color:var(--muted-foreground)]">{selectedTemplate.description.ko}</div>
                 <div className="inline-flex items-center justify-center gap-2">
                   <span className="rounded-full border border-[color:var(--border-soft)] px-3 py-1 text-xs font-medium text-[color:var(--foreground)]">

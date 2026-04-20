@@ -180,6 +180,10 @@ const hiraganaBaseTemplates: WritingTemplate[] = [
 
 export const hiraganaTemplates: WritingTemplate[] = applyHiraganaGlyphAssets(hiraganaBaseTemplates);
 
+function normalizeKatakanaLabel(label: string) {
+  return label.replace(/^카타카나 /, "").replace(/^Katakana /, "").replace(/\s*\([A-Za-z]+\)$/, "");
+}
+
 const katakanaBaseTemplates: WritingTemplate[] = [
   // ア行
   jaKatakanaATemplate,
@@ -240,7 +244,13 @@ const katakanaBaseTemplates: WritingTemplate[] = [
   jaKatakanaNTemplate,
 ];
 
-export const katakanaTemplates: WritingTemplate[] = applyKatakanaGlyphAssets(katakanaBaseTemplates);
+export const katakanaTemplates: WritingTemplate[] = applyKatakanaGlyphAssets(katakanaBaseTemplates).map((template) => ({
+  ...template,
+  label: {
+    ko: normalizeKatakanaLabel(template.label.ko),
+    en: normalizeKatakanaLabel(template.label.en),
+  },
+}));
 
 export const jaTemplates: WritingTemplate[] = [
   ...hiraganaTemplates,

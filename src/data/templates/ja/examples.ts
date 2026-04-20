@@ -309,6 +309,13 @@ const hiraganaExampleWordsByTemplateId: Record<string, ExampleWord[]> = {
     { word: "わらう", reading: "와라우", meaning: "웃다" },
     { word: "わん", reading: "완", meaning: "강아지 소리" },
   ],
+  "ja-hiragana-wo": [
+    { word: "本を読む", reading: "혼오요무", meaning: "책을 읽다" },
+    { word: "水を飲む", reading: "미즈오노무", meaning: "물을 마시다" },
+    { word: "服を着る", reading: "후쿠오키루", meaning: "옷을 입다" },
+    { word: "目を閉じる", reading: "메오토지루", meaning: "눈을 감다" },
+    { word: "ご飯を食べる", reading: "고한오타베루", meaning: "밥을 먹다" },
+  ],
   "ja-hiragana-n": [
     { word: "ん", reading: "응", meaning: "받침음" },
     { word: "あん", reading: "안", meaning: "팥소" },

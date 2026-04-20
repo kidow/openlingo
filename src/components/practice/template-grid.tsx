@@ -6,6 +6,7 @@ import { BookOpenText, Search } from "lucide-react";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { getLocalizedText } from "@/i18n/config";
 import { cn } from "@/lib/utils";
+import { getPracticeTemplateDisplayLabel } from "@/lib/practice-template-label";
 import { Badge } from "@/components/ui/badge";
 import { TemplateGlyphMark } from "@/components/practice/template-glyph";
 import { languagePacks } from "@/data/practice-content";
@@ -156,6 +157,7 @@ export function TemplateGrid({
 
   function renderTemplateCard(template: WritingTemplate) {
     const active = template.id === selectedTemplateId;
+    const displayLabel = getPracticeTemplateDisplayLabel(template);
 
     return (
       <button
@@ -172,13 +174,13 @@ export function TemplateGrid({
       >
         <TemplateGlyphMark
           template={template}
-          label={`${getLocalizedText(template.label)} glyph`}
+          label={`${displayLabel} glyph`}
           testId={`worksheet-template-card-glyph-${template.id}`}
           className="h-10 w-10"
           renderMode={usePrintedCardGlyphs ? "printed" : "glyph"}
         />
         <div className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
-          {getLocalizedText(template.label)}
+          {displayLabel}
         </div>
       </button>
     );

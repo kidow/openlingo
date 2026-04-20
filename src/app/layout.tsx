@@ -1,7 +1,8 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
+import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -11,6 +12,10 @@ export const viewport: Viewport = {
   userScalable: false,
   viewportFit: "cover",
   themeColor: "#efe6d8",
+};
+
+export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
 };
 
 export default function RootLayout({

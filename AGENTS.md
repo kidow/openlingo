@@ -6,6 +6,7 @@
 
 ## Notes
 
+- Notes must be written in Korean.
 - Before adding new knowledge for a given language, check the corresponding document in `src/content/notes/` first.
 - If needed, reorganize the existing content before applying the update.
 - Keep only one notes file per language.
