@@ -3,7 +3,15 @@
 import { Play, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { getDisplayVoiceName } from "@/lib/speech-synthesis";
 import { cn } from "@/lib/utils";
@@ -58,7 +66,10 @@ export function ExampleWordsSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent aria-describedby={undefined} className="h-[min(86dvh,44rem)]">
+      <SheetContent
+        aria-describedby={undefined}
+        className="h-[min(86dvh,44rem)]"
+      >
         <SheetHeader className="border-b border-[color:var(--border-soft)] pb-4">
           <div className="flex items-start justify-between gap-4">
             <div className="grid gap-1">
@@ -70,7 +81,13 @@ export function ExampleWordsSheet({
               </SheetDescription>
             </div>
             <SheetClose asChild>
-              <Button type="button" variant="subtle" size="icon" aria-label={dictionary.buttons.closePanel} className="shrink-0">
+              <Button
+                type="button"
+                variant="subtle"
+                size="icon"
+                aria-label={dictionary.buttons.closePanel}
+                className="shrink-0"
+              >
                 <X className="size-4" />
               </Button>
             </SheetClose>
@@ -82,10 +99,12 @@ export function ExampleWordsSheet({
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
               {languageLabel}
             </div>
-            <div className="font-[family-name:var(--font-display)] text-5xl leading-none text-[color:var(--foreground)]">
+            <div className="select-text font-[family-name:var(--font-display)] text-5xl leading-none text-[color:var(--foreground)]">
               {selectedTemplateNativeLabel}
             </div>
-            <div className="text-sm text-[color:var(--muted-foreground)]">{selectedTemplateLabel}</div>
+            <div className="text-sm text-[color:var(--muted-foreground)]">
+              {selectedTemplateLabel}
+            </div>
           </div>
 
           <div className="grid gap-3">
@@ -93,7 +112,9 @@ export function ExampleWordsSheet({
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted-foreground)]">
                 {voiceSelectorTitle}
               </div>
-              <div className="text-xs text-[color:var(--muted-foreground)]">{activeVoiceLabel}</div>
+              <div className="text-xs text-[color:var(--muted-foreground)]">
+                {activeVoiceLabel}
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {voiceOptions.length > 0 ? (
@@ -112,7 +133,9 @@ export function ExampleWordsSheet({
                           : "border-[color:var(--border-soft)] bg-white/60 hover:bg-[color:var(--paper-strong)]",
                       ].join(" ")}
                     >
-                      <span className="max-w-[16rem] truncate">{getDisplayVoiceName(voice.name)}</span>
+                      <span className="max-w-[16rem] truncate">
+                        {getDisplayVoiceName(voice.name)}
+                      </span>
                       {defaultVoiceName && voice.name === defaultVoiceName ? (
                         <span className="rounded-full border border-[color:var(--border-soft)] px-2 py-0.5 text-[10px] uppercase tracking-[0.16em]">
                           default
@@ -122,7 +145,9 @@ export function ExampleWordsSheet({
                   );
                 })
               ) : (
-                <div className="text-sm text-[color:var(--muted-foreground)]">{speechUnavailableText}</div>
+                <div className="text-sm text-[color:var(--muted-foreground)]">
+                  {speechUnavailableText}
+                </div>
               )}
             </div>
           </div>
@@ -134,31 +159,44 @@ export function ExampleWordsSheet({
                   key={`${selectedTemplateNativeLabel}-${item.word}-${index}`}
                   className={cn(
                     "flex items-center gap-3 rounded-[20px] border border-[color:var(--border-soft)] bg-white/70 px-4 py-3",
-                    isRtlLayout && "flex-row-reverse"
+                    isRtlLayout && "flex-row-reverse",
                   )}
                 >
-                  <div className={cn("min-w-0 flex-1", isRtlLayout && "text-right")}>
+                  <div
+                    className={cn(
+                      "min-w-0 flex-1",
+                      isRtlLayout && "text-right",
+                    )}
+                  >
                     <div
                       className={cn(
                         "flex flex-wrap items-center gap-x-3 gap-y-1",
-                        isRtlLayout && "flex-row-reverse justify-start"
+                        isRtlLayout && "flex-row-reverse justify-start",
                       )}
                     >
                       {isRtlLayout ? (
                         <>
-                          <span className="text-sm text-[color:var(--foreground)]">{item.meaning}</span>
-                          <span className="text-sm text-[color:var(--muted-foreground)]">{item.reading}</span>
-                          <span className="font-[family-name:var(--font-display)] text-2xl leading-none text-[color:var(--foreground)]">
+                          <span className="text-sm text-[color:var(--foreground)]">
+                            {item.meaning}
+                          </span>
+                          <span className="text-sm text-[color:var(--muted-foreground)]">
+                            {item.reading}
+                          </span>
+                          <span className="font-[family-name:var(--font-display)] text-2xl leading-none text-[color:var(--foreground)] select-text">
                             {item.word}
                           </span>
                         </>
                       ) : (
                         <>
-                          <span className="font-[family-name:var(--font-display)] text-2xl leading-none text-[color:var(--foreground)]">
+                          <span className="font-[family-name:var(--font-display)] text-2xl leading-none text-[color:var(--foreground)] select-text">
                             {item.word}
                           </span>
-                          <span className="text-sm text-[color:var(--muted-foreground)]">{item.reading}</span>
-                          <span className="text-sm text-[color:var(--foreground)]">{item.meaning}</span>
+                          <span className="text-sm text-[color:var(--muted-foreground)]">
+                            {item.reading}
+                          </span>
+                          <span className="text-sm text-[color:var(--foreground)]">
+                            {item.meaning}
+                          </span>
                         </>
                       )}
                     </div>
