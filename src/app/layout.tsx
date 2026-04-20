@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 
+import { SelectionPronunciationShortcut } from "@/components/layout/selection-pronunciation-shortcut";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
@@ -32,6 +33,7 @@ export default function RootLayout({
       </head>
       <body>
         {children}
+        <SelectionPronunciationShortcut />
         <ServiceWorkerRegister />
       </body>
     </html>
