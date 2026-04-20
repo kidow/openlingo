@@ -6,16 +6,17 @@ import Link from "next/link";
 import { AppDictionary } from "@/i18n/dictionaries";
 import { Button } from "@/components/ui/button";
 import { useExampleWordsAction } from "@/components/layout/example-words-action-context";
-import { getDefaultPracticeLanguageHref } from "@/lib/practice-routing";
 import { cn } from "@/lib/utils";
 
 type AppHeaderProps = {
   dictionary: AppDictionary["header"];
-  homeHref?: string;
+  homeHref: string;
+  practiceHref: string;
+  notesHref: string;
   activeSection?: "practice" | "notes";
 };
 
-export function AppHeader({ dictionary, homeHref = "/practice/en", activeSection }: AppHeaderProps) {
+export function AppHeader({ dictionary, homeHref, practiceHref, notesHref, activeSection }: AppHeaderProps) {
   const { action } = useExampleWordsAction();
 
   return (
@@ -37,7 +38,7 @@ export function AppHeader({ dictionary, homeHref = "/practice/en", activeSection
         <div className="flex items-center gap-2">
           <nav aria-label="Practice and notes navigation" className="flex items-center gap-2">
             <Link
-              href={getDefaultPracticeLanguageHref()}
+              href={practiceHref}
               aria-current={activeSection === "practice" ? "page" : undefined}
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
@@ -49,7 +50,7 @@ export function AppHeader({ dictionary, homeHref = "/practice/en", activeSection
               Practice
             </Link>
             <Link
-              href="/notes/en"
+              href={notesHref}
               aria-current={activeSection === "notes" ? "page" : undefined}
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
