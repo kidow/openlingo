@@ -15,7 +15,7 @@ function isEditableElement(target: EventTarget | null) {
     return true;
   }
 
-  return target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target.isContentEditable;
+  return target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable);
 }
 
 function getSelectedText() {
